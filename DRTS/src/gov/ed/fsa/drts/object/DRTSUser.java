@@ -79,14 +79,4 @@ public class DRTSUser {
 	{
 		this.home_page = Utils.getUserHomePage(this.groups);
 	}
-	
-	public boolean isAdmin()
-	{
-		int index = -1;
-		DRTSGroup admin_group = new DRTSGroup("admin", null);
-		
-		index = this.groups.indexOf(admin_group);
-		
-		return index != -1 ? true : false;
-	}
 }

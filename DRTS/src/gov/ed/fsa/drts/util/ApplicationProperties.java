@@ -12,9 +12,123 @@ import java.util.ResourceBundle;
 
 public enum ApplicationProperties {
 
-	PROCESS_ID_VACATION_REQUEST(true, false),
+	SHIRO_PERMISSIONS_BY_GROUP(true, true),
 	
-	DATE_FORMATS(true, true);
+	PROCESS_ID_DATA_REQUEST(true, false),
+	
+	DATE_FORMATS(true, true),
+	
+	GROUP_ADMIN(true, false),
+	
+	GROUP_SME(true, false),
+	
+	GROUP_DRT(true, false),
+	
+	GROUP_REPORTER(true, false),
+	
+	GROUP_REQUESTOR(true, false),
+	
+	GROUP_TYPE_SECURITY(true, false),
+	
+	GROUP_TYPE_GENERAL(true, false),
+	
+	HOME_PAGE_ADMIN(true, false),
+	
+	HOME_PAGE_SME(true, false),
+	
+	HOME_PAGE_DRT(true, false),
+	
+	HOME_PAGE_REPORTER(true, false),
+	
+	HOME_PAGE_REQUESTOR(true, false),
+	
+	PAGE_ERROR_APPLICATION(true, false),
+	
+	PAGE_ERROR_UNAUTHORIZED(true, false),
+	
+	USER_HEADER(true, false),
+	
+	USER_SESSION_HEADER(true, false),
+	
+	CONTEXT_ROOT(true, false),
+	
+	EMAIL_LABEL_NOTIFY_ADMIN_DRT_TO(true, false),
+	
+	EMAIL_LABEL_NOTIFY_ADMIN_DRT_CC(false, false),
+	
+	EMAIL_LABEL_NOTIFY_ADMIN_DRT_FROM(true, false),
+	
+	EMAIL_LABEL_NOTIFY_ADMIN_DRT_SUBJECT(true, false),
+	
+	EMAIL_LABEL_NOTIFY_ADMIN_DRT_CONTENT(true, false),
+	
+	EMAIL_NOTIFY_ADMIN_DRT_TO(true, false),
+	
+	EMAIL_NOTIFY_ADMIN_DRT_CC(false, false),
+	
+	EMAIL_NOTIFY_ADMIN_DRT_FROM(true, false),
+	
+	EMAIL_NOTIFY_ADMIN_DRT_SUBJECT(true, false),
+	
+	EMAIL_NOTIFY_ADMIN_DRT_CONTENT(true, false),
+	
+	EMAIL_LABEL_NOTIFY_REQUESTOR_TO(true, false),
+	
+	EMAIL_LABEL_NOTIFY_REQUESTOR_CC(false, false),
+	
+	EMAIL_LABEL_NOTIFY_REQUESTOR_FROM(true, false),
+	
+	EMAIL_LABEL_NOTIFY_REQUESTOR_SUBJECT(true, false),
+	
+	EMAIL_LABEL_NOTIFY_REQUESTOR_CONTENT(true, false),
+	
+	EMAIL_NOTIFY_REQUESTOR_CC(false, false),
+	
+	EMAIL_NOTIFY_REQUESTOR_FROM(true, false),
+	
+	EMAIL_NOTIFY_REQUESTOR_SUBJECT(true, false),
+	
+	EMAIL_NOTIFY_REQUESTOR_CONTENT(true, false),
+	
+	EMAIL_LABEL_NOTIFY_SME_NEW_REQUEST_TO(true, false),
+	
+	EMAIL_LABEL_NOTIFY_SME_NEW_REQUEST_CC(false, false),
+	
+	EMAIL_LABEL_NOTIFY_SME_NEW_REQUEST_FROM(true, false),
+	
+	EMAIL_LABEL_NOTIFY_SME_NEW_REQUEST_SUBJECT(true, false),
+	
+	EMAIL_LABEL_NOTIFY_SME_NEW_REQUEST_CONTENT(true, false),
+	
+	EMAIL_NOTIFY_SME_NEW_REQUEST_CC(false, false),
+	
+	EMAIL_NOTIFY_SME_NEW_REQUEST_FROM(true, false),
+	
+	EMAIL_NOTIFY_SME_NEW_REQUEST_SUBJECT(true, false),
+	
+	EMAIL_NOTIFY_SME_NEW_REQUEST_CONTENT(true, false),
+	
+	DATA_REQUEST_FIELD_ID(true, false),
+	
+	DATA_REQUEST_FIELD_TYPE(true, false),
+	
+	DATA_REQUEST_FIELD_CREATED_DATE(true, false),
+	
+	DATA_REQUEST_FIELD_CREATED_BY(true, false),
+	
+	DATA_REQUEST_FIELD_DESCRIPTION(true, false),
+	
+	DATA_REQUEST_FIELD_URGENT(true, false),
+	
+	DATA_REQUEST_FIELD_REQUESTOR_EMAIL(true, false),
+	
+	DATA_REQUEST_FIELD_NEW_REQUEST_REJECTED(true, false),
+	
+	DATA_REQUEST_FIELD_ASSIGNED_SME(true, false),
+	
+	DATA_REQUEST_FIELD_ASSIGNED_SME_EMAIL(true, false),
+	
+	DATA_REQUEST_FIELD_ASSIGNED_SME_FULL_NAME(true, false);
 	
 	private static final String LIST_DELIMITER = "\\|";
 	

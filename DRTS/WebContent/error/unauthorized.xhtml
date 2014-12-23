@@ -11,10 +11,10 @@
 	<c:set var="root" value="#{request.requestURL.substring(0, request.requestURL.length() - request.requestURI.length())}#{request.contextPath}/" scope="request" />
 
     <h:head>
-        
-        <ui:include src="#{root}includes/scripts.xhtml" />
+    
+    	<ui:include src="#{root}includes/scripts.xhtml" />
 
-	   <title>Data Request Tracking System | Federal Student Aid</title>
+	   	<title>Data Request Tracking System | Federal Student Aid</title>
     
     </h:head>
     
@@ -22,18 +22,7 @@
     
     	<ui:include src="#{root}includes/header.xhtml" />
     	
-    	<h:form>
-    	
-    		<h2>Data Request Tracking System</h2>
-    		
-    		<ul>
-      			<li><h:link value="Home" outcome="#{userSession.user.homePage}" /></li>
-      			<li><h:link value="Restricted Page" outcome="/restricted" rendered="#{userSession.user.admin}" /></li>
-      		</ul>
-      		
-      		<p>Only admins can access this page</p>
-      		
-      	</h:form>
+    	<p>You are not authorized to access this system.</p>
         
         <ui:include src="#{root}includes/footer.xhtml" />
     	

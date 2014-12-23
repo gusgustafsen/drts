@@ -60,14 +60,16 @@ public class AppInit {
 		
 		repository_service.createDeployment()
 		  			.addClasspathResource("gov/ed/fsa/drts/process/bookOrder/bookorder.bpmn20.xml")
+		  			.addClasspathResource("gov/ed/fsa/drts/process/dataRequest/datarequest.bpmn20.xml")
 		  			.deploy();
 		
 		String admin_user = "admin";
 		String user_1 = "tima";
+		String user_2 = "sme1";
 		
 		identity_service = process_engine.getIdentityService();
 		
-		String[] security_groups = new String[] {"user", "admin", "management", "reporter", "requestor"};
+		String[] security_groups = new String[] {"sme", "admin", "drt", "reporter", "requestor"};
 		String[] other_groups = new String[] {"group1"};
 		
 	    for(String group_id : security_groups)
@@ -104,8 +106,6 @@ public class AppInit {
 			List<String> admin_groups = new ArrayList<String>();
 			
 			admin_groups.add("admin");
-			admin_groups.add("user");
-			admin_groups.add("group1");
 			
 			List<String> admin_info = new ArrayList<String>();
 			
@@ -139,10 +139,8 @@ public class AppInit {
 			
 			List<String> user_1_groups = new ArrayList<String>();
 			
-			user_1_groups.add("user");
 			user_1_groups.add("group1");
-			user_1_groups.add("reporter");
-			user_1_groups.add("management");
+			user_1_groups.add("requestor");
 			
 			List<String> user_1_info = new ArrayList<String>();
 			
@@ -166,6 +164,41 @@ public class AppInit {
 			for(int i = 0; i < user_1_info.size(); i += 2)
 			{
 				identity_service.setUserInfo(user_1, user_1_info.get(i), user_1_info.get(i + 1));
+			}
+		}
+		
+		if(identity_service.createUserQuery().userId(user_2).count() == 0)
+		{
+			String user_2_password = "tima";
+			String user_2_email = "tasanov@ppsco.com";
+			
+			List<String> user_2_groups = new ArrayList<String>();
+			
+			user_2_groups.add("group1");
+			user_2_groups.add("sme");
+			
+			List<String> user_2_info = new ArrayList<String>();
+			
+			user_2_info.add("birth_date");
+			user_2_info.add("20140929");
+			
+			User user = identity_service.newUser(user_2);
+			
+			user.setFirstName("SME");
+			user.setLastName("1");
+			user.setPassword(user_2_password);
+			user.setEmail(user_2_email);
+		
+			identity_service.saveUser(user);
+			
+			for(String group : user_2_groups)
+			{
+				identity_service.createMembership(user_2, group);
+			}
+			
+			for(int i = 0; i < user_2_info.size(); i += 2)
+			{
+				identity_service.setUserInfo(user_2, user_2_info.get(i), user_2_info.get(i + 1));
 			}
 		}
     }

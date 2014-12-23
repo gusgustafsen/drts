@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+
+<html xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:pf="http://primefaces.org/ui"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core" lang="en-us"
+	xmlns="http://www.w3.org/1999/xhtml" class="no-js">
+
+	<c:set var="root" value="#{request.requestURL.substring(0, request.requestURL.length() - request.requestURI.length())}#{request.contextPath}/" scope="request" />
+
+    <h:head>
+        
+        <ui:include src="#{root}includes/scripts.xhtml" />
+
+	   <title>Data Request Tracking System | Federal Student Aid</title>
+    
+    </h:head>
+    
+    <h:body>
+    
+    	<ui:include src="#{root}includes/header.xhtml" />
+    	
+    	<h:form>
+    	
+    		<h2>Requestor home page</h2>
+    		
+    		<ul>
+      			<li><h:link value="Home" outcome="#{userSession.user.homePage}" /></li>
+      		</ul>
+      		
+      		<p>Home page should be: <h:outputText value="#{userSession.user.homePage}" /></p>
+      		
+      		<h4>Permissions:</h4>
+      		
+      		<p>
+      		Allowed to create requests: <h:outputText value="#{userSession.allowedToCreateRequests}" /><br/>
+      		Allowed to edit all requests: <h:outputText value="#{userSession.allowedToEditAllRequests}" /><br/>
+      		Allowed to delete requests: <h:outputText value="#{userSession.allowedToDeleteRequests}" /><br/>
+      		Allowed to view all requests: <h:outputText value="#{userSession.allowedToViewAllRequests}" /><br/>
+      		Allowed to resolve requests: <h:outputText value="#{userSession.allowedToResolveRequests}" /><br/>
+      		Allowed to close requests: <h:outputText value="#{userSession.allowedToCloseRequests}" /><br/>
+      		Allowed to hold requests: <h:outputText value="#{userSession.allowedToHoldRequests}" /><br/>
+      		Allowed to search all requests: <h:outputText value="#{userSession.allowedToSearchAllRequests}" /><br/>
+      		Allowed to search all attachments: <h:outputText value="#{userSession.allowedToSearchAllAttachments}" /><br/>
+      		Allowed to run reports with all data: <h:outputText value="#{userSession.allowedToRunReportsWithAllData}" /><br/>
+      		Allowed to export reports: <h:outputText value="#{userSession.allowedToExportReports}" /><br/>
+      		Allowed to create accounts: <h:outputText value="#{userSession.allowedToCreateAccounts}" /><br/>
+      		Allowed to edit accounts: <h:outputText value="#{userSession.allowedToEditAccounts}" /><br/>
+      		</p>
+      		
+    	</h:form>
+        
+        <ui:include src="#{root}includes/footer.xhtml" />
+    	
+    </h:body>
+    
+</html>

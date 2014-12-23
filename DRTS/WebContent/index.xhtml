@@ -11,107 +11,16 @@
 	<c:set var="root" value="#{request.requestURL.substring(0, request.requestURL.length() - request.requestURI.length())}#{request.contextPath}/" scope="request" />
 
     <h:head>
-        
-        <ui:include src="#{root}includes/scripts.xhtml" />
+    
+    	<ui:include src="#{root}includes/scripts.xhtml" />
 
-	   <title>Data Request Tracking System | Federal Student Aid</title>
+	   	<title>Data Request Tracking System | Federal Student Aid</title>
     
     </h:head>
     
     <h:body>
     
     	<ui:include src="#{root}includes/header.xhtml" />
-    	
-    	<h:form>
-    	
-    		<h2>Data Request Tracking System</h2>
-    		
-    		<ul>
-      			<li><h:link value="Home" outcome="#{userSession.user.homePage}" /></li>
-      			<li><h:link value="Restricted Page" outcome="/restricted" rendered="#{userSession.user.admin}" /></li>
-      		</ul>
-      		
-      		<p>Home page should be: <h:outputText value="#{userSession.user.homePage}" /></p>
-      		
-      		<h:dataTable value="#{processBean.processes}" var="process">
-      		
-      			<h:column>
-      				<f:facet name="header">Name</f:facet>
-      				<h:outputText value="#{process.name}" />
-      			</h:column>
-      			
-      			<h:column>
-      				<f:facet name="header">Key</f:facet>
-      				<h:outputText value="#{process.key}" />
-      			</h:column>
-      			
-      			<h:column>
-      				<f:facet name="header"></f:facet>
-      				<h:commandLink action="#{processBean.goTo(process)}" value="GO TO" />
-      			</h:column>
-      			
-      		</h:dataTable>
-      		
-      		<h:dataTable value="#{taskBean.tasks}" var="task">
-    			
-    				<h:column>
-    					<f:facet name="header">Name</f:facet>
-    					<h:outputText value="#{task.activitiTask.name}" />
-    				</h:column>
-    				
-    				<h:column>
-    					<f:facet name="header"></f:facet>
-    					<h:commandLink action="#{taskBean.handleTask(task)}" value="Go To Task" />
-    				</h:column>
-    				
-    			</h:dataTable>
-    			
-    		<h:dataTable value="#{historyBean.completedTasks}" var="task">
-    			
-    				<h:column>
-    					<f:facet name="header">Name</f:facet>
-    					<h:outputText value="#{task.name}" />
-    				</h:column>
-    				
-    				<h:column>
-    					<f:facet name="header">Assignee</f:facet>
-    					<h:outputText value="#{task.assignee}" />
-    				</h:column>
-    				
-    				<h:column>
-    					<f:facet name="header">Owner</f:facet>
-    					<h:outputText value="#{task.owner}" />
-    				</h:column>
-    				
-    				<h:column>
-    					<f:facet name="header">End Time</f:facet>
-    					<h:outputText value="#{task.endTime}" />
-    				</h:column>
-    				
-    			</h:dataTable>
-    			
-    			
-    			
-    		<h:dataTable value="#{historyBean.completedProcesses}" var="process">
-    			
-    				<h:column>
-    					<f:facet name="header">Name</f:facet>
-    					<h:outputText value="#{process.name}" />
-    				</h:column>
-    				
-    				<h:column>
-    					<f:facet name="header">Start User</f:facet>
-    					<h:outputText value="#{process.startUserId}" />
-    				</h:column>
-    				
-    				<h:column>
-    					<f:facet name="header">End Time</f:facet>
-    					<h:outputText value="#{process.endTime}" />
-    				</h:column>
-    				
-    			</h:dataTable>
-    		
-    	</h:form>
         
         <ui:include src="#{root}includes/footer.xhtml" />
     	

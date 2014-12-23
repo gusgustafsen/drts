@@ -102,45 +102,6 @@ public class TaskBean extends PageUtil implements Serializable  {
 			{
 				drts_task = new DRTSTask(task.getId(), task);
 				
-//				logger.info("task.getId(): " + task.getId());
-//				logger.info("task.getName(): " + task.getName());
-//				logger.info("task.getProcessDefinitionId(): " + task.getProcessDefinitionId());
-//				logger.info("task.getProcessInstanceId(): " + task.getProcessInstanceId());
-//				logger.info("task.getCategory(): " + task.getCategory());
-//				logger.info("task.getExecutionId(): " + task.getExecutionId());
-//				logger.info("task.getFormKey(): " + task.getFormKey());
-//				logger.info("task.getParentTaskId(): " + task.getParentTaskId());
-//				logger.info("task.getParentTaskId(): " + task.getProcessVariables());
-//				
-//				Execution execution = this.runtime_service.createExecutionQuery().processInstanceId(task.getProcessInstanceId()).singleResult();
-//				ProcessInstance pi = this.runtime_service.createProcessInstanceQuery().processInstanceId(task.getProcessInstanceId()).singleResult();
-//				ExecutionEntity ee = (ExecutionEntity) pi;
-//				
-//				logger.info("execution.getActivityId(): " + execution.getActivityId());
-//				logger.info("execution.getId(): " + execution.getId());
-//				logger.info("execution.getProcessInstanceId(): " + execution.getProcessInstanceId());
-//				logger.info("execution.getParentId(): " + execution.getParentId());
-//	
-//				logger.info("pi.getActivityId(): " + pi.getActivityId());
-//				logger.info("pi.getBusinessKey(): " + pi.getBusinessKey());
-//				logger.info("pi.getId(): " + pi.getId());
-//				logger.info("pi.getName(): " + pi.getName());
-//				logger.info("pi.getParentId(): " + pi.getParentId());
-//				logger.info("pi.getProcessDefinitionId(): " + pi.getProcessDefinitionId());
-//				logger.info("pi.getProcessDefinitionKey(): " + pi.getProcessDefinitionKey());
-//				logger.info("pi.getProcessDefinitionName(): " + pi.getProcessDefinitionName());
-//				logger.info("pi.getProcessInstanceId(): " + pi.getProcessInstanceId());
-//				
-//				logger.info("ee.getCurrentActivityId(): " + ee.getCurrentActivityId());
-//				logger.info("ee.getCurrentActivityName(): " + ee.getCurrentActivityName());
-//				logger.info("ee.getEventName(): " + ee.getEventName());
-//				logger.info("ee.getProcessBusinessKey(): " + ee.getProcessBusinessKey());
-//				logger.info("ee.getActivity(): " + ee.getActivity());
-//				logger.info("ee.getOutgoingTransitions(): " + ee.getActivity().getOutgoingTransitions());
-//				logger.info("ee.getIncomingTransitions(): " + ee.getActivity().getIncomingTransitions());
-//				
-//				logger.info("ee.getCurrentActivityId(): " + ee.getVariables());
-				
 				if(all_tasks.contains(drts_task) == false)
 				{
 					all_tasks.add(drts_task);
