@@ -59,7 +59,6 @@ public class AppInit {
 		}
 		
 		repository_service.createDeployment()
-		  			.addClasspathResource("gov/ed/fsa/drts/process/bookOrder/bookorder.bpmn20.xml")
 		  			.addClasspathResource("gov/ed/fsa/drts/process/dataRequest/datarequest.bpmn20.xml")
 		  			.deploy();
 		
@@ -170,7 +169,7 @@ public class AppInit {
 		if(identity_service.createUserQuery().userId(user_2).count() == 0)
 		{
 			String user_2_password = "tima";
-			String user_2_email = "tasanov@ppsco.com";
+			String user_2_email = "tim.asanov2013+smeemail@gmail.com";
 			
 			List<String> user_2_groups = new ArrayList<String>();
 			

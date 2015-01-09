@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+
+<html xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:pf="http://primefaces.org/ui"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core" lang="en-us"
+	xmlns="http://www.w3.org/1999/xhtml" class="no-js">
+
+	<c:set var="root" value="#{request.requestURL.substring(0, request.requestURL.length() - request.requestURI.length())}#{request.contextPath}/" scope="request" />
+
+    <h:head>
+    	
+    	<ui:include src="#{root}includes/scripts.xhtml" />
+
+	   	<title>Data Request Tracking System | Federal Student Aid</title>
+    
+    </h:head>
+    
+    <h:body class="section-two">
+    
+    	<ui:include src="#{root}includes/header.xhtml">
+    		<ui:param name="active" value="2" />
+    	</ui:include>
+    	
+    	<div id="content-wrapper">
+            <div class="grid">
+                <div id="breadcrumb" class="col-1-1 mobile-col-1-1">
+                    <h:link value="Home" outcome="#{userSession.user.homePage}" /> » Request [xxxxx]
+                </div>
+                <section class="col-1-1 mobile-col-1-1">
+                    <header id="content-header" class="col-1-1 mobile-col-1-1">
+                        <span class="content-header-box">
+                            <h1>Handle Request</h1>
+                        </span>
+                    </header>
+                    <div id="main-content" class="col-1-1 mobile-col-1-1">
+                        <section class="col-1-1 mobile-col-1-1">
+                        
+                        	<h:form styleClass="col-1-1 mobile-col-1-1">
+                        	
+                        		<div class="form-wrapper col-1-1 mobile-col-1-1">
+                                    
+                                    <div id="drtsTabs">
+                                         <ul>
+                                            <li><a href="#general">General</a></li>
+                                            <li><a href="#requestor">Requestor</a></li>
+                                            <li><a href="#receiver">Receiver</a></li>
+                                            <li><a href="#assignment">Assignment</a></li>
+                                        </ul>
+                                        <div id="general">
+                                            <h:outputLabel value="ID"/>
+                                            <h:outputText styleClass="form-text" value="#{dataRequest.id}" />
+
+											<h:outputLabel value="Iteration"/>
+                                            <h:outputText styleClass="form-text" value="#{dataRequest.iteration}" />
+
+											<h:outputLabel value="Status"/>
+                                            <h:outputText styleClass="form-text" value="#{dataRequest.status}" />
+                                            
+                                            <label>Original Request Date</label>
+                                            <h:outputText styleClass="form-text" value="#{dataRequest.createdDateTime}">
+								      			<f:converter converterId="defaultDateTimeConverter" />
+								      		</h:outputText>
+								      		
+								      		<h:outputLabel value="Type"/>
+								      		<h:outputText styleClass="form-text" value="#{dataRequest.type}" />
+                                            
+                                            <h:outputLabel value="Due Date"/>
+                                            <h:outputText styleClass="form-text" value="#{dataRequest.dueDate}">
+								      			<f:converter converterId="defaultDateConverter" />
+								      		</h:outputText>
+                                            
+                                            <h:outputLabel value="Urgency Flag"/>
+                                            <h:outputText styleClass="form-text" value="#{dataRequest.urgent}" />
+                                            
+                                            <h:outputLabel value="Related Requests"/>
+                                            <h:outputText styleClass="form-text" value="#{dataRequest.relatedRequests}" />
+
+											<h:outputLabel value="Topic/Keywords"/>
+                                            <h:outputText styleClass="form-text" value="#{dataRequest.topicKeywords}" />
+
+											<h:outputLabel value="Description"/>
+                                            <h:outputText styleClass="form-text" value="#{dataRequest.description}" />
+
+                                            <h:outputLabel value="Purpose"/>
+                                            <h:outputText styleClass="form-text" value="#{dataRequest.purpose}" />
+
+                                            <h:outputLabel value="Special Considerations/Issues"/>
+                                            <h:outputText styleClass="form-text" value="#{dataRequest.specialConsiderationsIssues}" />
+                                        </div>
+                                        <div id="requestor">
+                                        	<h:outputLabel value="Requestor"/>
+                                            <h:outputText styleClass="form-text" value="#{dataRequest.requestorName}" />
+                                            
+                                        	<h:outputLabel value="Requestor Organization"/>
+                                            <h:outputText styleClass="form-text" value="#{dataRequest.requestorOrganization}" />
+                                            
+                                        	<h:outputLabel value="Requestor Phone"/>
+                                            <h:outputText styleClass="form-text" value="#{dataRequest.requestorPhone}" />
+                                            
+                                        	<h:outputLabel value="Requestor Email"/>
+                                            <h:outputText styleClass="form-text" value="#{dataRequest.requestorEmail}" />
+                                        </div>
+                                        <div id="receiver">
+                                        	<h:outputLabel value="Receiver"/>
+                                            <h:outputText styleClass="form-text" value="#{dataRequest.receiverName}" />
+                                            
+                                        	<h:outputLabel value="Receiver Email"/>
+                                            <h:outputText styleClass="form-text" value="#{dataRequest.receiverEmail}" />
+                                        </div>
+                                        <div id="assignment">
+                                        	<h:outputLabel value="Date Assigned to SME"/>
+                                            <h:outputText styleClass="form-text" value="#{dataRequest.dateAssignedToSme}">
+                                            	<f:converter converterId="defaultDateTimeConverter" />
+                                            </h:outputText>
+
+                                            <h:outputLabel value="Assign To"/>
+                                            <h:selectOneMenu value="#{dataRequest.assignedSme}">
+									   			<f:selectItems value="#{dataRequest.smes}" />
+									   		</h:selectOneMenu>
+                                            
+                                            <h:outputLabel value="Comments"/>
+                                            <h:inputTextarea value="#{dataRequest.administratorComments}" />
+                                        </div>
+                                    </div>  
+                                
+                                </div>
+                                
+                                <div class="form-control col-1-1 mobile-col-1-1">
+                                	<h:commandButton styleClass="button" value="Assign to SME" action="#{dataRequest.assignNewRequestToSME}" />
+						      		<h:commandButton styleClass="button" value="Reject" action="#{dataRequest.rejectNewRequest}" />
+                                </div>
+    	
+    						</h:form>
+					    	
+                        </section>
+                    </div>
+                </section>
+            </div>
+        </div>
+        
+        <ui:include src="#{root}includes/footer.xhtml" />
+    	
+    </h:body>
+    
+</html>

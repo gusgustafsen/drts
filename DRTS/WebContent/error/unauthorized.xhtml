@@ -11,18 +11,41 @@
 	<c:set var="root" value="#{request.requestURL.substring(0, request.requestURL.length() - request.requestURI.length())}#{request.contextPath}/" scope="request" />
 
     <h:head>
-    
+    	
     	<ui:include src="#{root}includes/scripts.xhtml" />
 
 	   	<title>Data Request Tracking System | Federal Student Aid</title>
     
     </h:head>
     
-    <h:body>
+    <h:body class="section-one">
     
-    	<ui:include src="#{root}includes/header.xhtml" />
+    	<ui:include src="#{root}includes/header.xhtml">
+    		<ui:param name="active" value="1" />
+    	</ui:include>
     	
-    	<p>You are not authorized to access this system.</p>
+    	<div id="content-wrapper">
+            <div class="grid">
+                <section class="col-1-1 mobile-col-1-1">
+                    <header id="content-header" class="col-1-1 mobile-col-1-1">
+                        <span class="content-header-box">
+                            <h1>Unauthorized</h1>
+                        </span>
+                    </header>
+                    <div id="main-content" class="col-1-1 mobile-col-1-1">
+                        <section class="col-1-1 mobile-col-1-1">
+                        
+                        	<h:form styleClass="col-1-1 mobile-col-1-1">
+					      		
+					      		<p>You are not authorized.</p>
+								
+					    	</h:form>
+					    	
+                        </section>
+                    </div>
+                </section>
+            </div>
+        </div>
         
         <ui:include src="#{root}includes/footer.xhtml" />
     	

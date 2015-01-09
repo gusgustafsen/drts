@@ -11,66 +11,121 @@
 	<c:set var="root" value="#{request.requestURL.substring(0, request.requestURL.length() - request.requestURI.length())}#{request.contextPath}/" scope="request" />
 
     <h:head>
-        
-        <ui:include src="#{root}includes/scripts.xhtml" />
+    	
+    	<ui:include src="#{root}includes/scripts.xhtml" />
 
-	   <title>Data Request Tracking System | Federal Student Aid</title>
+	   	<title>Data Request Tracking System | Federal Student Aid</title>
     
     </h:head>
     
-    <h:body>
+    <h:body class="section-two">
     
-    	<ui:include src="#{root}includes/header.xhtml" />
+    	<ui:include src="#{root}includes/header.xhtml">
+    		<ui:param name="active" value="2" />
+    	</ui:include>
     	
-    	<h:form>
-    	
-    		<h2>New Request</h2>
-    		
-    		<ul>
-      			<li><h:link value="Home" outcome="#{userSession.user.homePage}" /></li>
-      			<li><h:link value="Create New Request" rendered="#{userSession.allowedToCreateRequests}" outcome="/dataRequest/newRequest" /></li>
-      		</ul>
-      		
-      		<h:outputLabel value="ID: "/>
-      		<h:outputText value="#{dataRequest.requestId}" />
-      		<br/>
-      		<br/>
-      		
-      		<h:outputLabel value="Type"/>
-      		<br/>
-      		<h:selectOneMenu value="#{dataRequest.requestType}">
-	   			<f:selectItems value="#{dataRequest.requestTypes}" />
-	   		</h:selectOneMenu>
-      		<br/>
-      		<br/>
-      		
-      		<h:outputLabel value="Created Date: "/>
-      		<h:outputText value="#{dataRequest.requestCreatedDate}">
-      			<f:converter converterId="defaultDateConverter" />
-      		</h:outputText>
-      		<br/>
-      		<br/>
-      		
-      		<h:outputLabel value="Description"/>
-      		<br/>
-      		<h:inputTextarea value="#{dataRequest.requestDescription}" />
-      		<br/>
-      		<br/>
-      		
-      		<h:outputLabel value="Urgency Flag"/>
-      		<br/>
-      		<h:selectBooleanCheckbox value="#{dataRequest.requestUrgent}" />
-      		<br/>
-      		<br/>
-    
-      		<h:outputLabel value="Requestor Email"/>
-      		<br/>
-      		<h:inputText value="#{dataRequest.requestorEmail}" />
-      		<br/>
-      		<br/>
-      		
-      		<h:commandButton value="Create" action="#{dataRequest.start}" />
-    	</h:form>
+    	<div id="content-wrapper">
+            <div class="grid">
+                <div id="breadcrumb" class="col-1-1 mobile-col-1-1">
+                    <h:link value="Home" outcome="#{userSession.user.homePage}" /> » Create Request
+                </div> 
+                <section class="col-1-1 mobile-col-1-1">
+                    <header id="content-header" class="col-1-1 mobile-col-1-1">
+                        <span class="content-header-box">
+                            <h1>Create New Request</h1>
+                        </span>
+                    </header>
+                    <div id="main-content" class="col-1-1 mobile-col-1-1">
+                        <section class="col-1-1 mobile-col-1-1">
+                        
+                        	<h:form styleClass="col-1-1 mobile-col-1-1">
+                        	
+                        		<div class="form-wrapper col-1-1 mobile-col-1-1">
+                                    
+                                    <div id="drtsTabs">
+                                         <ul>
+                                            <li><a href="#general">General</a></li>
+                                            <li><a href="#requestor">Requestor</a></li>
+                                            <li><a href="#receiver">Receiver</a></li>
+                                        </ul>
+                                        <div id="general">
+                                            <h:outputLabel value="ID"/>
+                                            <h:outputText styleClass="form-text" value="#{dataRequest.id}" />
+
+											<h:outputLabel value="Iteration"/>
+                                            <h:outputText styleClass="form-text" value="#{dataRequest.iteration}" />
+
+											<h:outputLabel value="Status"/>
+                                            <h:outputText styleClass="form-text" value="#{dataRequest.status}" />
+                                            
+                                            <label>Original Request Date</label>
+                                            <h:outputText styleClass="form-text" value="#{dataRequest.createdDateTime}">
+								      			<f:converter converterId="defaultDateTimeConverter" />
+								      		</h:outputText>
+								      		
+								      		<h:outputLabel value="Type"/>
+		                                    <h:selectOneMenu value="#{dataRequest.type}">
+									   			<f:selectItems value="#{dataRequest.types}" />
+									   		</h:selectOneMenu>
+                                            
+                                            <h:outputLabel value="Due Date"/>
+                                            <h:inputText styleClass="datepicker" value="#{dataRequest.dueDate}">
+                                            	<f:converter converterId="defaultDateConverter" />
+                                            </h:inputText>
+                                            
+                                            <h:outputLabel value="Urgency Flag"/>
+                                            <h:selectBooleanCheckbox value="#{dataRequest.urgent}" />
+                                            
+                                            <h:outputLabel value="Related Requests"/>
+                                    		<h:inputTextarea value="#{dataRequest.relatedRequests}" />
+
+											<h:outputLabel value="Topic/Keywords"/>
+                                    		<h:inputTextarea value="#{dataRequest.topicKeywords}" />
+
+											<h:outputLabel value="Description"/>
+                                    		<h:inputTextarea value="#{dataRequest.description}" />
+
+                                            <h:outputLabel value="Purpose"/>
+                                    		<h:inputTextarea value="#{dataRequest.purpose}" />
+
+                                            <h:outputLabel value="Special Considerations/Issues"/>
+                                    		<h:inputTextarea value="#{dataRequest.specialConsiderationsIssues}" />
+                                        </div>
+                                        <div id="requestor">
+                                        	<h:outputLabel value="Requestor"/>
+                                            <h:inputText value="#{dataRequest.requestorName}" />
+                                            
+                                        	<h:outputLabel value="Requestor Organization"/>
+                                            <h:inputText value="#{dataRequest.requestorOrganization}" />
+                                            
+                                        	<h:outputLabel value="Requestor Phone"/>
+                                            <h:inputText value="#{dataRequest.requestorPhone}" />
+                                            
+                                        	<h:outputLabel value="Requestor Email"/>
+                                            <h:inputText value="#{dataRequest.requestorEmail}" />
+                                        </div>
+                                        <div id="receiver">
+                                        	<h:outputLabel value="Receiver"/>
+                                            <h:inputText value="#{dataRequest.receiverName}" />
+                                            
+                                        	<h:outputLabel value="Receiver Email"/>
+                                            <h:inputText value="#{dataRequest.receiverEmail}" />
+                                        </div>
+                                    </div>
+                                
+                                </div>
+                                
+                                <div class="form-control col-1-1 mobile-col-1-1">
+                                	<h:commandButton value="Create" styleClass="button" action="#{dataRequest.start}" />
+                                </div>
+								
+					    	</h:form>
+					    	
+                        </section>
+                    </div>
+                </section>
+            </div>
+        </div>
         
         <ui:include src="#{root}includes/footer.xhtml" />
     	

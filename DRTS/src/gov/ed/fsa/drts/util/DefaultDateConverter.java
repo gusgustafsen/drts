@@ -20,7 +20,7 @@ public class DefaultDateConverter extends DateTimeConverter {
 
 	private List<String> date_formats = ApplicationProperties.DATE_FORMATS.getListValue();
 	
-	private static final Logger logger = Logger.getLogger(DefaultDateConverter.class);
+	private static final Logger logger = Logger.getLogger(DefaultDateTimeConverter.class);
 	
 	public DefaultDateConverter()
 	{
@@ -40,7 +40,7 @@ public class DefaultDateConverter extends DateTimeConverter {
             SimpleDateFormat sdf = new SimpleDateFormat(pattern);
             sdf.setLenient(false);
             
-            logger.info("trying patter: " + pattern);
+            logger.info("trying pattern: " + pattern);
             
             try
             {

@@ -11,63 +11,136 @@
 	<c:set var="root" value="#{request.requestURL.substring(0, request.requestURL.length() - request.requestURI.length())}#{request.contextPath}/" scope="request" />
 
     <h:head>
-        
-        <ui:include src="#{root}includes/scripts.xhtml" />
+    	
+    	<ui:include src="#{root}includes/scripts.xhtml" />
 
-	   <title>Data Request Tracking System | Federal Student Aid</title>
+	   	<title>Data Request Tracking System | Federal Student Aid</title>
     
     </h:head>
     
-    <h:body>
+    <h:body class="section-one">
     
-    	<ui:include src="#{root}includes/header.xhtml" />
+    	<ui:include src="#{root}includes/header.xhtml">
+    		<ui:param name="active" value="1" />
+    	</ui:include>
     	
-    	<h:form>
-    	
-    		<h2>Admin home page</h2>
-    		
-    		<ul>
-      			<li><h:link value="Home" outcome="#{userSession.user.homePage}" /></li>
-      			<li><h:link value="Create New Request" rendered="#{userSession.allowedToCreateRequests}" outcome="/dataRequest/newRequest" /></li>
-      		</ul>
+    	<div id="content-wrapper">
+            <div class="grid">
+                <section class="col-1-1 mobile-col-1-1">
+                    <header id="content-header" class="col-1-1 mobile-col-1-1">
+                        <span class="content-header-box">
+                            <h1>Home</h1>
+                        </span>
+                    </header>
+                    <div id="main-content" class="col-1-1 mobile-col-1-1">
+                        <section class="col-1-1 mobile-col-1-1">
+                        
+                        	<h:form styleClass="col-1-1 mobile-col-1-1">
+					      		
+					      		<h2 class="first">Permissions</h2>
       		
-      		<p>Home page should be: <h:outputText value="#{userSession.user.homePage}" /></p>
+					      		<p>
+					      		Allowed to create requests: <h:outputText value="#{userSession.allowedToCreateRequests}" /><br/>
+					      		Allowed to edit all requests: <h:outputText value="#{userSession.allowedToEditAllRequests}" /><br/>
+					      		Allowed to delete requests: <h:outputText value="#{userSession.allowedToDeleteRequests}" /><br/>
+					      		Allowed to view all requests: <h:outputText value="#{userSession.allowedToViewAllRequests}" /><br/>
+					      		Allowed to resolve requests: <h:outputText value="#{userSession.allowedToResolveRequests}" /><br/>
+					      		Allowed to close requests: <h:outputText value="#{userSession.allowedToCloseRequests}" /><br/>
+					      		Allowed to hold requests: <h:outputText value="#{userSession.allowedToHoldRequests}" /><br/>
+					      		Allowed to search all requests: <h:outputText value="#{userSession.allowedToSearchAllRequests}" /><br/>
+					      		Allowed to search all attachments: <h:outputText value="#{userSession.allowedToSearchAllAttachments}" /><br/>
+					      		Allowed to run reports with all data: <h:outputText value="#{userSession.allowedToRunReportsWithAllData}" /><br/>
+					      		Allowed to export reports: <h:outputText value="#{userSession.allowedToExportReports}" /><br/>
+					      		Allowed to create accounts: <h:outputText value="#{userSession.allowedToCreateAccounts}" /><br/>
+					      		Allowed to edit accounts: <h:outputText value="#{userSession.allowedToEditAccounts}" /><br/>
+					      		</p>
       		
-      		<h4>Permissions:</h4>
-      		
-      		<p>
-      		Allowed to create requests: <h:outputText value="#{userSession.allowedToCreateRequests}" /><br/>
-      		Allowed to edit all requests: <h:outputText value="#{userSession.allowedToEditAllRequests}" /><br/>
-      		Allowed to delete requests: <h:outputText value="#{userSession.allowedToDeleteRequests}" /><br/>
-      		Allowed to view all requests: <h:outputText value="#{userSession.allowedToViewAllRequests}" /><br/>
-      		Allowed to resolve requests: <h:outputText value="#{userSession.allowedToResolveRequests}" /><br/>
-      		Allowed to close requests: <h:outputText value="#{userSession.allowedToCloseRequests}" /><br/>
-      		Allowed to hold requests: <h:outputText value="#{userSession.allowedToHoldRequests}" /><br/>
-      		Allowed to search all requests: <h:outputText value="#{userSession.allowedToSearchAllRequests}" /><br/>
-      		Allowed to search all attachments: <h:outputText value="#{userSession.allowedToSearchAllAttachments}" /><br/>
-      		Allowed to run reports with all data: <h:outputText value="#{userSession.allowedToRunReportsWithAllData}" /><br/>
-      		Allowed to export reports: <h:outputText value="#{userSession.allowedToExportReports}" /><br/>
-      		Allowed to create accounts: <h:outputText value="#{userSession.allowedToCreateAccounts}" /><br/>
-      		Allowed to edit accounts: <h:outputText value="#{userSession.allowedToEditAccounts}" /><br/>
-      		</p>
-      		
-      		<h4>Available Tasks</h4>
-      		
-      		<h:dataTable value="#{taskBean.tasks}" var="task">
-      		
-      			<h:column>
-      				<f:facet name="header">Name</f:facet>
-      				<h:outputText value="#{task.activitiTask.name}" />
-      			</h:column>
-      			
-      			<h:column>
-      				<f:facet name="header"></f:facet>
-      				<h:commandLink action="#{taskBean.handleTask(task)}" value="Go To Task" />
-      			</h:column>
-      			
-      		</h:dataTable>
-      		
-    	</h:form>
+					      		<h2>Available Tasks</h2>
+					      		
+					      		<h:panelGroup rendered="#{not empty requestTable.dataRequests}">
+					      		
+						      		<h:dataTable styleClass="drtsTable" value="#{requestTable.dataRequests}" var="dataRequest">
+						      		
+						      			<h:column>
+						      				<f:facet name="header">Requestor</f:facet>
+						      				<h:outputText value="#{dataRequest.drtsRequestor}" />
+						      			</h:column>
+						      		
+						      			<h:column>
+						      				<f:facet name="header">Status</f:facet>
+						      				<h:outputText value="#{dataRequest.status}" />
+						      			</h:column>
+						      		
+						      			<h:column>
+						      				<f:facet name="header">
+						      					<h:commandLink actionListener="#{requestTable.sort}">
+						      						<f:attribute name="sort_field" value="request_type" />
+						      						<span>Type</span>
+						      						<h:panelGroup rendered="#{requestTable.isSortedBy('request_type')}">
+							      						<h:panelGroup rendered="#{requestTable.sortAscending eq true}">
+							      							<span class="arrow-up"></span>
+							      						</h:panelGroup>
+							      						<h:panelGroup rendered="#{requestTable.sortAscending eq false}">
+							      							<span class="arrow-down"></span>
+							      						</h:panelGroup>
+						      						</h:panelGroup>
+						    			   		</h:commandLink>
+						      				</f:facet>
+						      				<h:outputText value="#{dataRequest.type}" />
+						      			</h:column>
+						      			
+						      			<h:column>
+						      				<f:facet name="header">
+						      					<h:commandLink actionListener="#{requestTable.sort}">
+						      						<f:attribute name="sort_field" value="request_created_date_time" />
+						      						<span>Created On</span>
+						      						<h:panelGroup rendered="#{requestTable.isSortedBy('request_created_date_time')}">
+							      						<h:panelGroup rendered="#{requestTable.sortAscending eq true}">
+							      							<span class="arrow-up"></span>
+							      						</h:panelGroup>
+							      						<h:panelGroup rendered="#{requestTable.sortAscending eq false}">
+							      							<span class="arrow-down"></span>
+							      						</h:panelGroup>
+						      						</h:panelGroup>
+						    			   		</h:commandLink>
+						      				</f:facet>
+						      				<h:outputText value="#{dataRequest.createdDateTime}">
+						      					<f:converter converterId="defaultDateTimeConverter" />
+						      				</h:outputText>
+						      			</h:column>
+						      		
+						      			<h:column>
+						      				<f:facet name="header"></f:facet>
+					      					<h:commandLink action="#{requestTable.goToTask(dataRequest)}" value="#{dataRequest.taskName}" />
+						      			</h:column>
+						      		
+						      		</h:dataTable>
+						      		
+						      		<div class="table-control">
+	                                    <h:outputText value="(Page #{requestTable.currentPage}/#{requestTable.totalPages}) " />
+	                                    <h:commandLink value="« first" action="#{requestTable.pageFirst}" rendered="#{requestTable.firstRow ne 0}" />
+	                                    <h:commandLink value="‹ prev" action="#{requestTable.pagePrevious}" rendered="#{requestTable.firstRow ne 0}" />
+	                                    <ui:repeat var="page" value="#{requestTable.pages}">
+											<h:commandLink value="#{page}" actionListener="#{requestTable.page}" rendered="#{page ne requestTable.currentPage}" />
+											<h:outputText value="#{page}" escape="false" rendered="#{page eq requestTable.currentPage}" />
+										</ui:repeat>
+	                                    <h:commandLink value="next ›" action="#{requestTable.pageNext}" rendered="#{(requestTable.firstRow + requestTable.rowsPerPage) lt requestTable.totalRows}" />
+						      			<h:commandLink value="last »" action="#{requestTable.pageLast}" rendered="#{(requestTable.firstRow + requestTable.rowsPerPage) lt requestTable.totalRows}" />
+	                                </div>
+						      		
+								</h:panelGroup>
+								
+								<h:panelGroup rendered="#{empty requestTable.dataRequests}">
+									<p>You do not have any tasks.</p>
+								</h:panelGroup>
+								
+					    	</h:form>
+					    	
+                        </section>
+                    </div>
+                </section>
+            </div>
+        </div>
         
         <ui:include src="#{root}includes/footer.xhtml" />
     	
