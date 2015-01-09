@@ -1,1 +1,24 @@
-/.apt_generated/
+#java specific
+*.class
+bin/
+junit/
+build/
+dist/
+## generic files to ignore
+*~
+*.lock
+*.DS_Store
+*.swp
+*.out
+*.log*
+# rcs-specific files
+newfile.cld
+itarcs.zip
+npas*.war
+TEST-*.xml
+*.orig
+*.LOCAL.*
+*.REMOTE.*
+*.BASE.*
+*.migration.prefs
+.eclipse-pmd
