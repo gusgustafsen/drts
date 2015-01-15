@@ -10,11 +10,6 @@
     	<property name="jdbcDriver" value="oracle.jdbc.OracleDriver" />
     	<property name="jdbcUsername" value="tima" />
     	<property name="jdbcPassword" value="xmmwoxak47" />
-    	
-    	<!--<property name="jdbcUrl" value="jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000" />
-    	<property name="jdbcDriver" value="org.h2.Driver" />
-    	<property name="jdbcUsername" value="sa" />
-    	<property name="jdbcPassword" value="" />-->
     
     	<property name="databaseSchemaUpdate" value="true" />
     
@@ -24,9 +19,9 @@
     	
     	<property name="mailServerHost" value="smtp.gmail.com" />
     	<property name="mailServerPort" value="587" />
-    	<property name="mailServerDefaultFrom" value="tasanov@ppsco.com" />
-    	<property name="mailServerUsername" value="tim.asanov2013@gmail.com" />
-    	<property name="mailServerPassword" value="s8AfreMe35" />
+    	<property name="mailServerDefaultFrom" value="drts@ed.gov" />
+    	<property name="mailServerUsername" value="tasanov.work@gmail.com" />
+    	<property name="mailServerPassword" value="400ShadyGrove" />
     	<property name="mailServerUseTLS" value="true" />
     	
   	</bean>
