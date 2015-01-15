@@ -65,6 +65,8 @@ public class AppInit {
 		String admin_user = "admin";
 		String user_1 = "tima";
 		String user_2 = "sme1";
+		String user_3 = "drt1";
+		String user_4 = "reporter1";
 		
 		identity_service = process_engine.getIdentityService();
 		
@@ -96,6 +98,74 @@ public class AppInit {
 	    		identity_service.saveGroup(newGroup);
 	    	}
 	    }
+	    
+	    if(identity_service.createUserQuery().userId(user_4).count() == 0)
+		{
+			String user_4_password = "admin";
+			String user_4_email = "tasanov@ppsco.com";
+			
+			List<String> user_4_groups = new ArrayList<String>();
+			
+			user_4_groups.add("reporter");
+			
+			List<String> user_4_info = new ArrayList<String>();
+			
+			user_4_info.add("birth_date");
+			user_4_info.add("20140929");
+			
+			User user = identity_service.newUser(user_4);
+			
+			user.setFirstName("Reporter");
+			user.setLastName("1");
+			user.setPassword(user_4_password);
+			user.setEmail(user_4_email);
+		
+			identity_service.saveUser(user);
+			
+			for(String group : user_4_groups)
+			{
+				identity_service.createMembership(user_4, group);
+			}
+			
+			for(int i = 0; i < user_4_info.size(); i += 2)
+			{
+				identity_service.setUserInfo(user_4, user_4_info.get(i), user_4_info.get(i + 1));
+			}
+		}
+	    
+	    if(identity_service.createUserQuery().userId(user_3).count() == 0)
+		{
+			String user_3_password = "admin";
+			String user_3_email = "tasanov@ppsco.com";
+			
+			List<String> user_3_groups = new ArrayList<String>();
+			
+			user_3_groups.add("drt");
+			
+			List<String> user_3_info = new ArrayList<String>();
+			
+			user_3_info.add("birth_date");
+			user_3_info.add("20140929");
+			
+			User user = identity_service.newUser(user_3);
+			
+			user.setFirstName("DRT");
+			user.setLastName("1");
+			user.setPassword(user_3_password);
+			user.setEmail(user_3_email);
+		
+			identity_service.saveUser(user);
+			
+			for(String group : user_3_groups)
+			{
+				identity_service.createMembership(user_3, group);
+			}
+			
+			for(int i = 0; i < user_3_info.size(); i += 2)
+			{
+				identity_service.setUserInfo(user_3, user_3_info.get(i), user_3_info.get(i + 1));
+			}
+		}
 		
 		if(identity_service.createUserQuery().userId(admin_user).count() == 0)
 		{

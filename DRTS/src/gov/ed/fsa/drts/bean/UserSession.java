@@ -2,6 +2,8 @@ package gov.ed.fsa.drts.bean;
 
 import gov.ed.fsa.drts.object.DRTSUser;
 import gov.ed.fsa.drts.security.SecurityPermissions;
+import gov.ed.fsa.drts.util.ApplicationProperties;
+import gov.ed.fsa.drts.util.Utils;
 
 import java.io.Serializable;
 
@@ -47,6 +49,56 @@ public class UserSession implements Serializable {
 	public void setSubject(Subject subject)
 	{
 		this.subject = subject;
+	}
+	
+	public boolean isAdmin()
+	{
+		if(subject == null)
+		{
+			return false;
+		}
+		
+		return Utils.isUserInGroup(this.user.getGroups(), ApplicationProperties.GROUP_ADMIN.getStringValue());
+	}
+	
+	public boolean isDrt()
+	{
+		if(subject == null)
+		{
+			return false;
+		}
+		
+		return Utils.isUserInGroup(this.user.getGroups(), ApplicationProperties.GROUP_DRT.getStringValue());
+	}
+
+	public boolean isRequestor()
+	{
+		if(subject == null)
+		{
+			return false;
+		}
+		
+		return Utils.isUserInGroup(this.user.getGroups(), ApplicationProperties.GROUP_REQUESTOR.getStringValue());
+	}
+	
+	public boolean isReporter()
+	{
+		if(subject == null)
+		{
+			return false;
+		}
+		
+		return Utils.isUserInGroup(this.user.getGroups(), ApplicationProperties.GROUP_REPORTER.getStringValue());
+	}
+	
+	public boolean isSme()
+	{
+		if(subject == null)
+		{
+			return false;
+		}
+		
+		return Utils.isUserInGroup(this.user.getGroups(), ApplicationProperties.GROUP_SME.getStringValue());
 	}
 	
 	public boolean isAllowedToCreateRequests()

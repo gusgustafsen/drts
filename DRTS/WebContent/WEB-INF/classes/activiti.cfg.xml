@@ -29,12 +29,6 @@
     	<property name="mailServerPassword" value="s8AfreMe35" />
     	<property name="mailServerUseTLS" value="true" />
     	
-    	<property name="customMybatisMappers">
-    		<set>
-    			<value>gov.ed.fsa.drts.sql.CustomTaskMapper</value>
-    		</set>
-    	</property>
-    	
   	</bean>
 
 </beans>

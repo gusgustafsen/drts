@@ -178,16 +178,6 @@ public enum ApplicationProperties {
 	
 	DATA_REQUEST_FIELD_SME_COMMENTS(true, false),
 	
-	DATA_REQUEST_STATUS_LABEL_PENDING(true, false),
-	
-	DATA_REQUEST_STATUS_LABEL_ASSIGNED_TO_SME(true, false),
-	
-	DATA_REQUEST_STATUS_LABEL_RESOLVED(true, false),
-	
-	DATA_REQUEST_STATUS_LABEL_REJECTED_BY_ADMIN(true, false),
-	
-	DATA_REQUEST_STATUS_LABEL_REJECTED_BY_SME(true, false),
-	
 	DATA_REQUEST_STATUS_PENDING(true, false),
 	
 	DATA_REQUEST_STATUS_ASSIGNED_TO_SME(true, false),
@@ -196,7 +186,9 @@ public enum ApplicationProperties {
 	
 	DATA_REQUEST_STATUS_REJECTED_BY_ADMIN(true, false),
 	
-	DATA_REQUEST_STATUS_REJECTED_BY_SME(true, false);
+	DATA_REQUEST_STATUS_REJECTED_BY_SME(true, false),
+	
+	DATA_REQUEST_TYPES(true, true);
 	
 	private static final String LIST_DELIMITER = "\\|";
 	

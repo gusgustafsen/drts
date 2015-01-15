@@ -1,6 +1,7 @@
 package gov.ed.fsa.drts.process.dataRequest;
 
 import gov.ed.fsa.drts.bean.PageUtil;
+import gov.ed.fsa.drts.dataaccess.DataLayer;
 import gov.ed.fsa.drts.object.DataRequest;
 import gov.ed.fsa.drts.util.ApplicationProperties;
 import gov.ed.fsa.drts.util.Utils;
@@ -26,6 +27,7 @@ import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.identity.User;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.apache.log4j.Logger;
 
 @ManagedBean(name = "dataRequest")
@@ -45,9 +47,9 @@ public class DataRequestBean extends PageUtil implements Serializable {
 	
 	private String id = UUID.randomUUID().toString();
 	private int iteration = 1;
-	private int status = Integer.parseInt(ApplicationProperties.DATA_REQUEST_STATUS_PENDING.getStringValue());
+	private String status = ApplicationProperties.DATA_REQUEST_STATUS_PENDING.getStringValue();
 	private Date created_date_time = new Date();
-	private int type;
+	private String type;
 	private Date due_date = null;
 	private boolean urgent = false;
 	private String related_requests = null;
@@ -72,12 +74,9 @@ public class DataRequestBean extends PageUtil implements Serializable {
 	private String resolution = null;
 	private String sme_comments = null;
 	
-	private Map<String, Integer> request_types;
-	
 	private Map<String, String> email_replace_tokens = new HashMap<String, String>();
 	
 	Map<String, User> sme_users = null;
-	
 	
 	@PostConstruct
 	private void init()
@@ -114,13 +113,13 @@ public class DataRequestBean extends PageUtil implements Serializable {
 		}
 		
 		this.current_data_request = (DataRequest) FacesContext.getCurrentInstance().getExternalContext().getFlash().get("drtsDataRequest");
-		setCurrentDataRequestVariables();
 	}
 
 	public String start()
 	{
 		Map<String, Object> form_variables = new HashMap<String, Object>();
 		
+		// TODO maybe remove, other then the needed fields in emails.
 		form_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_ID.getStringValue(), this.id);
 		form_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_ITERATION.getStringValue(), this.iteration);
 		form_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_DUE_DATE.getStringValue(), this.due_date);
@@ -155,11 +154,27 @@ public class DataRequestBean extends PageUtil implements Serializable {
 		form_variables.put(ApplicationProperties.EMAIL_LABEL_NOTIFY_REQUESTOR_SUBJECT.getStringValue(), Utils.replaceAll(ApplicationProperties.EMAIL_NOTIFY_REQUESTOR_SUBJECT.getStringValue(), this.email_replace_tokens));
 		form_variables.put(ApplicationProperties.EMAIL_LABEL_NOTIFY_REQUESTOR_CONTENT.getStringValue(), Utils.replaceAll(ApplicationProperties.EMAIL_NOTIFY_REQUESTOR_CONTENT.getStringValue(), this.email_replace_tokens));
 		
-		this.runtime_service.startProcessInstanceByKey(ApplicationProperties.PROCESS_ID_DATA_REQUEST.getStringValue(), form_variables);
+		ProcessInstance started_process_instance = this.runtime_service.startProcessInstanceByKey(ApplicationProperties.PROCESS_ID_DATA_REQUEST.getStringValue(), form_variables);
+		
+		try
+		{
+			boolean result = DataLayer.getInstance().insertDataRequest(form_variables, started_process_instance.getId(), ApplicationProperties.GROUP_ADMIN.getStringValue(), null);
+			
+			if(result == false)
+			{
+				// TODO handle
+				
+				logger.error("did not insert a new request");
+			}
+		}
+		catch(Exception e)
+		{
+			// TODO handle error
+			logger.error(e);
+		}
 		
 		return userSession.getUser().getHomePage() + "?faces-redirect=true";
 	}
-	
 	
 	public String assignNewRequestToSME()
 	{
@@ -180,11 +195,27 @@ public class DataRequestBean extends PageUtil implements Serializable {
 		task_variables.put(ApplicationProperties.EMAIL_LABEL_NOTIFY_SME_NEW_REQUEST_SUBJECT.getStringValue(), Utils.replaceAll(ApplicationProperties.EMAIL_NOTIFY_SME_NEW_REQUEST_SUBJECT.getStringValue(), this.email_replace_tokens));
 		task_variables.put(ApplicationProperties.EMAIL_LABEL_NOTIFY_SME_NEW_REQUEST_CONTENT.getStringValue(), Utils.replaceAll(ApplicationProperties.EMAIL_NOTIFY_SME_NEW_REQUEST_CONTENT.getStringValue(), this.email_replace_tokens));
 		
-		this.task_service.complete(this.current_data_request.getTaskId(), task_variables);
+		this.task_service.complete(this.current_data_request.getCurrentTaskId(), task_variables);
+		
+		try
+		{
+			boolean result = DataLayer.getInstance().updateDataRequestAssigned(assigned_sme.getId(), this.administrator_comments, this.current_data_request.getId());
+			
+			if(result == false)
+			{
+				// TODO handle
+				
+				logger.error("did not update assigned request");
+			}
+		}
+		catch(Exception e)
+		{
+			// TODO handle error
+			logger.error(e);
+		}
 		
 		return userSession.getUser().getHomePage() + "?faces-redirect=true";
 	}
-	
 	
 	public String rejectNewRequest()
 	{
@@ -193,11 +224,27 @@ public class DataRequestBean extends PageUtil implements Serializable {
 		task_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_ADMIN_COMMENTS.getStringValue(), this.administrator_comments);
 		task_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_STATUS.getStringValue(), ApplicationProperties.DATA_REQUEST_STATUS_REJECTED_BY_ADMIN.getStringValue());
 		
-		this.task_service.complete(this.current_data_request.getTaskId(), task_variables);
+		this.task_service.complete(this.current_data_request.getCurrentTaskId(), task_variables);
+		
+		try
+		{
+			boolean result = DataLayer.getInstance().updateDataRequestRejectedByAdmin(this.administrator_comments,this.current_data_request.getId());
+			
+			if(result == false)
+			{
+				// TODO handle
+				
+				logger.error("did not update reject request");
+			}
+		}
+		catch(Exception e)
+		{
+			// TODO handle error
+			logger.error(e);
+		}
 		
 		return userSession.getUser().getHomePage() + "?faces-redirect=true";
 	}
-	
 	
 	public String rejectRequest()
 	{
@@ -206,11 +253,27 @@ public class DataRequestBean extends PageUtil implements Serializable {
 		task_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_SME_COMMENTS.getStringValue(), this.sme_comments);
 		task_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_STATUS.getStringValue(), ApplicationProperties.DATA_REQUEST_STATUS_REJECTED_BY_SME.getStringValue());
 		
-		this.task_service.complete(this.current_data_request.getTaskId(), task_variables);
+		this.task_service.complete(this.current_data_request.getCurrentTaskId(), task_variables);
+		
+		try
+		{
+			boolean result = DataLayer.getInstance().updateDataRequestRejectedBySME(this.sme_comments, this.current_data_request.getId());
+			
+			if(result == false)
+			{
+				// TODO handle
+				
+				logger.error("did not update sme rejected request");
+			}
+		}
+		catch(Exception e)
+		{
+			// TODO handle error
+			logger.error(e);
+		}
 		
 		return userSession.getUser().getHomePage() + "?faces-redirect=true";
 	}
-	
 	
 	public String resolveRequest()
 	{
@@ -227,11 +290,27 @@ public class DataRequestBean extends PageUtil implements Serializable {
 		task_variables.put(ApplicationProperties.EMAIL_LABEL_NOTIFY_ADMIN_REQUEST_RESOLVED_SUBJECT.getStringValue(), Utils.replaceAll(ApplicationProperties.EMAIL_NOTIFY_ADMIN_REQUEST_RESOLVED_SUBJECT.getStringValue(), this.email_replace_tokens));
 		task_variables.put(ApplicationProperties.EMAIL_LABEL_NOTIFY_ADMIN_REQUEST_RESOLVED_CONTENT.getStringValue(), Utils.replaceAll(ApplicationProperties.EMAIL_NOTIFY_ADMIN_REQUEST_RESOLVED_CONTENT.getStringValue(), this.email_replace_tokens));
 		
-		this.task_service.complete(this.current_data_request.getTaskId(), task_variables);
+		this.task_service.complete(this.current_data_request.getCurrentTaskId(), task_variables);
+		
+		try
+		{
+			boolean result = DataLayer.getInstance().updateDataRequestResolved(this.resolution, this.sme_comments, this.current_data_request.getId());
+			
+			if(result == false)
+			{
+				// TODO handle
+				
+				logger.error("did not update resolved request");
+			}
+		}
+		catch(Exception e)
+		{
+			// TODO handle error
+			logger.error(e);
+		}
 		
 		return userSession.getUser().getHomePage() + "?faces-redirect=true";
 	}
-	
 	
 	private void updateEmailReplacementValues()
 	{
@@ -245,7 +324,7 @@ public class DataRequestBean extends PageUtil implements Serializable {
 		}
 		
 		this.email_replace_tokens.put(ApplicationProperties.DATA_REQUEST_FIELD_ID.getStringValue(), this.id);
-		this.email_replace_tokens.put(ApplicationProperties.DATA_REQUEST_FIELD_TYPE.getStringValue(), Integer.toString(this.type));
+		this.email_replace_tokens.put(ApplicationProperties.DATA_REQUEST_FIELD_TYPE.getStringValue(), this.type);
 		this.email_replace_tokens.put(ApplicationProperties.DATA_REQUEST_FIELD_DESCRIPTION.getStringValue(), this.description);
 		this.email_replace_tokens.put(ApplicationProperties.DATA_REQUEST_FIELD_URGENT.getStringValue(), Boolean.toString(this.urgent));
 		this.email_replace_tokens.put(ApplicationProperties.DATA_REQUEST_FIELD_CREATED_DATE_TIME.getStringValue(), this.created_date_time.toString());
@@ -254,18 +333,17 @@ public class DataRequestBean extends PageUtil implements Serializable {
 		this.email_replace_tokens.put(ApplicationProperties.DATA_REQUEST_FIELD_ADMIN_COMMENTS.getStringValue(), this.administrator_comments);
 	}
 	
-	public Map<String, Integer> getTypes()
+	public Map<String, String> getTypes()
 	{
-		if(this.request_types == null)
-		{
-			// TODO move to properties
-			request_types = new LinkedHashMap<String, Integer>();
-			request_types.put("Type 1", 1);
-			request_types.put("Type 2", 2);
-			request_types.put("Type 3", 3);
-		}
+		// TODO move to properties
+		Map<String, String> request_types = new LinkedHashMap<String, String>();
 		
-		return this.request_types;
+		for(String type : ApplicationProperties.DATA_REQUEST_TYPES.getListValue())
+		{
+			request_types.put(type, type);
+		}
+			
+		return request_types;
 	}
 	
 	private void setSMEUsers()
@@ -333,83 +411,17 @@ public class DataRequestBean extends PageUtil implements Serializable {
 		return sb.toString();
 	}
 
-	private void setCurrentDataRequestVariables()
-	{
-		if(this.current_data_request != null && this.current_data_request.getProcessInstanceId() != null)
-		{
-			Map<String, Object> variables = this.runtime_service.getVariables(this.current_data_request.getProcessInstanceId());
-			
-			if(variables != null)
-			{
-				Iterator<Map.Entry<String, Object>> it = variables.entrySet().iterator();
-				
-			    while(it.hasNext())
-			    {
-			    	Map.Entry<String, Object> pairs = (Map.Entry<String, Object>) it.next();
-			        
-			        if(pairs.getKey().equalsIgnoreCase(ApplicationProperties.DATA_REQUEST_FIELD_ID.getStringValue()))
-			        {
-			        	this.id = (String) pairs.getValue();
-			        }
-			        
-			        if(pairs.getKey().equalsIgnoreCase(ApplicationProperties.DATA_REQUEST_FIELD_TYPE.getStringValue()))
-			        {
-			        	this.type = (Integer) pairs.getValue();
-			        }
-			        
-			        if(pairs.getKey().equalsIgnoreCase(ApplicationProperties.DATA_REQUEST_FIELD_DESCRIPTION.getStringValue()))
-			        {
-			        	this.description = (String) pairs.getValue();
-			        }
-			        
-			        if(pairs.getKey().equalsIgnoreCase(ApplicationProperties.DATA_REQUEST_FIELD_URGENT.getStringValue()))
-			        {
-			        	this.urgent = (Boolean) pairs.getValue();
-			        }
-			        
-			        if(pairs.getKey().equalsIgnoreCase(ApplicationProperties.DATA_REQUEST_FIELD_REQUESTOR_EMAIL.getStringValue()))
-			        {
-			        	this.requestor_email = (String) pairs.getValue();
-			        }
-			        
-			        if(pairs.getKey().equalsIgnoreCase(ApplicationProperties.DATA_REQUEST_FIELD_CREATED_BY.getStringValue()))
-			        {
-			        	this.created_by = (String) pairs.getValue();
-			        }
-			        
-			        if(pairs.getKey().equalsIgnoreCase(ApplicationProperties.DATA_REQUEST_FIELD_CREATED_DATE_TIME.getStringValue()))
-			        {
-			        	this.created_date_time = (Date) pairs.getValue();
-			        }
-			        
-			        if(pairs.getKey().equalsIgnoreCase(ApplicationProperties.DATA_REQUEST_FIELD_ADMIN_COMMENTS.getStringValue()))
-			        {
-			        	this.administrator_comments = (String) pairs.getValue();
-			        }
-			        
-			        if(pairs.getKey().equalsIgnoreCase(ApplicationProperties.DATA_REQUEST_FIELD_SME_COMMENTS.getStringValue()))
-			        {
-			        	this.sme_comments = (String) pairs.getValue();
-			        }
-			    }
-			}
-			
-			FacesContext.getCurrentInstance().getExternalContext().getFlash().put("drtsDataRequest", null);
-		}
-		else
-		{
-			logger.error("Current request is null");
-		}
-	}
-	
-	
 	@PreDestroy
 	private void destroy(){}
 	
-
+	/*
+	 * GETTERS AND SETTERS
+	 * 
+	 */
+	
 	public String getId()
 	{
-		return id;
+		return (this.current_data_request == null ? this.id : this.current_data_request.getId());
 	}
 
 	public void setId(String id)
@@ -417,9 +429,14 @@ public class DataRequestBean extends PageUtil implements Serializable {
 		this.id = id;
 	}
 
+	public String getDisplayId()
+	{
+		return this.current_data_request.getDisplayId();
+	}
+	
 	public int getIteration()
 	{
-		return iteration;
+		return (this.current_data_request == null ? this.iteration : this.current_data_request.getIteration());
 	}
 
 	public void setIteration(int iteration)
@@ -427,29 +444,29 @@ public class DataRequestBean extends PageUtil implements Serializable {
 		this.iteration = iteration;
 	}
 	
-	public int getStatus()
+	public String getStatus()
 	{
-		return status;
+		return (this.current_data_request == null ? this.status : this.current_data_request.getStatus());
 	}
 
-	public void setStatus(int status)
+	public void setStatus(String status)
 	{
 		this.status = status;
 	}
 	
-	public int getType()
+	public String getType()
 	{
-		return type;
+		return (this.current_data_request == null ? this.type : this.current_data_request.getType());
 	}
 
-	public void setType(int type)
+	public void setType(String type)
 	{
 		this.type = type;
 	}
 	
 	public Date getCreatedDateTime()
 	{
-		return created_date_time;
+		return (this.current_data_request == null ? this.created_date_time : this.current_data_request.getCreatedDateTime());
 	}
 
 	public void setCreatedDateTime(Date created_date_time)
@@ -459,7 +476,7 @@ public class DataRequestBean extends PageUtil implements Serializable {
 	
 	public Date getDueDate()
 	{
-		return due_date;
+		return (this.current_data_request == null ? this.due_date : this.current_data_request.getDueDate());
 	}
 
 	public void setDueDate(Date due_date)
@@ -469,7 +486,7 @@ public class DataRequestBean extends PageUtil implements Serializable {
 	
 	public String getCreatedBy()
 	{
-		return created_by;
+		return (this.current_data_request == null ? this.created_by : this.current_data_request.getDrtsRequestor());
 	}
 
 	public void setCreatedBy(String created_by)
@@ -479,7 +496,7 @@ public class DataRequestBean extends PageUtil implements Serializable {
 
 	public String getRelatedRequests()
 	{
-		return related_requests;
+		return (this.current_data_request == null ? this.related_requests : this.current_data_request.getRelatedRequests());
 	}
 
 	public void setRelatedRequests(String related_requests)
@@ -489,7 +506,7 @@ public class DataRequestBean extends PageUtil implements Serializable {
 	
 	public String getDescription()
 	{
-		return description;
+		return (this.current_data_request == null ? this.description : this.current_data_request.getDescription());
 	}
 
 	public void setDescription(String description)
@@ -499,7 +516,7 @@ public class DataRequestBean extends PageUtil implements Serializable {
 
 	public String getTopicKeywords()
 	{
-		return topic_keywords;
+		return (this.current_data_request == null ? this.topic_keywords : this.current_data_request.getTopicKeywords());
 	}
 
 	public void setTopicKeywords(String topic_keywords)
@@ -509,7 +526,7 @@ public class DataRequestBean extends PageUtil implements Serializable {
 	
 	public String getPurpose()
 	{
-		return purpose;
+		return (this.current_data_request == null ? this.purpose : this.current_data_request.getPurpose());
 	}
 
 	public void setPurpose(String purpose)
@@ -519,7 +536,7 @@ public class DataRequestBean extends PageUtil implements Serializable {
 	
 	public boolean isUrgent()
 	{
-		return urgent;
+		return (this.current_data_request == null ? this.urgent : this.current_data_request.isUrgent());
 	}
 
 	public void setUrgent(boolean urgent)
@@ -529,7 +546,7 @@ public class DataRequestBean extends PageUtil implements Serializable {
 
 	public String getSpecialConsiderationsIssues()
 	{
-		return special_considerations_issues;
+		return (this.current_data_request == null ? this.special_considerations_issues : this.current_data_request.getSpecialConsiderationsIssues());
 	}
 
 	public void setSpecialConsiderationsIssues(String special_considerations_issues)
@@ -539,7 +556,7 @@ public class DataRequestBean extends PageUtil implements Serializable {
 	
 	public String getRequestorName()
 	{
-		return requestor_name;
+		return (this.current_data_request == null ? this.requestor_name : this.current_data_request.getRequestorName());
 	}
 
 	public void setRequestorName(String requestor_name)
@@ -549,7 +566,7 @@ public class DataRequestBean extends PageUtil implements Serializable {
 	
 	public String getRequestorOrganization()
 	{
-		return requestor_organization;
+		return (this.current_data_request == null ? this.requestor_organization : this.current_data_request.getRequestorOrganization());
 	}
 
 	public void setRequestorOrganization(String requestor_organization)
@@ -559,7 +576,7 @@ public class DataRequestBean extends PageUtil implements Serializable {
 	
 	public String getRequestorPhone()
 	{
-		return requestor_phone;
+		return (this.current_data_request == null ? this.requestor_phone : this.current_data_request.getRequestorPhone());
 	}
 
 	public void setRequestorPhone(String requestor_phone)
@@ -569,7 +586,7 @@ public class DataRequestBean extends PageUtil implements Serializable {
 	
 	public String getRequestorEmail()
 	{
-		return requestor_email;
+		return (this.current_data_request == null ? this.requestor_email : this.current_data_request.getRequestorEmail());
 	}
 
 	public void setRequestorEmail(String requestor_email)
@@ -579,7 +596,7 @@ public class DataRequestBean extends PageUtil implements Serializable {
 	
 	public String getReceiverName()
 	{
-		return receiver_name;
+		return (this.current_data_request == null ? this.receiver_name : this.current_data_request.getReceiverName());
 	}
 
 	public void setReceiverName(String receiver_name)
@@ -589,7 +606,7 @@ public class DataRequestBean extends PageUtil implements Serializable {
 	
 	public String getReceiverEmail()
 	{
-		return receiver_email;
+		return (this.current_data_request == null ? this.receiver_email : this.current_data_request.getReceiverEmail());
 	}
 
 	public void setReceiverEmail(String receiver_email)
@@ -599,7 +616,7 @@ public class DataRequestBean extends PageUtil implements Serializable {
 	
 	public String getAssignedSme()
 	{
-		return assigned_sme;
+		return (this.current_data_request == null ? this.assigned_sme : this.current_data_request.getAssignedSme());
 	}
 
 	public void setAssignedSme(String assigned_sme)
@@ -609,7 +626,7 @@ public class DataRequestBean extends PageUtil implements Serializable {
 
 	public Date getDateAssignedToSme()
 	{
-		return this.date_assigned_to_sme;
+		return (this.current_data_request == null ? this.date_assigned_to_sme : this.current_data_request.getDateAssignedToSme());
 	}
 	
 	public void setDateAssignedToSme(Date date_assigned_to_sme)
@@ -619,7 +636,7 @@ public class DataRequestBean extends PageUtil implements Serializable {
 	
 	public String getAdministratorComments()
 	{
-		return this.administrator_comments;
+		return (this.current_data_request == null ? this.administrator_comments : this.current_data_request.getAdministratorComments());
 	}
 	
 	public void setAdministratorComments(String administrator_comments)
@@ -629,7 +646,7 @@ public class DataRequestBean extends PageUtil implements Serializable {
 	
 	public Date getDateResolved()
 	{
-		return this.date_resolved;
+		return (this.current_data_request == null ? this.date_resolved : this.current_data_request.getDateResolved());
 	}
 	
 	public void setDateResolved(Date date_resolved)
@@ -639,7 +656,7 @@ public class DataRequestBean extends PageUtil implements Serializable {
 	
 	public String getResolution()
 	{
-		return this.resolution;
+		return (this.current_data_request == null ? this.resolution : this.current_data_request.getResolution());
 	}
 	
 	public void setResolution(String resolution)
@@ -649,7 +666,7 @@ public class DataRequestBean extends PageUtil implements Serializable {
 	
 	public String getSmeComments()
 	{
-		return this.sme_comments;
+		return (this.current_data_request == null ? this.sme_comments : this.current_data_request.getSmeComments());
 	}
 	
 	public void setSmeComments(String sme_comments)

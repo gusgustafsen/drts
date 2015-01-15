@@ -1,106 +1,342 @@
 package gov.ed.fsa.drts.object;
 
-import gov.ed.fsa.drts.util.ApplicationProperties;
-
-import java.math.BigDecimal;
+import java.util.Calendar;
 import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 public class DataRequest {
 
-	private Map<String, Object> variables = null;
+	private String id = null;
+	private Date created_date_time = null;
+	private String drts_requestor = null;
+	private String status = null;
+	private String type = null;
+	private int iteration = 1;
+	private Date due_date = null;
+	private boolean urgent = false;
+	private String related_requests = null;
+	private String topic_keywords = null;
+	private String description = null;
+	private String purpose = null;
+	private String special_considerations_issues = null;
+	private String requestor_name = null;
+	private String requestor_organization = null;
+	private String requestor_phone = null;
+	private String requestor_email = null;
+	private String receiver_name = null;
+	private String receiver_email = null;
+	
+	private String assigned_sme = null;
+	private Date date_assigned_to_sme = null;
+	private String administrator_comments = null;
+	
+	private Date date_resolved = null;
+	private String resolution = null;
+	private String sme_comments = null;
+	
+	private String current_task_id = null;
+	private String current_task_name = null;
+	private String current_task_form_key = null;
+	
+	private int display_id = 1;
 	
 	public DataRequest(){}
 	
-	public DataRequest(Map<String, Object> variables)
+	public String getId()
 	{
-		this.variables = variables;
+		return this.id;
 	}
-
-	public void setVariables(Map<String, Object> variables)
+	
+	public void setId(String id)
 	{
-		this.variables = variables;
+		this.id = id;
 	}
-
+	
 	public Date getCreatedDateTime()
 	{
-		return getDateVariable(ApplicationProperties.DATA_REQUEST_FIELD_CREATED_DATE_TIME.getStringValue());
+		return this.created_date_time;
+	}
+	
+	public void setCreatedDateTime(Date created_date_time)
+	{
+		this.created_date_time = created_date_time;
 	}
 	
 	public String getDrtsRequestor()
 	{
-		return getStringVariable(ApplicationProperties.DATA_REQUEST_FIELD_CREATED_BY.getStringValue());
+		return this.drts_requestor;
+	}
+	
+	public void setDrtsRequestor(String drts_requestor)
+	{
+		this.drts_requestor = drts_requestor;
 	}
 	
 	public String getStatus()
 	{
-		// TODO change to string
-		
-		return getStringVariable(ApplicationProperties.DATA_REQUEST_FIELD_STATUS.getStringValue());
+		return this.status;
 	}
 	
-	public String getTaskId()
+	public void setStatus(String status)
 	{
-		return getStringVariable("TASK_ID");
-	}
-	
-	public String getTaskName()
-	{
-		return getStringVariable("TASK_NAME");
-	}
-	
-	public String getTaskFormKey()
-	{
-		return getStringVariable("TASK_FORM_KEY");
-	}
-	
-	public String getProcessInstanceId()
-	{
-		return getStringVariable("TASK_PROCESS_INSTANCE_ID");
+		this.status = status;
 	}
 	
 	public String getType()
 	{
-		int int_type = getIntegerVariable(ApplicationProperties.DATA_REQUEST_FIELD_TYPE.getStringValue());
-		
-		// TODO fix
-		
-		Map<Integer, String> request_types = new LinkedHashMap<Integer, String>();
-		request_types.put(1, "Type 1");
-		request_types.put(2, "Type 2");
-		request_types.put(3, "Type 3");
-		
-		return request_types.get(int_type);
+		return this.type;
 	}
 	
-	private String getStringVariable(String key)
+	public void setType(String type)
 	{
-		if(this.variables != null)
-		{
-			return (String) this.variables.get(key);
-		}
-		
-		return null;
+		this.type = type;
 	}
 	
-	private int getIntegerVariable(String key)
+	public String getCurrentTaskId()
 	{
-		if(this.variables != null)
-		{
-			return Integer.parseInt(getStringVariable(key));
-		}
-		
-		return 0;
+		return this.current_task_id;
 	}
 	
-	private Date getDateVariable(String key)
+	public void setCurrentTaskId(String current_task_id)
 	{
-		if(this.variables != null)
-		{
-			return new Date(((BigDecimal) this.variables.get(key)).longValue());
-		}
+		this.current_task_id = current_task_id;
+	}
+	
+	public String getCurrentTaskName()
+	{
+		return this.current_task_name;
+	}
+	
+	public void setCurrentTaskName(String current_task_name)
+	{
+		this.current_task_name = current_task_name;
+	}
+	
+	public String getCurrentTaskFormKey()
+	{
+		return this.current_task_form_key;
+	}
+	
+	public void setCurrentTaskFormKey(String current_task_form_key)
+	{
+		this.current_task_form_key = current_task_form_key;
+	}
+
+	public int getIteration()
+	{
+		return iteration;
+	}
+
+	public void setIteration(int iteration)
+	{
+		this.iteration = iteration;
+	}
+
+	public Date getDueDate()
+	{
+		return due_date;
+	}
+
+	public void setDueDate(Date due_date)
+	{
+		this.due_date = due_date;
+	}
+
+	public boolean isUrgent()
+	{
+		return urgent;
+	}
+
+	public void setUrgent(boolean urgent)
+	{
+		this.urgent = urgent;
+	}
+
+	public String getRelatedRequests()
+	{
+		return related_requests;
+	}
+
+	public void setRelatedRequests(String related_requests)
+	{
+		this.related_requests = related_requests;
+	}
+
+	public String getTopicKeywords()
+	{
+		return topic_keywords;
+	}
+
+	public void setTopicKeywords(String topic_keywords)
+	{
+		this.topic_keywords = topic_keywords;
+	}
+
+	public String getDescription()
+	{
+		return description;
+	}
+
+	public void setDescription(String description)
+	{
+		this.description = description;
+	}
+
+	public String getPurpose()
+	{
+		return purpose;
+	}
+
+	public void setPurpose(String purpose)
+	{
+		this.purpose = purpose;
+	}
+
+	public String getSpecialConsiderationsIssues()
+	{
+		return special_considerations_issues;
+	}
+
+	public void setSpecialConsiderationsIssues(String special_considerations_issues)
+	{
+		this.special_considerations_issues = special_considerations_issues;
+	}
+
+	public String getRequestorName()
+	{
+		return requestor_name;
+	}
+
+	public void setRequestorName(String requestor_name)
+	{
+		this.requestor_name = requestor_name;
+	}
+
+	public String getRequestorOrganization()
+	{
+		return requestor_organization;
+	}
+
+	public void setRequestorOrganization(String requestor_organization)
+	{
+		this.requestor_organization = requestor_organization;
+	}
+
+	public String getRequestorPhone()
+	{
+		return requestor_phone;
+	}
+
+	public void setRequestorPhone(String requestor_phone)
+	{
+		this.requestor_phone = requestor_phone;
+	}
+
+	public String getRequestorEmail()
+	{
+		return requestor_email;
+	}
+
+	public void setRequestorEmail(String requestor_email)
+	{
+		this.requestor_email = requestor_email;
+	}
+
+	public String getReceiverName()
+	{
+		return receiver_name;
+	}
+
+	public void setReceiverName(String receiver_name)
+	{
+		this.receiver_name = receiver_name;
+	}
+
+	public String getReceiverEmail()
+	{
+		return receiver_email;
+	}
+
+	public void setReceiverEmail(String receiver_email)
+	{
+		this.receiver_email = receiver_email;
+	}
+
+	public String getAssignedSme()
+	{
+		return assigned_sme;
+	}
+
+	public void setAssignedSme(String assigned_sme)
+	{
+		this.assigned_sme = assigned_sme;
+	}
+
+	public Date getDateAssignedToSme()
+	{
+		return date_assigned_to_sme;
+	}
+
+	public void setDateAssignedToSme(Date date_assigned_to_sme)
+	{
+		this.date_assigned_to_sme = date_assigned_to_sme;
+	}
+
+	public String getAdministratorComments()
+	{
+		return administrator_comments;
+	}
+
+	public void setAdministratorComments(String administrator_comments)
+	{
+		this.administrator_comments = administrator_comments;
+	}
+
+	public Date getDateResolved()
+	{
+		return date_resolved;
+	}
+
+	public void setDateResolved(Date date_resolved)
+	{
+		this.date_resolved = date_resolved;
+	}
+
+	public String getResolution()
+	{
+		return resolution;
+	}
+
+	public void setResolution(String resolution)
+	{
+		this.resolution = resolution;
+	}
+
+	public String getSmeComments()
+	{
+		return sme_comments;
+	}
+
+	public void setSmeComments(String sme_comments)
+	{
+		this.sme_comments = sme_comments;
+	}
+
+	public String getDisplayId()
+	{
+		String result = "";
 		
-		return null;
+		Calendar cal = Calendar.getInstance();
+	    cal.setTime(this.created_date_time);
+	    
+	    int year = cal.get(Calendar.YEAR);
+	    
+	    result += year + "-" + this.display_id + "-D";
+	    
+	    return result;
+	}
+	
+	public void setDisplayId(int display_id)
+	{
+		this.display_id = display_id;
 	}
 }

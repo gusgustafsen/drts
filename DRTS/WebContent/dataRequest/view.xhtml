@@ -32,7 +32,7 @@
                 <section class="col-1-1 mobile-col-1-1">
                     <header id="content-header" class="col-1-1 mobile-col-1-1">
                         <span class="content-header-box">
-                            <h1>Handle Request</h1>
+                            <h1>View Request</h1>
                         </span>
                     </header>
                     <div id="main-content" class="col-1-1 mobile-col-1-1">
@@ -56,6 +56,7 @@
                                             <li><a href="#requestor">Requestor</a></li>
                                             <li><a href="#receiver">Receiver</a></li>
                                             <li><a href="#assignment">Assignment</a></li>
+                                            <li><a href="#resolution">Resolution</a></li>
                                         </ul>
                                         <div id="general">
                                             <h:outputLabel value="ID"/>
@@ -99,7 +100,7 @@
                                             <h:outputText styleClass="form-text" value="#{dataRequest.specialConsiderationsIssues}" />
                                         </div>
                                         <div id="requestor">
-                                        	<h:outputLabel value="Requestor"/>
+                                            <h:outputLabel value="Requestor"/>
                                             <h:outputText styleClass="form-text" value="#{dataRequest.requestorName}" />
                                             
                                         	<h:outputLabel value="Requestor Organization"/>
@@ -112,29 +113,34 @@
                                             <h:outputText styleClass="form-text" value="#{dataRequest.requestorEmail}" />
                                         </div>
                                         <div id="receiver">
-                                        	<h:outputLabel value="Receiver"/>
+                                            <h:outputLabel value="Receiver"/>
                                             <h:outputText styleClass="form-text" value="#{dataRequest.receiverName}" />
                                             
                                         	<h:outputLabel value="Receiver Email"/>
                                             <h:outputText styleClass="form-text" value="#{dataRequest.receiverEmail}" />
                                         </div>
                                         <div id="assignment">
-                                            <h:outputLabel value="Assign To"/>
-                                            <h:selectOneMenu value="#{dataRequest.assignedSme}">
-									   			<f:selectItems value="#{dataRequest.smes}" />
-									   		</h:selectOneMenu>
+                                            <h:outputLabel value="Date Assigned to SME"/>
+                                            <h:outputText styleClass="form-text" value="#{dataRequest.dateAssignedToSme}">
+                                            	<f:converter converterId="defaultDateTimeConverter" />
+                                            </h:outputText>
+
+                                            <h:outputLabel value="Assigned To"/>
+                                            <h:outputText styleClass="form-text" value="#{dataRequest.assignedSme}" />
                                             
                                             <h:outputLabel value="Comments"/>
-                                            <h:inputTextarea value="#{dataRequest.administratorComments}" />
+                                            <h:outputText styleClass="form-text" value="#{dataRequest.administratorComments}" />
                                         </div>
-                                    </div>  
-                                
-                                </div>
-                                
-                                <div class="form-control col-1-1 mobile-col-1-1">
-                                	<h:commandButton styleClass="button" value="Assign to SME" action="#{dataRequest.assignNewRequestToSME}" />
-						      		<h:commandButton styleClass="button" value="Reject" action="#{dataRequest.rejectNewRequest}" />
-                                </div>
+                                        <div id="resolution">
+                                            <h:outputLabel value="Resolution"/>
+                                            <h:outputText styleClass="form-text" value="#{dataRequest.resolution}" />
+                                            
+                                            <h:outputLabel value="Comments"/>
+                                            <h:outputText styleClass="form-text" value="#{dataRequest.smeComments}" />
+                                        </div>
+                                    </div>
+                        	
+                        		</div>
     	
     						</h:form>
 					    	

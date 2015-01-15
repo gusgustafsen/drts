@@ -22,6 +22,6 @@
 	<classpathentry kind="lib" path="/opt/IBM/WebSphere/drtslib/commons-lang3-3.3.2.jar"/>
 	<classpathentry kind="lib" path="/opt/IBM/WebSphere/drtslib/log4j-1.2.17.jar"/>
 	<classpathentry kind="lib" path="/opt/IBM/WebSphere/drtslib/shiro-all-1.2.3.jar"/>
-	<classpathentry kind="lib" path="/opt/IBM/WebSphere/drtslib/mybatis-3.2.5.jar"/>
+	<classpathentry kind="lib" path="/opt/IBM/WebSphere/drtslib/ojdbc6.jar"/>
 	<classpathentry kind="output" path="WebContent/WEB-INF/classes"/>
 </classpath>

@@ -32,55 +32,30 @@ public class Utils {
 	
 	public static String getUserHomePage(List<DRTSGroup> user_groups)
 	{
-		DRTSGroup group = null;
-		int index = -1;
-		
-		group = new DRTSGroup(ApplicationProperties.GROUP_ADMIN.getStringValue(), null);
-		
-		index = user_groups.indexOf(group);
-		
-		if(index != -1)
+		if(isUserInGroup(user_groups, ApplicationProperties.GROUP_ADMIN.getStringValue()) == true)
 		{
 			return ApplicationProperties.HOME_PAGE_ADMIN.getStringValue();
 		}
-		
-		group = new DRTSGroup(ApplicationProperties.GROUP_DRT.getStringValue(), null);
-		
-		index = user_groups.indexOf(group);
-		
-		if(index != -1)
+		else if(isUserInGroup(user_groups, ApplicationProperties.GROUP_DRT.getStringValue()) == true)
 		{
 			return ApplicationProperties.HOME_PAGE_DRT.getStringValue();
 		}
-		
-		group = new DRTSGroup(ApplicationProperties.GROUP_REPORTER.getStringValue(), null);
-		
-		index = user_groups.indexOf(group);
-		
-		if(index != -1)
+		else if(isUserInGroup(user_groups, ApplicationProperties.GROUP_REPORTER.getStringValue()) == true)
 		{
 			return ApplicationProperties.HOME_PAGE_REPORTER.getStringValue();
 		}
-		
-		group = new DRTSGroup(ApplicationProperties.GROUP_REQUESTOR.getStringValue(), null);
-		
-		index = user_groups.indexOf(group);
-		
-		if(index != -1)
+		else if(isUserInGroup(user_groups, ApplicationProperties.GROUP_REQUESTOR.getStringValue()) == true)
 		{
 			return ApplicationProperties.HOME_PAGE_REQUESTOR.getStringValue();
 		}
-		
-		group = new DRTSGroup(ApplicationProperties.GROUP_SME.getStringValue(), null);
-		
-		index = user_groups.indexOf(group);
-		
-		if(index != -1)
+		else if(isUserInGroup(user_groups, ApplicationProperties.GROUP_SME.getStringValue()) == true)
 		{
 			return ApplicationProperties.HOME_PAGE_SME.getStringValue();
 		}
-		
-		return ApplicationProperties.PAGE_ERROR_UNAUTHORIZED.getStringValue();
+		else
+		{
+			return ApplicationProperties.PAGE_ERROR_UNAUTHORIZED.getStringValue();
+		}
 	}
 
 	public static boolean isStringEmpty(String item)
@@ -131,4 +106,20 @@ public class Utils {
 		return item;
 	}
 
+	public static boolean isUserInGroup(List<DRTSGroup> user_groups, String group_name)
+	{
+		DRTSGroup group = null;
+		int index = -1;
+		
+		group = new DRTSGroup(group_name, null);
+		
+		index = user_groups.indexOf(group);
+		
+		if(index != -1)
+		{
+			return true;
+		}
+		
+		return false;
+	}
 }

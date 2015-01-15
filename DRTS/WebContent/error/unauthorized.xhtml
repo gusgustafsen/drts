@@ -20,9 +20,41 @@
     
     <h:body class="section-one">
     
-    	<ui:include src="#{root}includes/header.xhtml">
-    		<ui:param name="active" value="1" />
-    	</ui:include>
+    	<div id="header-wrapper">
+            <div class="grid">
+                <header class="col-1-1 mobile-col-1-1">
+                    <nav class="col-8-12 mobile-col-1-1">
+                    </nav>
+                    <div class="col-4-12 mobile-col-1-1">
+                    </div>
+                </header>
+            </div>
+        </div>
+        <div class="grid">
+            <header class="col-1-1 mobile-col-1-1">
+                <div class="col-1-1 mobile-col-1-1">
+                    <div id="fsa-logo" class="col-6-12 mobile-col-1-1">
+                    	<a href="#">
+                        	<h:graphicImage name="images/logo.png" />
+                        </a>
+                    </div>
+                    <div id="site-logo" class="col-6-12 mobile-col-1-1">
+                    	<h:graphicImage name="images/drts_logo.png" />
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div id="menu-wrapper">
+            <div class="grid">
+                <header class="col-1-1 mobile-col-1-1">
+                    <nav class="col-1-1 mobile-col-1-1" role="navigation">
+                            <ul id="top-menu">
+                            
+                            </ul>
+                        </nav>
+                </header>
+            </div>
+        </div>
     	
     	<div id="content-wrapper">
             <div class="grid">

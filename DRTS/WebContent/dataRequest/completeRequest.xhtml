@@ -27,7 +27,7 @@
     	<div id="content-wrapper">
             <div class="grid">
                 <div id="breadcrumb" class="col-1-1 mobile-col-1-1">
-                    <h:link value="Home" outcome="#{userSession.user.homePage}" /> » Request [xxxxx]
+                    <h:link value="Home" outcome="#{userSession.user.homePage}" /> » Request <h:outputText value="#{dataRequest.displayId}" />
                 </div>
                 <section class="col-1-1 mobile-col-1-1">
                     <header id="content-header" class="col-1-1 mobile-col-1-1">
@@ -39,6 +39,14 @@
                         <section class="col-1-1 mobile-col-1-1">
                         
                         	<h:form styleClass="col-1-1 mobile-col-1-1">
+                        	
+                        		<p>
+      								Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla volutpat dui at metus ultrices, at 
+      								sollicitudin felis varius. Cras sed orci nisl. Donec semper ornare dignissim. Fusce et neque finibus, 
+      								porttitor elit vel, feugiat lectus. Aliquam nunc odio, placerat vitae dapibus finibus, facilisis venenatis 
+      								eros. Vestibulum id purus sit amet risus dapibus elementum. In nulla elit, convallis et quam a, viverra 
+      								dapibus justo.
+      							</p>
                         	
                         		<div class="form-wrapper col-1-1 mobile-col-1-1">
                                     
@@ -52,7 +60,7 @@
                                         </ul>
                                         <div id="general">
                                             <h:outputLabel value="ID"/>
-                                            <h:outputText styleClass="form-text" value="#{dataRequest.id}" />
+                                            <h:outputText styleClass="form-text" value="#{dataRequest.displayId}" />
 
 											<h:outputLabel value="Iteration"/>
                                             <h:outputText styleClass="form-text" value="#{dataRequest.iteration}" />
@@ -124,11 +132,6 @@
                                             <h:outputText styleClass="form-text" value="#{dataRequest.administratorComments}" />
                                         </div>
                                         <div id="resolution">
-                                        	<h:outputLabel value="Date Resolved"/>
-                                            <h:outputText styleClass="form-text" value="#{dataRequest.dateResolved}">
-                                            	<f:converter converterId="defaultDateTimeConverter" />
-                                            </h:outputText>
-
                                             <h:outputLabel value="Resolution"/>
                                             <h:inputTextarea value="#{dataRequest.resolution}" />
                                             

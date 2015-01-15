@@ -20,10 +20,11 @@
                 <div class="col-1-1 mobile-col-1-1">
                     <div id="fsa-logo" class="col-6-12 mobile-col-1-1">
                     	<h:link outcome="#{userSession.user.homePage}">
-                        	<h:graphicImage id="logo" name="images/logo.png" />
+                        	<h:graphicImage name="images/logo.png" />
                         </h:link>
                     </div>
                     <div id="site-logo" class="col-6-12 mobile-col-1-1">
+                    	<h:graphicImage name="images/drts_logo.png" />
                     </div>
                 </div>
             </header>
@@ -38,11 +39,12 @@
                                 		<span>Home</span>
                                 	</h:link>
                                 </li>
+                                <h:panelGroup rendered="#{userSession.reporter eq false}">
                                 <li class="menu-sec-2 #{(active == 2) ? 'active' : '' }">
-                                    <h:link outcome="/dataRequest/newRequest">
+                                    <a href="#">
                                         <span>Data Requests</span>
                                         <span class="arrow"></span>
-                                    </h:link>
+                                    </a>
                                     <ul>
                                     	<h:panelGroup rendered="#{userSession.allowedToCreateRequests}">
 	                                        <li>
@@ -60,47 +62,80 @@
                                 		</h:panelGroup>
                                     </ul>
                                 </li>
+                                </h:panelGroup>
+                                <h:panelGroup rendered="#{userSession.reporter eq false}">
                                 <li class="menu-sec-3 #{(active == 3) ? 'active' : '' }">
-                                    <h:link outcome="/search/searchRequests">
+                                    <a href="#">
                                         <span>Search</span>
                                         <span class="arrow"></span>
-                                    </h:link>
+                                    </a>
                                     <ul>
                                     	<li>
                                     		<h:link outcome="/search/searchRequests">
                                     			<span>Search Requests</span>
                                     		</h:link>
                                     	</li>
-                                    	<li>
-                                    		<h:link outcome="/search/searchAttachments">
-                                    			<span>Search Attachments</span>
-                                    		</h:link>
-                                    	</li>
                                     </ul>
                                 </li>
+                                </h:panelGroup>
                                 <li class="menu-sec-4 #{(active == 4) ? 'active' : '' }">
-                                    <h:link outcome="/reports/reports">
-                                		<span>Reports</span>
-                                	</h:link>
-                                </li>
-                                <li class="menu-sec-5 #{(active == 5) ? 'active' : '' }">
-                                    <h:link outcome="/administration/administration">
-                                		<span>Administration</span>
-                                        <span class="arrow"></span>
-                                	</h:link>
-                                	<ul>
-                                    	<li>
-                                    		<h:link outcome="/administration/userManagement">
-                                    			<span>User Management</span>
-                                    		</h:link>
-                                    	</li>
-                                    	<li>
-                                    		<h:link outcome="/administration/createAccount">
-                                    			<span>Create Account</span>
-                                    		</h:link>
-                                    	</li>
-                                    </ul>
-                                </li>
+                                	<h:link outcome="/reports/reports">
+	                                		<span>Reports</span>
+	                                		<span class="arrow"></span>
+	                                	</h:link>
+	                                	<ul>
+	                                    	<li>
+	                                    		<a href="#">
+	                                    			<span>Request Filter</span>
+	                                    		</a>
+	                                    	</li>
+	                                    	<li>
+	                                    		<a href="#">
+	                                    			<span>Open-Closed Requests by Day</span>
+	                                    		</a>
+	                                    	</li>
+	                                    	<li>
+	                                    		<a href="#">
+	                                    			<span>Number of Requests Assigned to SME</span>
+	                                    		</a>
+	                                    	</li>
+	                                    	<li>
+	                                    		<a href="#">
+	                                    			<span>Average Age</span>
+	                                    		</a>
+	                                    	</li>
+	                                    	<li>
+	                                    		<a href="#">
+	                                    			<span>Overdue Requests</span>
+	                                    		</a>
+	                                    	</li>
+	                                    	<li>
+	                                    		<a href="#">
+	                                    			<span>Request Filter</span>
+	                                    		</a>
+	                                    	</li>
+	                                    </ul>
+	                                </li>
+                                <h:panelGroup rendered="#{userSession.admin}">
+	                                <li class="menu-sec-5 #{(active == 5) ? 'active' : '' }">
+	                                    <a href="#">
+	                                		<span>Administration</span>
+	                                        <span class="arrow"></span>
+	                                	</a>
+	                                	<ul>
+	                                    	<li>
+	                                    		<h:link outcome="/administration/userManagement">
+	                                    			<span>User Management</span>
+	                                    		</h:link>
+	                                    	</li>
+	                                    	<li>
+	                                    		<h:link outcome="/administration/createAccount">
+	                                    			<span>Create Account</span>
+	                                    		</h:link>
+	                                    	</li>
+	                                    </ul>
+	                                </li>
+                                </h:panelGroup>
                             </ul>
                         </nav>
                 </header>

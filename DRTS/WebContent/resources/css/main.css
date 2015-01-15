@@ -9,7 +9,8 @@
 }
 
 .grid header .col-1-1,
-.grid header.col-1-1
+.grid header.col-1-1,
+#site-logo.col-6-12
 {
     padding-right: 0;
 }
@@ -85,8 +86,8 @@ p
 	color: #000000;
 	padding-top: .75em;
     line-height: 1.6em;
-    margin: 0 10px 10px;
-    padding-bottom: 0.5em;
+    margin: 0 10px;
+    padding-bottom: 0;
 }
 
 /*
@@ -633,7 +634,7 @@ textarea
 {
     float: left;
     clear: both;
-    margin: 0 10px 0;
+    margin: 10px 10px 0;
     font-family: 'Droid Serif', serif;
 	font-size: 0.85em;
 	color: #000000;
