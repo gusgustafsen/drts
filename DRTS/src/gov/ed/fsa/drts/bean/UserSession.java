@@ -1,6 +1,5 @@
 package gov.ed.fsa.drts.bean;
 
-import gov.ed.fsa.drts.object.DRTSUser;
 import gov.ed.fsa.drts.security.SecurityPermissions;
 import gov.ed.fsa.drts.util.ApplicationProperties;
 import gov.ed.fsa.drts.util.Utils;
@@ -12,6 +11,7 @@ import javax.annotation.PreDestroy;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
+import org.activiti.engine.identity.User;
 import org.apache.log4j.Logger;
 import org.apache.shiro.subject.Subject;
 
@@ -23,7 +23,7 @@ public class UserSession implements Serializable {
 
 	private static final Logger logger = Logger.getLogger(UserSession.class);
 	
-	private DRTSUser user = null;
+	private User user = null;
 	
 	private Subject subject;
 	
@@ -36,14 +36,19 @@ public class UserSession implements Serializable {
 	@PreDestroy
 	private void destroy(){}
 	
-	public DRTSUser getUser()
+	public User getUser()
 	{
 		return this.user;
 	}
 	
-	public void setUser(DRTSUser user)
+	public void setUser(User user)
 	{
 		this.user = user;
+	}
+	
+	public String getHomePage()
+	{
+		return Utils.getUserHomePage(this.user.getId());
 	}
 	
 	public void setSubject(Subject subject)
@@ -58,7 +63,7 @@ public class UserSession implements Serializable {
 			return false;
 		}
 		
-		return Utils.isUserInGroup(this.user.getGroups(), ApplicationProperties.GROUP_ADMIN.getStringValue());
+		return Utils.isUserInGroup(this.user.getId(), ApplicationProperties.GROUP_ADMIN.getStringValue());
 	}
 	
 	public boolean isDrt()
@@ -68,7 +73,7 @@ public class UserSession implements Serializable {
 			return false;
 		}
 		
-		return Utils.isUserInGroup(this.user.getGroups(), ApplicationProperties.GROUP_DRT.getStringValue());
+		return Utils.isUserInGroup(this.user.getId(), ApplicationProperties.GROUP_DRT.getStringValue());
 	}
 
 	public boolean isRequestor()
@@ -78,7 +83,7 @@ public class UserSession implements Serializable {
 			return false;
 		}
 		
-		return Utils.isUserInGroup(this.user.getGroups(), ApplicationProperties.GROUP_REQUESTOR.getStringValue());
+		return Utils.isUserInGroup(this.user.getId(), ApplicationProperties.GROUP_REQUESTOR.getStringValue());
 	}
 	
 	public boolean isReporter()
@@ -88,7 +93,7 @@ public class UserSession implements Serializable {
 			return false;
 		}
 		
-		return Utils.isUserInGroup(this.user.getGroups(), ApplicationProperties.GROUP_REPORTER.getStringValue());
+		return Utils.isUserInGroup(this.user.getId(), ApplicationProperties.GROUP_REPORTER.getStringValue());
 	}
 	
 	public boolean isSme()
@@ -98,7 +103,7 @@ public class UserSession implements Serializable {
 			return false;
 		}
 		
-		return Utils.isUserInGroup(this.user.getGroups(), ApplicationProperties.GROUP_SME.getStringValue());
+		return Utils.isUserInGroup(this.user.getId(), ApplicationProperties.GROUP_SME.getStringValue());
 	}
 	
 	public boolean isAllowedToCreateRequests()

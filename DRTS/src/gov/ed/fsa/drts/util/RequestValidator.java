@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Set;
 
 import gov.ed.fsa.drts.bean.UserSession;
-import gov.ed.fsa.drts.object.DRTSUser;
 import gov.ed.fsa.drts.security.DRTSRealm;
 
 import javax.faces.context.FacesContext;
@@ -92,13 +91,6 @@ public class RequestValidator implements PhaseListener {
 							
 							if(security_groups != null && security_groups.size() > 0)
 							{
-								List<Group> all_groups = identity_service.createGroupQuery().groupMember(activiti_user.getId()).list();
-								
-								DRTSUser user = new DRTSUser();
-								user.setActivitiUser(activiti_user);
-								user.addGroups(Utils.convertActivitiGroups(all_groups));
-								user.setHomePage();
-								
 								Set<String> roles = new HashSet<String>(string_groups);
 								
 								final DRTSRealm realm = new DRTSRealm(roles);
@@ -110,7 +102,7 @@ public class RequestValidator implements PhaseListener {
 								subject.login(new UsernamePasswordToken(DRTSRealm.DEFAULT_USERNAME, DRTSRealm.DEFAULT_PASSWORD));
 								
 								UserSession user_session = new UserSession();
-								user_session.setUser(user);
+								user_session.setUser(activiti_user);
 								user_session.setSubject(subject);
 								
 								faces_context.getExternalContext().getSessionMap().put(ApplicationProperties.USER_SESSION_HEADER.getStringValue(), user_session);
@@ -119,7 +111,7 @@ public class RequestValidator implements PhaseListener {
 								
 								if(request_url.contains("index.htm") == true)
 								{
-									destination_url = ApplicationProperties.CONTEXT_ROOT.getStringValue() + user_session.getUser().getHomePage();
+									destination_url = ApplicationProperties.CONTEXT_ROOT.getStringValue() + user_session.getHomePage();
 								}
 							}
 							else

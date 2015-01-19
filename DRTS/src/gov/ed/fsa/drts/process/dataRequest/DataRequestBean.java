@@ -173,7 +173,7 @@ public class DataRequestBean extends PageUtil implements Serializable {
 			logger.error(e);
 		}
 		
-		return userSession.getUser().getHomePage() + "?faces-redirect=true";
+		return userSession.getHomePage() + "?faces-redirect=true";
 	}
 	
 	public String assignNewRequestToSME()
@@ -214,7 +214,7 @@ public class DataRequestBean extends PageUtil implements Serializable {
 			logger.error(e);
 		}
 		
-		return userSession.getUser().getHomePage() + "?faces-redirect=true";
+		return userSession.getHomePage() + "?faces-redirect=true";
 	}
 	
 	public String rejectNewRequest()
@@ -243,7 +243,7 @@ public class DataRequestBean extends PageUtil implements Serializable {
 			logger.error(e);
 		}
 		
-		return userSession.getUser().getHomePage() + "?faces-redirect=true";
+		return userSession.getHomePage() + "?faces-redirect=true";
 	}
 	
 	public String rejectRequest()
@@ -272,7 +272,7 @@ public class DataRequestBean extends PageUtil implements Serializable {
 			logger.error(e);
 		}
 		
-		return userSession.getUser().getHomePage() + "?faces-redirect=true";
+		return userSession.getHomePage() + "?faces-redirect=true";
 	}
 	
 	public String resolveRequest()
@@ -309,7 +309,7 @@ public class DataRequestBean extends PageUtil implements Serializable {
 			logger.error(e);
 		}
 		
-		return userSession.getUser().getHomePage() + "?faces-redirect=true";
+		return userSession.getHomePage() + "?faces-redirect=true";
 	}
 	
 	private void updateEmailReplacementValues()

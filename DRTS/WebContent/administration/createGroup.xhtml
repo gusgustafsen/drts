@@ -18,21 +18,21 @@
     
     </h:head>
     
-    <h:body class="section-three">
+    <h:body class="section-five">
     
     	<ui:include src="#{root}includes/header.xhtml">
-    		<ui:param name="active" value="3" />
+    		<ui:param name="active" value="5" />
     	</ui:include>
     	
     	<div id="content-wrapper">
             <div class="grid">
                 <div id="breadcrumb" class="col-1-1 mobile-col-1-1">
-                    <h:link value="Home" outcome="#{userSession.homePage}" /> » Search Requests
+                    <h:link value="Home" outcome="#{userSession.homePage}" /> » Create Group
                 </div>
                 <section class="col-1-1 mobile-col-1-1">
                     <header id="content-header" class="col-1-1 mobile-col-1-1">
                         <span class="content-header-box">
-                            <h1>Search Requests</h1>
+                            <h1>Create New Group</h1>
                         </span>
                     </header>
                     <div id="main-content" class="col-1-1 mobile-col-1-1">
@@ -47,6 +47,25 @@
       								eros. Vestibulum id purus sit amet risus dapibus elementum. In nulla elit, convallis et quam a, viverra 
       								dapibus justo.
       							</p>
+      							
+      							<div class="form-wrapper col-1-1 mobile-col-1-1">
+                                    
+                                    <div id="drtsTabs">
+                                         <ul>
+                                            <li><a href="#information">Information</a></li>
+                                        </ul>
+                                        <div id="information">
+			      							<h:outputLabel value="Name"/>
+			      							<h:inputText value="#{groupBean.name}" />
+			      						</div>
+			      					</div>
+			      					
+			      				</div>
+			      				
+			      				<div class="form-control col-1-1 mobile-col-1-1">
+                                	<h:commandButton value="Create" styleClass="button" action="#{groupBean.save(true)}" />
+                                	<h:commandButton value="Cancel" styleClass="button" action="#{groupBean.cancel}" />
+                                </div>
     	
     						</h:form>
 					    	

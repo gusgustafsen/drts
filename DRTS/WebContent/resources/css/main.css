@@ -630,6 +630,53 @@ textarea
     min-height: 100px;   
 }
 
+fieldset
+{
+    border: none;
+    margin: 0 0 10px;
+    padding: 0;
+}
+
+fieldset legend
+{
+    font-family: "News Cycle", Arial, Tahoma, sans-serif;
+    font-size: 1em;
+    font-weight: bold;   
+}  
+
+fieldset input[type="checkbox"]
+{
+    margin: 0;
+    padding: 0;
+    position: relative;
+    top: -1px;
+    vertical-align: middle;
+    float: none;
+}
+
+fieldset label
+{
+    clear: none;
+    float: none;
+    margin: 0 10px 0 0;
+    font-weight: normal;
+    padding: 0;
+}
+
+fieldset table,
+fieldset table tbody,
+fieldset table thead,
+fieldset table tr,
+fieldset table td
+{
+    border: none;
+}
+
+fieldset table td
+{
+	width: 120px;
+}
+
 .form-wrapper
 {
     float: left;

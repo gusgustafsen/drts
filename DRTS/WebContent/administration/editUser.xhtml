@@ -27,12 +27,12 @@
     	<div id="content-wrapper">
             <div class="grid">
                 <div id="breadcrumb" class="col-1-1 mobile-col-1-1">
-                    <h:link value="Home" outcome="#{userSession.homePage}" /> » Create Account
+                    <h:link value="Home" outcome="#{userSession.homePage}" /> » Edit User
                 </div>
                 <section class="col-1-1 mobile-col-1-1">
                     <header id="content-header" class="col-1-1 mobile-col-1-1">
                         <span class="content-header-box">
-                            <h1>Create New Account</h1>
+                            <h1><h:outputText value="#{userBean.firstName} #{userBean.lastName}" /></h1>
                         </span>
                     </header>
                     <div id="main-content" class="col-1-1 mobile-col-1-1">
@@ -57,7 +57,7 @@
                                         </ul>
                                         <div id="information">
 			      							<h:outputLabel value="ID"/>
-			      							<h:inputText value="#{userBean.id}" />
+			      							<h:outputText styleClass="form-text" value="#{userBean.id}" />
 			      							
 			      							<h:outputLabel value="First Name"/>
 			      							<h:inputText value="#{userBean.firstName}" />
@@ -89,7 +89,7 @@
 			      				</div>
 			      				
 			      				<div class="form-control col-1-1 mobile-col-1-1">
-                                	<h:commandButton value="Create" styleClass="button" action="#{userBean.save(true)}" />
+                                	<h:commandButton value="Save" styleClass="button" action="#{userBean.save(false)}" />
                                 	<h:commandButton value="Cancel" styleClass="button" action="#{userBean.cancel}" />
                                 </div>
     	

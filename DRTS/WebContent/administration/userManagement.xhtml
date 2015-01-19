@@ -27,7 +27,7 @@
     	<div id="content-wrapper">
             <div class="grid">
                 <div id="breadcrumb" class="col-1-1 mobile-col-1-1">
-                    <h:link value="Home" outcome="#{userSession.user.homePage}" /> » User Management
+                    <h:link value="Home" outcome="#{userSession.homePage}" /> » User Management
                 </div>
                 <section class="col-1-1 mobile-col-1-1">
                     <header id="content-header" class="col-1-1 mobile-col-1-1">
@@ -47,6 +47,43 @@
       								eros. Vestibulum id purus sit amet risus dapibus elementum. In nulla elit, convallis et quam a, viverra 
       								dapibus justo.
       							</p>
+      							
+      							<h:panelGroup rendered="#{not empty adminBean.users}">
+					      		
+						      		<h:dataTable styleClass="drtsTable" value="#{adminBean.users}" var="user">
+						      		
+						      			<h:column>
+						      				<f:facet name="header">Username</f:facet>
+						      				<h:outputText value="#{user.id}" />
+						      			</h:column>
+						      			
+						      			<h:column>
+						      				<f:facet name="header">Name</f:facet>
+						      				<h:outputText value="#{user.firstName} #{user.lastName}" />
+						      			</h:column>
+						      			
+						      			<h:column>
+						      				<f:facet name="header">Email Address</f:facet>
+						      				<h:outputText value="#{user.email}" />
+						      			</h:column>
+						      			
+						      			<h:column>
+						      				<f:facet name="header">Groups</f:facet>
+						      				<h:outputText value="#{adminBean.getUserGroups(user.id)}" />
+						      			</h:column>
+						      			
+						      			<h:column>
+						      				<f:facet name="header"></f:facet>
+						      				<h:commandLink action="#{adminBean.goToEditUser(user)}" value="Edit" />
+						      			</h:column>
+						      		
+						      		</h:dataTable>
+						      		
+								</h:panelGroup>
+								
+								<h:panelGroup rendered="#{empty adminBean.users}">
+									<p>There are no users</p>
+								</h:panelGroup>
     	
     						</h:form>
 					    	

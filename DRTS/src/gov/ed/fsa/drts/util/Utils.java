@@ -1,54 +1,53 @@
 package gov.ed.fsa.drts.util;
 
-import gov.ed.fsa.drts.object.DRTSGroup;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.activiti.engine.identity.Group;
+import org.activiti.engine.IdentityService;
+import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.ProcessEngines;
+import org.activiti.engine.identity.User;
 import org.apache.commons.lang3.StringUtils;
 
 public class Utils {
 
-	public static List<DRTSGroup> convertActivitiGroups(List<Group> activiti_groups)
-	{
-		List<DRTSGroup> result = null;
-		
-		if(activiti_groups != null && activiti_groups.size() > 0)
-		{
-			result = new ArrayList<DRTSGroup>();
-			
-			for(Group activiti_group : activiti_groups)
-			{
-				result.add(new DRTSGroup(activiti_group));
-			}
-		}
-		
-		return result;
-	}
+//	public static List<DRTSGroup> convertActivitiGroups(List<Group> activiti_groups)
+//	{
+//		List<DRTSGroup> result = null;
+//		
+//		if(activiti_groups != null && activiti_groups.size() > 0)
+//		{
+//			result = new ArrayList<DRTSGroup>();
+//			
+//			for(Group activiti_group : activiti_groups)
+//			{
+//				result.add(new DRTSGroup(activiti_group));
+//			}
+//		}
+//		
+//		return result;
+//	}
 	
-	public static String getUserHomePage(List<DRTSGroup> user_groups)
+	public static String getUserHomePage(String user_id)
 	{
-		if(isUserInGroup(user_groups, ApplicationProperties.GROUP_ADMIN.getStringValue()) == true)
+		if(isUserInGroup(user_id, ApplicationProperties.GROUP_ADMIN.getStringValue()) == true)
 		{
 			return ApplicationProperties.HOME_PAGE_ADMIN.getStringValue();
 		}
-		else if(isUserInGroup(user_groups, ApplicationProperties.GROUP_DRT.getStringValue()) == true)
+		else if(isUserInGroup(user_id, ApplicationProperties.GROUP_DRT.getStringValue()) == true)
 		{
 			return ApplicationProperties.HOME_PAGE_DRT.getStringValue();
 		}
-		else if(isUserInGroup(user_groups, ApplicationProperties.GROUP_REPORTER.getStringValue()) == true)
+		else if(isUserInGroup(user_id, ApplicationProperties.GROUP_REPORTER.getStringValue()) == true)
 		{
 			return ApplicationProperties.HOME_PAGE_REPORTER.getStringValue();
 		}
-		else if(isUserInGroup(user_groups, ApplicationProperties.GROUP_REQUESTOR.getStringValue()) == true)
+		else if(isUserInGroup(user_id, ApplicationProperties.GROUP_REQUESTOR.getStringValue()) == true)
 		{
 			return ApplicationProperties.HOME_PAGE_REQUESTOR.getStringValue();
 		}
-		else if(isUserInGroup(user_groups, ApplicationProperties.GROUP_SME.getStringValue()) == true)
+		else if(isUserInGroup(user_id, ApplicationProperties.GROUP_SME.getStringValue()) == true)
 		{
 			return ApplicationProperties.HOME_PAGE_SME.getStringValue();
 		}
@@ -106,16 +105,15 @@ public class Utils {
 		return item;
 	}
 
-	public static boolean isUserInGroup(List<DRTSGroup> user_groups, String group_name)
+	public static boolean isUserInGroup(String user_id, String group_name)
 	{
-		DRTSGroup group = null;
-		int index = -1;
+		ProcessEngine process_engine = ProcessEngines.getDefaultProcessEngine();
+		IdentityService identity_service = process_engine.getIdentityService();
+		User user = null;
 		
-		group = new DRTSGroup(group_name, null);
+		user = identity_service.createUserQuery().userId(user_id).memberOfGroup(group_name).singleResult();
 		
-		index = user_groups.indexOf(group);
-		
-		if(index != -1)
+		if(user != null)
 		{
 			return true;
 		}

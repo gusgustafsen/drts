@@ -18,21 +18,21 @@
     
     </h:head>
     
-    <h:body class="section-three">
+    <h:body class="section-five">
     
     	<ui:include src="#{root}includes/header.xhtml">
-    		<ui:param name="active" value="3" />
+    		<ui:param name="active" value="5" />
     	</ui:include>
     	
     	<div id="content-wrapper">
             <div class="grid">
                 <div id="breadcrumb" class="col-1-1 mobile-col-1-1">
-                    <h:link value="Home" outcome="#{userSession.homePage}" /> » Search Requests
+                    <h:link value="Home" outcome="#{userSession.homePage}" /> » Group Management
                 </div>
                 <section class="col-1-1 mobile-col-1-1">
                     <header id="content-header" class="col-1-1 mobile-col-1-1">
                         <span class="content-header-box">
-                            <h1>Search Requests</h1>
+                            <h1>Group Management</h1>
                         </span>
                     </header>
                     <div id="main-content" class="col-1-1 mobile-col-1-1">
@@ -47,6 +47,28 @@
       								eros. Vestibulum id purus sit amet risus dapibus elementum. In nulla elit, convallis et quam a, viverra 
       								dapibus justo.
       							</p>
+      							
+      							<h:panelGroup rendered="#{not empty adminBean.groups}">
+					      		
+						      		<h:dataTable styleClass="drtsTable" value="#{adminBean.groups}" var="group">
+						      		
+						      			<h:column>
+						      				<f:facet name="header">Username</f:facet>
+						      				<h:outputText value="#{group.name}" />
+						      			</h:column>
+						      			
+						      			<h:column>
+						      				<f:facet name="header"></f:facet>
+						      				<h:commandLink action="#{adminBean.goToEditGroup(group)}" value="Edit" />
+						      			</h:column>
+						      		
+						      		</h:dataTable>
+						      		
+								</h:panelGroup>
+								
+								<h:panelGroup rendered="#{empty adminBean.groups}">
+									<p>There are no groups</p>
+								</h:panelGroup>
     	
     						</h:form>
 					    	

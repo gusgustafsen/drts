@@ -32,10 +32,7 @@ public class RequestTable extends PageUtil implements Serializable {
 	private static final Logger logger = Logger.getLogger(RequestTable.class);
 
 	private transient ProcessEngine process_engine = null;
-//	private transient TaskService task_service = null;
 	private transient IdentityService identity_service = null;
-//	private transient RuntimeService runtime_service = null;
-//	private transient ManagementService management_service = null;
 	
 	private int total_rows;
     private int first_row;
@@ -60,33 +57,12 @@ public class RequestTable extends PageUtil implements Serializable {
 		
 		if(this.process_engine != null)
 		{
-//			this.task_service = this.process_engine.getTaskService();
-//			
-//			if(this.task_service == null)
-//			{
-//				// TODO handle error
-//			}
-			
 			this.identity_service = this.process_engine.getIdentityService();
 			
 			if(this.identity_service == null)
 			{
 				// TODO handle error
 			}
-			
-//			this.runtime_service = this.process_engine.getRuntimeService();
-//			
-//			if(this.runtime_service == null)
-//			{
-//				// TODO handle error
-//			}
-//			
-//			this.management_service = this.process_engine.getManagementService();
-//			
-//			if(this.management_service == null)
-//			{
-//				// TODO handle error
-//			}
 		}
 		else
 		{
