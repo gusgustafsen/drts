@@ -52,6 +52,13 @@ public class DataLayer {
 	
 	private static final String QUERY_SELECT_ALL_DATA_REQUESTS_COUNT = "SELECT COUNT(*) FROM DRTS_HISTORY";
 	
+	private static final String QUERY_UPDATE_DATA_REQUEST = "UPDATE DRTS_HISTORY SET "
+															+ "proc_inst_id = ?, candidate_group = ?, assignee = ?, request_type = ?, request_status = ?, request_iteration = ?, "
+															+ "request_due_date = ?, request_urgent = ?, request_related_requests = ?, request_topic_keywords = ?, request_purpose = ?, "
+															+ "request_special_considerations = ?, request_description = ?, requestor_name = ?, requestor_organization = ?, requestor_phone = ?, requestor_email = ?, "
+															+ "receiver_name = ?, receiver_email = ?"
+															+ "WHERE request_number = ?";
+	
 	private static final String QUERY_UPDATE_DATA_REQUEST_ASSIGNED = "UPDATE DRTS_HISTORY SET candidate_group = ?, assignee = ?, request_status = ?, assigned_sme = ?, assigned_to_sme = SYSDATE, admin_comments = ? WHERE request_number = ?";
 	
 	private static final String QUERY_UPDATE_DATA_REQUEST_REJECTED_BY_ADMIN = "UPDATE DRTS_HISTORY SET candidate_group = ?, assignee = ?, request_status = ?, admin_comments = ? WHERE request_number = ?";
@@ -647,6 +654,80 @@ public class DataLayer {
 		}
 					
 		return count;
+	}
+	
+	public boolean updateDataRequest(String request_id, Map<String, Object> request_variables, String process_instance_id, String candidate_group, String assignee)
+		throws Exception
+	{
+		boolean result = false;
+		Connection oracle_connection = null;
+		int sql_result = 0;
+		
+		try 
+		{
+			oracle_connection = OracleFactory.createConnection();
+			
+			PreparedStatement prepared_statement = oracle_connection.prepareStatement(QUERY_UPDATE_DATA_REQUEST);
+			
+			prepared_statement.setString(1, process_instance_id);
+			prepared_statement.setString(2, candidate_group);
+			prepared_statement.setString(3, assignee);
+			prepared_statement.setString(4, (String) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_TYPE.getStringValue()));
+			prepared_statement.setString(5, (String) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_STATUS.getStringValue()));
+			prepared_statement.setInt(6, (Integer) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_ITERATION.getStringValue()));
+			prepared_statement.setTimestamp(7, new Timestamp(((Date) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_DUE_DATE.getStringValue())).getTime()));
+			prepared_statement.setString(8, ((Boolean) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_URGENT.getStringValue())).toString());
+			prepared_statement.setString(9, (String) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_RELATED_REQUESTS.getStringValue()));
+			prepared_statement.setString(10, (String) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_TOPIC_KEYWORDS.getStringValue()));
+			prepared_statement.setString(11, (String) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_PURPOSE.getStringValue()));
+			prepared_statement.setString(12, (String) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_SPECIAL_CONSIDERATIONS_ISSUES.getStringValue()));
+			prepared_statement.setString(13, (String) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_DESCRIPTION.getStringValue()));
+			prepared_statement.setString(14, (String) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_REQUESTOR_NAME.getStringValue()));
+			prepared_statement.setString(15, (String) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_REQUESTOR_ORGANIZATION.getStringValue()));
+			prepared_statement.setString(16, (String) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_REQUESTOR_PHONE.getStringValue()));
+			prepared_statement.setString(17, (String) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_REQUESTOR_EMAIL.getStringValue()));
+			prepared_statement.setString(18, (String) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_RECEIVER_NAME.getStringValue()));
+			prepared_statement.setString(19, (String) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_RECEIVER_EMAIL.getStringValue()));
+			prepared_statement.setString(20, request_id);
+			
+			sql_result = prepared_statement.executeUpdate();
+			
+			if(sql_result == 1)
+			{
+				result = true;
+			}
+			else
+			{
+				logger.error("update statement did not update exactly one row. Updated: " + sql_result);
+				throw new Exception();
+			}
+		}
+		catch(SQLException sqle) 
+		{
+			logger.error("A SQL exception occured in updateDataRequest().", sqle);
+			throw sqle;
+		} 
+		catch(Exception e) 
+		{
+			logger.error("An exception occured in updateDataRequest().", e);
+			throw e;
+		}
+		finally
+		{
+			try 
+			{
+				if(oracle_connection != null)
+				{
+					oracle_connection.close();
+				}
+			}
+			catch(SQLException sqle) 
+			{
+				logger.error("A SQL exception occured while trying to close the connection in updateDataRequest().", sqle);
+			}
+		}
+		
+		return result;
 	}
 	
 	public boolean updateDataRequestAssigned(String assigned_sme, String admin_comments, String request_number)

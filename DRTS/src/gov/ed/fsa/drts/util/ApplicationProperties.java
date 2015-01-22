@@ -178,6 +178,8 @@ public enum ApplicationProperties {
 	
 	DATA_REQUEST_FIELD_SME_COMMENTS(true, false),
 	
+	DATA_REQUEST_STATUS_DRAFTED(true, false),
+	
 	DATA_REQUEST_STATUS_PENDING(true, false),
 	
 	DATA_REQUEST_STATUS_ASSIGNED_TO_SME(true, false),

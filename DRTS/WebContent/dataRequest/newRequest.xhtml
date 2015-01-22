@@ -38,7 +38,7 @@
                     <div id="main-content" class="col-1-1 mobile-col-1-1">
                         <section class="col-1-1 mobile-col-1-1">
                         
-                        	<h:form styleClass="col-1-1 mobile-col-1-1">
+                        	<h:form id="create-form" styleClass="col-1-1 mobile-col-1-1" enctype="multipart/form-data">
                         	
                         		<p>
       								Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla volutpat dui at metus ultrices, at 
@@ -55,6 +55,7 @@
                                             <li><a href="#general">General</a></li>
                                             <li><a href="#requestor">Requestor</a></li>
                                             <li><a href="#receiver">Receiver</a></li>
+                                            <li><a href="#attachments">Attachments</a></li>
                                         </ul>
                                         <div id="general">
 											<h:outputLabel value="Iteration"/>
@@ -116,12 +117,15 @@
                                         	<h:outputLabel value="Receiver Email"/>
                                             <h:inputText value="#{dataRequest.receiverEmail}" />
                                         </div>
+                                        <div id="attachments">
+                                        </div>
                                     </div>
                                 
                                 </div>
                                 
                                 <div class="form-control col-1-1 mobile-col-1-1">
                                 	<h:commandButton value="Create" styleClass="button" action="#{dataRequest.start}" />
+                                	<h:commandButton value="Save as Draft" styleClass="button" action="#{dataRequest.saveAsDraft}" />
                                 </div>
 								
 					    	</h:form>

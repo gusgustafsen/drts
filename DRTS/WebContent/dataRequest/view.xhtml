@@ -55,8 +55,10 @@
                                             <li><a href="#general">General</a></li>
                                             <li><a href="#requestor">Requestor</a></li>
                                             <li><a href="#receiver">Receiver</a></li>
-                                            <li><a href="#assignment">Assignment</a></li>
-                                            <li><a href="#resolution">Resolution</a></li>
+                                            <h:panelGroup rendered="#{dataRequest.statusDrafted eq false}">
+	                                            <li><a href="#assignment">Assignment</a></li>
+	                                            <li><a href="#resolution">Resolution</a></li>
+                                            </h:panelGroup>
                                         </ul>
                                         <div id="general">
                                             <h:outputLabel value="ID"/>
@@ -74,73 +76,100 @@
 								      		</h:outputText>
 								      		
 								      		<h:outputLabel value="Type"/>
-								      		<h:outputText styleClass="form-text" value="#{dataRequest.type}" />
+								      		<h:outputText styleClass="form-text" value="#{dataRequest.type}" rendered="#{dataRequest.statusDrafted eq false}" />
+								      		<h:selectOneMenu value="#{dataRequest.type}" rendered="#{dataRequest.statusDrafted eq true}">
+									   			<f:selectItems value="#{dataRequest.types}" />
+									   		</h:selectOneMenu>
                                             
                                             <h:outputLabel value="Due Date"/>
-                                            <h:outputText styleClass="form-text" value="#{dataRequest.dueDate}">
+                                            <h:outputText styleClass="form-text" value="#{dataRequest.dueDate}" rendered="#{dataRequest.statusDrafted eq false}">
 								      			<f:converter converterId="defaultDateConverter" />
 								      		</h:outputText>
+								      		<h:inputText styleClass="datepicker" value="#{dataRequest.dueDate}" rendered="#{dataRequest.statusDrafted eq true}">
+                                            	<f:converter converterId="defaultDateConverter" />
+                                            </h:inputText>
                                             
                                             <h:outputLabel value="Urgency Flag"/>
-                                            <h:outputText styleClass="form-text" value="#{dataRequest.urgent}" />
+                                            <h:outputText styleClass="form-text" value="#{dataRequest.urgent}" rendered="#{dataRequest.statusDrafted eq false}" />
+                                            <h:selectBooleanCheckbox value="#{dataRequest.urgent}" rendered="#{dataRequest.statusDrafted eq true}" />
                                             
                                             <h:outputLabel value="Related Requests"/>
-                                            <h:outputText styleClass="form-text" value="#{dataRequest.relatedRequests}" />
+                                            <h:outputText styleClass="form-text" value="#{dataRequest.relatedRequests}" rendered="#{dataRequest.statusDrafted eq false}" />
+                                            <h:inputTextarea value="#{dataRequest.relatedRequests}" rendered="#{dataRequest.statusDrafted eq true}" />
 
 											<h:outputLabel value="Topic/Keywords"/>
-                                            <h:outputText styleClass="form-text" value="#{dataRequest.topicKeywords}" />
+                                            <h:outputText styleClass="form-text" value="#{dataRequest.topicKeywords}" rendered="#{dataRequest.statusDrafted eq false}" />
+                                            <h:inputTextarea value="#{dataRequest.topicKeywords}" rendered="#{dataRequest.statusDrafted eq true}" />
 
 											<h:outputLabel value="Description"/>
-                                            <h:outputText styleClass="form-text" value="#{dataRequest.description}" />
+                                            <h:outputText styleClass="form-text" value="#{dataRequest.description}" rendered="#{dataRequest.statusDrafted eq false}" />
+                                            <h:inputTextarea value="#{dataRequest.description}" rendered="#{dataRequest.statusDrafted eq true}" />
 
                                             <h:outputLabel value="Purpose"/>
-                                            <h:outputText styleClass="form-text" value="#{dataRequest.purpose}" />
+                                            <h:outputText styleClass="form-text" value="#{dataRequest.purpose}" rendered="#{dataRequest.statusDrafted eq false}" />
+                                            <h:inputTextarea value="#{dataRequest.purpose}" rendered="#{dataRequest.statusDrafted eq true}" />
 
                                             <h:outputLabel value="Special Considerations/Issues"/>
-                                            <h:outputText styleClass="form-text" value="#{dataRequest.specialConsiderationsIssues}" />
+                                            <h:outputText styleClass="form-text" value="#{dataRequest.specialConsiderationsIssues}" rendered="#{dataRequest.statusDrafted eq false}" />
+                                            <h:inputTextarea value="#{dataRequest.specialConsiderationsIssues}" rendered="#{dataRequest.statusDrafted eq true}" />
                                         </div>
                                         <div id="requestor">
                                             <h:outputLabel value="Requestor"/>
-                                            <h:outputText styleClass="form-text" value="#{dataRequest.requestorName}" />
+                                            <h:outputText styleClass="form-text" value="#{dataRequest.requestorName}" rendered="#{dataRequest.statusDrafted eq false}" />
+                                            <h:inputText value="#{dataRequest.requestorName}" rendered="#{dataRequest.statusDrafted eq true}" />
                                             
                                         	<h:outputLabel value="Requestor Organization"/>
-                                            <h:outputText styleClass="form-text" value="#{dataRequest.requestorOrganization}" />
+                                            <h:outputText styleClass="form-text" value="#{dataRequest.requestorOrganization}" rendered="#{dataRequest.statusDrafted eq false}" />
+                                            <h:inputText value="#{dataRequest.requestorOrganization}" rendered="#{dataRequest.statusDrafted eq true}" />
                                             
                                         	<h:outputLabel value="Requestor Phone"/>
-                                            <h:outputText styleClass="form-text" value="#{dataRequest.requestorPhone}" />
+                                            <h:outputText styleClass="form-text" value="#{dataRequest.requestorPhone}" rendered="#{dataRequest.statusDrafted eq false}" />
+                                            <h:inputText value="#{dataRequest.requestorPhone}" rendered="#{dataRequest.statusDrafted eq true}" />
                                             
                                         	<h:outputLabel value="Requestor Email"/>
-                                            <h:outputText styleClass="form-text" value="#{dataRequest.requestorEmail}" />
+                                            <h:outputText styleClass="form-text" value="#{dataRequest.requestorEmail}" rendered="#{dataRequest.statusDrafted eq false}" />
+                                            <h:inputText value="#{dataRequest.requestorEmail}" rendered="#{dataRequest.statusDrafted eq true}" />
                                         </div>
                                         <div id="receiver">
                                             <h:outputLabel value="Receiver"/>
-                                            <h:outputText styleClass="form-text" value="#{dataRequest.receiverName}" />
+                                            <h:outputText styleClass="form-text" value="#{dataRequest.receiverName}" rendered="#{dataRequest.statusDrafted eq false}" />
+                                            <h:inputText value="#{dataRequest.receiverName}" rendered="#{dataRequest.statusDrafted eq true}" />
                                             
                                         	<h:outputLabel value="Receiver Email"/>
-                                            <h:outputText styleClass="form-text" value="#{dataRequest.receiverEmail}" />
+                                            <h:outputText styleClass="form-text" value="#{dataRequest.receiverEmail}" rendered="#{dataRequest.statusDrafted eq false}" />
+                                            <h:inputText value="#{dataRequest.receiverEmail}" rendered="#{dataRequest.statusDrafted eq true}" />
                                         </div>
-                                        <div id="assignment">
-                                            <h:outputLabel value="Date Assigned to SME"/>
-                                            <h:outputText styleClass="form-text" value="#{dataRequest.dateAssignedToSme}">
-                                            	<f:converter converterId="defaultDateTimeConverter" />
-                                            </h:outputText>
-
-                                            <h:outputLabel value="Assigned To"/>
-                                            <h:outputText styleClass="form-text" value="#{dataRequest.assignedSme}" />
-                                            
-                                            <h:outputLabel value="Comments"/>
-                                            <h:outputText styleClass="form-text" value="#{dataRequest.administratorComments}" />
-                                        </div>
-                                        <div id="resolution">
-                                            <h:outputLabel value="Resolution"/>
-                                            <h:outputText styleClass="form-text" value="#{dataRequest.resolution}" />
-                                            
-                                            <h:outputLabel value="Comments"/>
-                                            <h:outputText styleClass="form-text" value="#{dataRequest.smeComments}" />
-                                        </div>
+                                        <h:panelGroup rendered="#{dataRequest.statusDrafted eq false}">
+	                                        <div id="assignment">
+	                                            <h:outputLabel value="Date Assigned to SME"/>
+	                                            <h:outputText styleClass="form-text" value="#{dataRequest.dateAssignedToSme}">
+	                                            	<f:converter converterId="defaultDateTimeConverter" />
+	                                            </h:outputText>
+	
+	                                            <h:outputLabel value="Assigned To"/>
+	                                            <h:outputText styleClass="form-text" value="#{dataRequest.assignedSme}" />
+	                                            
+	                                            <h:outputLabel value="Comments"/>
+	                                            <h:outputText styleClass="form-text" value="#{dataRequest.administratorComments}" />
+	                                        </div>
+	                                        <div id="resolution">
+	                                            <h:outputLabel value="Resolution"/>
+	                                            <h:outputText styleClass="form-text" value="#{dataRequest.resolution}" />
+	                                            
+	                                            <h:outputLabel value="Comments"/>
+	                                            <h:outputText styleClass="form-text" value="#{dataRequest.smeComments}" />
+	                                        </div>
+                                        </h:panelGroup>
                                     </div>
                         	
                         		</div>
+                        		
+                        		<h:panelGroup rendered="#{dataRequest.statusDrafted}">
+	                        		<div class="form-control col-1-1 mobile-col-1-1">
+	                                	<h:commandButton value="Submit" styleClass="button" action="#{dataRequest.updateDraft(true)}" />
+	                                	<h:commandButton value="Save as Draft" styleClass="button" action="#{dataRequest.updateDraft(false)}" />
+	                                </div>
+                                </h:panelGroup>
     	
     						</h:form>
 					    	

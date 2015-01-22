@@ -20,6 +20,7 @@ import javax.annotation.PreDestroy;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+//import javax.servlet.http.Part;
 
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ProcessEngine;
@@ -47,7 +48,7 @@ public class DataRequestBean extends PageUtil implements Serializable {
 	
 	private String id = UUID.randomUUID().toString();
 	private int iteration = 1;
-	private String status = ApplicationProperties.DATA_REQUEST_STATUS_PENDING.getStringValue();
+	private String status = ApplicationProperties.DATA_REQUEST_STATUS_DRAFTED.getStringValue();
 	private Date created_date_time = new Date();
 	private String type;
 	private Date due_date = null;
@@ -73,6 +74,8 @@ public class DataRequestBean extends PageUtil implements Serializable {
 	private Date date_resolved = new Date();
 	private String resolution = null;
 	private String sme_comments = null;
+	
+//	private Part attachment1 = null;
 	
 	private Map<String, String> email_replace_tokens = new HashMap<String, String>();
 	
@@ -115,11 +118,10 @@ public class DataRequestBean extends PageUtil implements Serializable {
 		this.current_data_request = (DataRequest) FacesContext.getCurrentInstance().getExternalContext().getFlash().get("drtsDataRequest");
 	}
 
-	public String start()
+	public String saveAsDraft()
 	{
 		Map<String, Object> form_variables = new HashMap<String, Object>();
 		
-		// TODO maybe remove, other then the needed fields in emails.
 		form_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_ID.getStringValue(), this.id);
 		form_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_ITERATION.getStringValue(), this.iteration);
 		form_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_DUE_DATE.getStringValue(), this.due_date);
@@ -139,6 +141,125 @@ public class DataRequestBean extends PageUtil implements Serializable {
 		form_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_RECEIVER_NAME.getStringValue(), this.receiver_name);
 		form_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_RECEIVER_EMAIL.getStringValue(), this.receiver_email);
 		form_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_STATUS.getStringValue(), this.status);
+		
+//		System.out.println("att1: " + this.attachment1);
+//		if(this.attachment1 != null)
+//		{
+//			System.out.println("att1 name: " + this.attachment1.getName());
+//			System.out.println("att1 content type: " + this.attachment1.getContentType());
+//			System.out.println("att1 size: " + this.attachment1.getSize());
+//		}
+		
+		try
+		{
+			boolean result = DataLayer.getInstance().insertDataRequest(form_variables, null, null, null);
+			
+			if(result == false)
+			{
+				// TODO handle
+				
+				logger.error("did not insert a new request");
+			}
+		}
+		catch(Exception e)
+		{
+			// TODO handle error
+			logger.error(e);
+		}
+		
+		return userSession.getHomePage() + "?faces-redirect=true";
+	}
+	
+	public String updateDraft(boolean start)
+	{
+		Map<String, Object> form_variables = new HashMap<String, Object>();
+		String process_instance_id = null;
+
+		form_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_ITERATION.getStringValue(), this.iteration);
+		form_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_DUE_DATE.getStringValue(), this.due_date);
+		form_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_RELATED_REQUESTS.getStringValue(), this.related_requests);
+		form_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_TOPIC_KEYWORDS.getStringValue(), this.topic_keywords);
+		form_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_PURPOSE.getStringValue(), this.purpose);
+		form_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_SPECIAL_CONSIDERATIONS_ISSUES.getStringValue(), this.special_considerations_issues);
+		form_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_TYPE.getStringValue(), this.type);
+		form_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_DESCRIPTION.getStringValue(), this.description);
+		form_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_URGENT.getStringValue(), this.urgent);
+		form_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_REQUESTOR_NAME.getStringValue(), this.requestor_name);
+		form_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_REQUESTOR_ORGANIZATION.getStringValue(), this.requestor_organization);
+		form_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_REQUESTOR_PHONE.getStringValue(), this.requestor_phone);
+		form_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_REQUESTOR_EMAIL.getStringValue(), this.requestor_email);
+		form_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_RECEIVER_NAME.getStringValue(), this.receiver_name);
+		form_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_RECEIVER_EMAIL.getStringValue(), this.receiver_email);
+		
+		if(start == true)
+		{
+			form_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_STATUS.getStringValue(), ApplicationProperties.DATA_REQUEST_STATUS_PENDING.getStringValue());
+			
+			updateEmailReplacementValues();
+			
+			form_variables.put(ApplicationProperties.EMAIL_LABEL_NOTIFY_ADMIN_DRT_TO.getStringValue(), ApplicationProperties.EMAIL_NOTIFY_ADMIN_DRT_TO.getStringValue());
+			form_variables.put(ApplicationProperties.EMAIL_LABEL_NOTIFY_ADMIN_DRT_CC.getStringValue(), ApplicationProperties.EMAIL_NOTIFY_ADMIN_DRT_CC.getStringValue());
+			form_variables.put(ApplicationProperties.EMAIL_LABEL_NOTIFY_ADMIN_DRT_FROM.getStringValue(), ApplicationProperties.EMAIL_NOTIFY_ADMIN_DRT_FROM.getStringValue());
+			form_variables.put(ApplicationProperties.EMAIL_LABEL_NOTIFY_ADMIN_DRT_SUBJECT.getStringValue(), Utils.replaceAll(ApplicationProperties.EMAIL_NOTIFY_ADMIN_DRT_SUBJECT.getStringValue(), this.email_replace_tokens));
+			form_variables.put(ApplicationProperties.EMAIL_LABEL_NOTIFY_ADMIN_DRT_CONTENT.getStringValue(), Utils.replaceAll(ApplicationProperties.EMAIL_NOTIFY_ADMIN_DRT_CONTENT.getStringValue(), this.email_replace_tokens));
+			
+			form_variables.put(ApplicationProperties.EMAIL_LABEL_NOTIFY_REQUESTOR_TO.getStringValue(), this.requestor_email);
+			form_variables.put(ApplicationProperties.EMAIL_LABEL_NOTIFY_REQUESTOR_CC.getStringValue(), ApplicationProperties.EMAIL_NOTIFY_REQUESTOR_CC.getStringValue());
+			form_variables.put(ApplicationProperties.EMAIL_LABEL_NOTIFY_REQUESTOR_FROM.getStringValue(), ApplicationProperties.EMAIL_NOTIFY_REQUESTOR_FROM.getStringValue());
+			form_variables.put(ApplicationProperties.EMAIL_LABEL_NOTIFY_REQUESTOR_SUBJECT.getStringValue(), Utils.replaceAll(ApplicationProperties.EMAIL_NOTIFY_REQUESTOR_SUBJECT.getStringValue(), this.email_replace_tokens));
+			form_variables.put(ApplicationProperties.EMAIL_LABEL_NOTIFY_REQUESTOR_CONTENT.getStringValue(), Utils.replaceAll(ApplicationProperties.EMAIL_NOTIFY_REQUESTOR_CONTENT.getStringValue(), this.email_replace_tokens));
+			
+			ProcessInstance started_process_instance = this.runtime_service.startProcessInstanceByKey(ApplicationProperties.PROCESS_ID_DATA_REQUEST.getStringValue(), form_variables);
+			process_instance_id = started_process_instance.getId();
+		}
+		else
+		{
+			form_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_STATUS.getStringValue(), ApplicationProperties.DATA_REQUEST_STATUS_DRAFTED.getStringValue());
+		}
+		
+		try
+		{
+			boolean result = DataLayer.getInstance().updateDataRequest(this.current_data_request.getId(), form_variables, process_instance_id, ApplicationProperties.GROUP_ADMIN.getStringValue(), null);
+			
+			if(result == false)
+			{
+				// TODO handle
+				
+				logger.error("did not update a request");
+			}
+		}
+		catch(Exception e)
+		{
+			// TODO handle error
+			logger.error(e);
+		}
+		
+		return userSession.getHomePage() + "?faces-redirect=true";
+	}
+	
+	public String start()
+	{
+		Map<String, Object> form_variables = new HashMap<String, Object>();
+		
+		form_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_ID.getStringValue(), this.id);
+		form_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_ITERATION.getStringValue(), this.iteration);
+		form_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_DUE_DATE.getStringValue(), this.due_date);
+		form_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_RELATED_REQUESTS.getStringValue(), this.related_requests);
+		form_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_TOPIC_KEYWORDS.getStringValue(), this.topic_keywords);
+		form_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_PURPOSE.getStringValue(), this.purpose);
+		form_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_SPECIAL_CONSIDERATIONS_ISSUES.getStringValue(), this.special_considerations_issues);
+		form_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_TYPE.getStringValue(), this.type);
+		form_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_DESCRIPTION.getStringValue(), this.description);
+		form_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_URGENT.getStringValue(), this.urgent);
+		form_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_CREATED_DATE_TIME.getStringValue(), this.created_date_time);
+		form_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_CREATED_BY.getStringValue(), this.userSession.getUser().getId());
+		form_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_REQUESTOR_NAME.getStringValue(), this.requestor_name);
+		form_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_REQUESTOR_ORGANIZATION.getStringValue(), this.requestor_organization);
+		form_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_REQUESTOR_PHONE.getStringValue(), this.requestor_phone);
+		form_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_REQUESTOR_EMAIL.getStringValue(), this.requestor_email);
+		form_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_RECEIVER_NAME.getStringValue(), this.receiver_name);
+		form_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_RECEIVER_EMAIL.getStringValue(), this.receiver_email);
+		form_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_STATUS.getStringValue(), ApplicationProperties.DATA_REQUEST_STATUS_PENDING.getStringValue());
 		
 		updateEmailReplacementValues();
 		
@@ -183,9 +304,6 @@ public class DataRequestBean extends PageUtil implements Serializable {
 		Map<String, Object> task_variables = new HashMap<String, Object>();
 		task_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_NEW_REQUEST_REJECTED.getStringValue(), false);
 		task_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_ASSIGNED_SME.getStringValue(), assigned_sme.getId());
-		task_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_ADMIN_COMMENTS.getStringValue(), this.administrator_comments);
-		task_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_ASSIGNED_SME_FULL_NAME.getStringValue(), assigned_sme.getFirstName() + " " + assigned_sme.getLastName());
-		task_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_STATUS.getStringValue(), ApplicationProperties.DATA_REQUEST_STATUS_ASSIGNED_TO_SME.getStringValue());
 		
 		updateEmailReplacementValues();
 		
@@ -221,8 +339,6 @@ public class DataRequestBean extends PageUtil implements Serializable {
 	{
 		Map<String, Object> task_variables = new HashMap<String, Object>();
 		task_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_NEW_REQUEST_REJECTED.getStringValue(), true);
-		task_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_ADMIN_COMMENTS.getStringValue(), this.administrator_comments);
-		task_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_STATUS.getStringValue(), ApplicationProperties.DATA_REQUEST_STATUS_REJECTED_BY_ADMIN.getStringValue());
 		
 		this.task_service.complete(this.current_data_request.getCurrentTaskId(), task_variables);
 		
@@ -250,8 +366,6 @@ public class DataRequestBean extends PageUtil implements Serializable {
 	{
 		Map<String, Object> task_variables = new HashMap<String, Object>();
 		task_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_REQUEST_REJECTED.getStringValue(), true);
-		task_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_SME_COMMENTS.getStringValue(), this.sme_comments);
-		task_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_STATUS.getStringValue(), ApplicationProperties.DATA_REQUEST_STATUS_REJECTED_BY_SME.getStringValue());
 		
 		this.task_service.complete(this.current_data_request.getCurrentTaskId(), task_variables);
 		
@@ -279,8 +393,6 @@ public class DataRequestBean extends PageUtil implements Serializable {
 	{
 		Map<String, Object> task_variables = new HashMap<String, Object>();
 		task_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_REQUEST_REJECTED.getStringValue(), false);
-		task_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_SME_COMMENTS.getStringValue(), this.sme_comments);
-		task_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_STATUS.getStringValue(), ApplicationProperties.DATA_REQUEST_STATUS_RESOLVED.getStringValue());
 		
 		updateEmailReplacementValues();
 		
@@ -411,6 +523,17 @@ public class DataRequestBean extends PageUtil implements Serializable {
 		return sb.toString();
 	}
 
+	public boolean getStatusDrafted()
+	{
+		if((this.userSession.getUser().getId().equalsIgnoreCase(this.current_data_request.getDrtsRequestor()) == true) && 
+				(this.current_data_request.getStatus().equalsIgnoreCase(ApplicationProperties.DATA_REQUEST_STATUS_DRAFTED.getStringValue()) == true))
+		{
+			return true;
+		}
+		
+		return false;
+	}
+	
 	@PreDestroy
 	private void destroy(){}
 	
@@ -673,4 +796,14 @@ public class DataRequestBean extends PageUtil implements Serializable {
 	{
 		this.sme_comments = sme_comments;
 	}
+
+//	public Part getAttachment1()
+//	{
+//		return this.attachment1;
+//	}
+//	
+//	public void setAttachment1(Part attachment1)
+//	{
+//		this.attachment1 = attachment1;
+//	}
 }

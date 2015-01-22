@@ -181,7 +181,7 @@
         <omgdi:waypoint x="649.0" y="450.0"></omgdi:waypoint>
         <omgdi:waypoint x="649.0" y="375.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="12.0" width="100.0" x="650.0" y="421.0"></omgdc:Bounds>
+          <omgdc:Bounds height="12.0" width="90.0" x="650.0" y="421.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="request_rejected" id="BPMNEdge_request_rejected">
