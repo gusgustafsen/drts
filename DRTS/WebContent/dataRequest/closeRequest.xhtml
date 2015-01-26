@@ -32,7 +32,7 @@
                 <section class="col-1-1 mobile-col-1-1">
                     <header id="content-header" class="col-1-1 mobile-col-1-1">
                         <span class="content-header-box">
-                            <h1>Complete Request</h1>
+                            <h1>Close Request</h1>
                         </span>
                     </header>
                     <div id="main-content" class="col-1-1 mobile-col-1-1">
@@ -55,10 +55,9 @@
                                             <li><a href="#general">General</a></li>
                                             <li><a href="#requestor">Requestor</a></li>
                                             <li><a href="#receiver">Receiver</a></li>
-                                            <h:panelGroup rendered="#{userSession.admin}">
-                                            	<li><a href="#assignment">Assignment</a></li>
-                                            </h:panelGroup>
+                                            <li><a href="#assignment">Assignment</a></li>
                                             <li><a href="#resolution">Resolution</a></li>
+                                            <li><a href="#validation">Validation</a></li>
                                         </ul>
                                         <div id="general">
                                             <h:outputLabel value="ID"/>
@@ -123,32 +122,30 @@
                                         	<h:outputLabel value="Receiver Email"/>
                                             <h:outputText styleClass="form-text" value="#{dataRequest.receiverEmail}" />
                                         </div>
-                                        <h:panelGroup rendered="#{userSession.admin}">
-	                                        <div id="assignment">
-	                                            <h:outputLabel value="Assigned To"/>
-	                                            <h:selectOneMenu value="#{dataRequest.assignedSme}">
-										   			<f:selectItems value="#{dataRequest.smes}" />
-										   		</h:selectOneMenu>
-	                                            
-	                                            <h:outputLabel value="Comments"/>
-	                                            <h:inputTextarea value="#{dataRequest.administratorComments}" />
-	                                        </div>
-                                        </h:panelGroup>
+                                        <div id="assignment">
+                                        	<h:outputLabel value="Assigned To"/>
+                                        	<h:outputText styleClass="form-text" value="#{dataRequest.assignedSme}" />
+	                                           
+	                                       	<h:outputLabel value="Comments"/>
+	                                       	<h:outputText styleClass="form-text" value="#{dataRequest.administratorComments}" />
+	                                  	</div>
                                         <div id="resolution">
                                             <h:outputLabel value="Resolution"/>
                                             <h:inputTextarea value="#{dataRequest.resolution}" />
                                             
                                             <h:outputLabel value="Comments"/>
-                                    		<h:inputTextarea value="#{dataRequest.smeComments}" />
+                                    		<h:outputText styleClass="form-text" value="#{dataRequest.smeComments}" />
+                                        </div>
+                                        <div id="validation">
+                                        	<h:outputLabel value="Assign To"/>
+                                            <h:outputText styleClass="form-text" value="#{dataRequest.assignedValidator}" />
                                         </div>
                                     </div>
                         	
                         		</div>
                                 
                                 <div class="form-control col-1-1 mobile-col-1-1">
-                                	<h:commandButton styleClass="button" value="Update" action="#{dataRequest.updateRequest(6)}" />
-                                	<h:commandButton styleClass="button" value="Resolve" action="#{dataRequest.updateRequest(7)}" />
-						      		<h:commandButton styleClass="button" value="Reject" action="#{dataRequest.updateRequest(8)}" />
+						      		<h:commandButton styleClass="button" value="Close" action="#{dataRequest.updateRequest(16)}" />
                                 </div>
     	
     						</h:form>

@@ -73,50 +73,52 @@
 								      		</h:outputText>
 								      		
 								      		<h:outputLabel value="Type"/>
-								      		<h:outputText styleClass="form-text" value="#{dataRequest.type}" />
+								      		<h:selectOneMenu value="#{dataRequest.type}">
+									   			<f:selectItems value="#{dataRequest.types}" />
+									   		</h:selectOneMenu>
                                             
                                             <h:outputLabel value="Due Date"/>
-                                            <h:outputText styleClass="form-text" value="#{dataRequest.dueDate}">
-								      			<f:converter converterId="defaultDateConverter" />
-								      		</h:outputText>
+                                            <h:inputText styleClass="datepicker" value="#{dataRequest.dueDate}">
+                                            	<f:converter converterId="defaultDateConverter" />
+                                            </h:inputText>
                                             
                                             <h:outputLabel value="Urgency Flag"/>
-                                            <h:outputText styleClass="form-text" value="#{dataRequest.urgent}" />
+                                            <h:selectBooleanCheckbox value="#{dataRequest.urgent}" />
                                             
                                             <h:outputLabel value="Related Requests"/>
-                                            <h:outputText styleClass="form-text" value="#{dataRequest.relatedRequests}" />
+                                            <h:inputTextarea value="#{dataRequest.relatedRequests}" />
 
 											<h:outputLabel value="Topic/Keywords"/>
-                                            <h:outputText styleClass="form-text" value="#{dataRequest.topicKeywords}" />
+                                            <h:inputTextarea value="#{dataRequest.topicKeywords}" />
 
 											<h:outputLabel value="Description"/>
-                                            <h:outputText styleClass="form-text" value="#{dataRequest.description}" />
+                                            <h:inputTextarea value="#{dataRequest.description}" />
 
                                             <h:outputLabel value="Purpose"/>
-                                            <h:outputText styleClass="form-text" value="#{dataRequest.purpose}" />
+                                            <h:inputTextarea value="#{dataRequest.purpose}" />
 
                                             <h:outputLabel value="Special Considerations/Issues"/>
-                                            <h:outputText styleClass="form-text" value="#{dataRequest.specialConsiderationsIssues}" />
+                                            <h:inputTextarea value="#{dataRequest.specialConsiderationsIssues}" />
                                         </div>
                                         <div id="requestor">
                                         	<h:outputLabel value="Requestor"/>
-                                            <h:outputText styleClass="form-text" value="#{dataRequest.requestorName}" />
+                                            <h:inputText value="#{dataRequest.requestorName}" />
                                             
                                         	<h:outputLabel value="Requestor Organization"/>
-                                            <h:outputText styleClass="form-text" value="#{dataRequest.requestorOrganization}" />
+                                            <h:inputText value="#{dataRequest.requestorOrganization}" />
                                             
                                         	<h:outputLabel value="Requestor Phone"/>
-                                            <h:outputText styleClass="form-text" value="#{dataRequest.requestorPhone}" />
+                                            <h:inputText value="#{dataRequest.requestorPhone}" />
                                             
                                         	<h:outputLabel value="Requestor Email"/>
-                                            <h:outputText styleClass="form-text" value="#{dataRequest.requestorEmail}" />
+                                            <h:inputText value="#{dataRequest.requestorEmail}" />
                                         </div>
                                         <div id="receiver">
                                         	<h:outputLabel value="Receiver"/>
-                                            <h:outputText styleClass="form-text" value="#{dataRequest.receiverName}" />
+                                            <h:inputText value="#{dataRequest.receiverName}" />
                                             
                                         	<h:outputLabel value="Receiver Email"/>
-                                            <h:outputText styleClass="form-text" value="#{dataRequest.receiverEmail}" />
+                                            <h:inputText value="#{dataRequest.receiverEmail}" />
                                         </div>
                                         <div id="assignment">
                                             <h:outputLabel value="Assign To"/>
@@ -132,8 +134,8 @@
                                 </div>
                                 
                                 <div class="form-control col-1-1 mobile-col-1-1">
-                                	<h:commandButton styleClass="button" value="Assign to SME" action="#{dataRequest.assignNewRequestToSME}" />
-						      		<h:commandButton styleClass="button" value="Reject" action="#{dataRequest.rejectNewRequest}" />
+                                	<h:commandButton styleClass="button" value="Update" action="#{dataRequest.updateRequest(4)}" />
+						      		<h:commandButton styleClass="button" value="Reject" action="#{dataRequest.updateRequest(5)}" />
                                 </div>
     	
     						</h:form>

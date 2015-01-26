@@ -12,23 +12,6 @@ import org.apache.commons.lang3.StringUtils;
 
 public class Utils {
 
-//	public static List<DRTSGroup> convertActivitiGroups(List<Group> activiti_groups)
-//	{
-//		List<DRTSGroup> result = null;
-//		
-//		if(activiti_groups != null && activiti_groups.size() > 0)
-//		{
-//			result = new ArrayList<DRTSGroup>();
-//			
-//			for(Group activiti_group : activiti_groups)
-//			{
-//				result.add(new DRTSGroup(activiti_group));
-//			}
-//		}
-//		
-//		return result;
-//	}
-	
 	public static String getUserHomePage(String user_id)
 	{
 		if(isUserInGroup(user_id, ApplicationProperties.GROUP_ADMIN.getStringValue()) == true)

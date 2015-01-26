@@ -1,7 +1,10 @@
 package gov.ed.fsa.drts.object;
 
+import gov.ed.fsa.drts.util.ApplicationProperties;
+
 import java.util.Calendar;
 import java.util.Date;
+import java.util.UUID;
 
 public class DataRequest {
 
@@ -37,9 +40,27 @@ public class DataRequest {
 	private String current_task_name = null;
 	private String current_task_form_key = null;
 	
+	private String candidate_group = null;
+	private String assignee = null;
+	
+	private String assigned_validator = null;
+	private Date date_assigned_to_validator = null;
+	private Date date_validated = null;
+	
+	private Date date_closed = null;
+	
 	private int display_id = 1;
 	
 	public DataRequest(){}
+	
+	public void initialize(String created_by)
+	{
+		this.id = UUID.randomUUID().toString();
+		this.iteration = 1;
+		this.created_date_time = new Date();
+		this.status = ApplicationProperties.DATA_REQUEST_STATUS_DRAFTED.getStringValue();
+		this.drts_requestor = created_by;
+	}
 	
 	public String getId()
 	{
@@ -338,5 +359,65 @@ public class DataRequest {
 	public void setDisplayId(int display_id)
 	{
 		this.display_id = display_id;
+	}
+
+	public String getCandidateGroup()
+	{
+	    return this.candidate_group;
+	}
+	
+	public void setCandidateGroup(String candidate_group)
+	{
+		this.candidate_group = candidate_group;
+	}
+	
+	public String getAssignee()
+	{
+	    return this.assignee;
+	}
+	
+	public void setAssignee(String assignee)
+	{
+		this.assignee = assignee;
+	}
+	
+	public String getAssignedValidator()
+	{
+		return assigned_validator;
+	}
+
+	public void setAssignedValidator(String assigned_validator)
+	{
+		this.assigned_validator = assigned_validator;
+	}
+
+	public Date getDateAssignedToValidator()
+	{
+		return date_assigned_to_validator;
+	}
+
+	public void setDateAssignedToValidator(Date date_assigned_to_validator)
+	{
+		this.date_assigned_to_validator = date_assigned_to_validator;
+	}
+	
+	public Date getDateValidated()
+	{
+		return date_validated;
+	}
+
+	public void setDateValidated(Date date_validated)
+	{
+		this.date_validated = date_validated;
+	}
+	
+	public Date getDateClosed()
+	{
+		return date_closed;
+	}
+
+	public void setDateClosed(Date date_closed)
+	{
+		this.date_closed = date_closed;
 	}
 }

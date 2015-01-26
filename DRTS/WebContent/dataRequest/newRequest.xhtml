@@ -38,7 +38,7 @@
                     <div id="main-content" class="col-1-1 mobile-col-1-1">
                         <section class="col-1-1 mobile-col-1-1">
                         
-                        	<h:form id="create-form" styleClass="col-1-1 mobile-col-1-1" enctype="multipart/form-data">
+                        	<h:form id="create-form" styleClass="col-1-1 mobile-col-1-1">
                         	
                         		<p>
       								Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla volutpat dui at metus ultrices, at 
@@ -124,8 +124,8 @@
                                 </div>
                                 
                                 <div class="form-control col-1-1 mobile-col-1-1">
-                                	<h:commandButton value="Create" styleClass="button" action="#{dataRequest.start}" />
-                                	<h:commandButton value="Save as Draft" styleClass="button" action="#{dataRequest.saveAsDraft}" />
+                                	<h:commandButton value="Save as Draft" styleClass="button" action="#{dataRequest.updateRequest(1)}" />
+                                	<h:commandButton value="Create" styleClass="button" action="#{dataRequest.updateRequest(2)}" />
                                 </div>
 								
 					    	</h:form>

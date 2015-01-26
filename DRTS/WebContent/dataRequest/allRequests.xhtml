@@ -55,20 +55,20 @@
       								commodo justo in libero volutpat elementum. 
       							</p>
                         	
-                        		<h:panelGroup rendered="#{not empty requestTableAll.dataRequests}">
+                        		<h:panelGroup rendered="#{not empty requestTable.table4.dataRequests}">
 					      		
-						      		<h:dataTable styleClass="drtsTable" value="#{requestTableAll.dataRequests}" var="dataRequest">
+						      		<h:dataTable styleClass="drtsTable" value="#{requestTable.table4.dataRequests}" var="dataRequest">
 						      		
 						      			<h:column>
 						      				<f:facet name="header">
-						      					<h:commandLink actionListener="#{requestTableAll.sort}">
+						      					<h:commandLink actionListener="#{requestTable.table4.sort}">
 						      						<f:attribute name="sort_field" value="request_display_id" />
 						      						<span>ID</span>
-						      						<h:panelGroup rendered="#{requestTableAll.isSortedBy('request_display_id')}">
-							      						<h:panelGroup rendered="#{requestTableAll.sortAscending eq true}">
+						      						<h:panelGroup rendered="#{requestTable.table4.isSortedBy('request_display_id')}">
+							      						<h:panelGroup rendered="#{requestTable.table4.sortAscending eq true}">
 							      							<span class="arrow-up"></span>
 							      						</h:panelGroup>
-							      						<h:panelGroup rendered="#{requestTableAll.sortAscending eq false}">
+							      						<h:panelGroup rendered="#{requestTable.table4.sortAscending eq false}">
 							      							<span class="arrow-down"></span>
 							      						</h:panelGroup>
 						      						</h:panelGroup>
@@ -84,14 +84,14 @@
 						      		
 						      			<h:column>
 						      				<f:facet name="header">
-						      					<h:commandLink actionListener="#{requestTableAll.sort}">
+						      					<h:commandLink actionListener="#{requestTable.table4.sort}">
 						      						<f:attribute name="sort_field" value="request_created_by" />
 						      						<span>Requestor</span>
-						      						<h:panelGroup rendered="#{requestTableAll.isSortedBy('request_created_by')}">
-							      						<h:panelGroup rendered="#{requestTableAll.sortAscending eq true}">
+						      						<h:panelGroup rendered="#{requestTable.table4.isSortedBy('request_created_by')}">
+							      						<h:panelGroup rendered="#{requestTable.table4.sortAscending eq true}">
 							      							<span class="arrow-up"></span>
 							      						</h:panelGroup>
-							      						<h:panelGroup rendered="#{requestTableAll.sortAscending eq false}">
+							      						<h:panelGroup rendered="#{requestTable.table4.sortAscending eq false}">
 							      							<span class="arrow-down"></span>
 							      						</h:panelGroup>
 						      						</h:panelGroup>
@@ -102,14 +102,14 @@
 						      		
 						      			<h:column>
 						      				<f:facet name="header">
-						      					<h:commandLink actionListener="#{requestTableAll.sort}">
+						      					<h:commandLink actionListener="#{requestTable.table4.sort}">
 						      						<f:attribute name="sort_field" value="request_status" />
 						      						<span>Status</span>
-						      						<h:panelGroup rendered="#{requestTableAll.isSortedBy('request_status')}">
-							      						<h:panelGroup rendered="#{requestTableAll.sortAscending eq true}">
+						      						<h:panelGroup rendered="#{requestTable.table4.isSortedBy('request_status')}">
+							      						<h:panelGroup rendered="#{requestTable.table4.sortAscending eq true}">
 							      							<span class="arrow-up"></span>
 							      						</h:panelGroup>
-							      						<h:panelGroup rendered="#{requestTableAll.sortAscending eq false}">
+							      						<h:panelGroup rendered="#{requestTable.table4.sortAscending eq false}">
 							      							<span class="arrow-down"></span>
 							      						</h:panelGroup>
 						      						</h:panelGroup>
@@ -120,14 +120,14 @@
 						      			
 						      			<h:column>
 						      				<f:facet name="header">
-						      					<h:commandLink actionListener="#{requestTableAll.sort}">
+						      					<h:commandLink actionListener="#{requestTable.table4.sort}">
 						      						<f:attribute name="sort_field" value="request_created_date_time" />
 						      						<span>Created On</span>
-						      						<h:panelGroup rendered="#{requestTableAll.isSortedBy('request_created_date_time')}">
-							      						<h:panelGroup rendered="#{requestTableAll.sortAscending eq true}">
+						      						<h:panelGroup rendered="#{requestTable.table4.isSortedBy('request_created_date_time')}">
+							      						<h:panelGroup rendered="#{requestTable.table4.sortAscending eq true}">
 							      							<span class="arrow-up"></span>
 							      						</h:panelGroup>
-							      						<h:panelGroup rendered="#{requestTableAll.sortAscending eq false}">
+							      						<h:panelGroup rendered="#{requestTable.table4.sortAscending eq false}">
 							      							<span class="arrow-down"></span>
 							      						</h:panelGroup>
 						      						</h:panelGroup>
@@ -140,14 +140,14 @@
 						      			
 						      			<h:column>
 						      				<f:facet name="header">
-						      					<h:commandLink actionListener="#{requestTableAll.sort}">
+						      					<h:commandLink actionListener="#{requestTable.table4.sort}">
 						      						<f:attribute name="sort_field" value="request_due_date" />
 						      						<span>Due Date</span>
-						      						<h:panelGroup rendered="#{requestTableAll.isSortedBy('request_due_date')}">
-							      						<h:panelGroup rendered="#{requestTableAll.sortAscending eq true}">
+						      						<h:panelGroup rendered="#{requestTable.table4.isSortedBy('request_due_date')}">
+							      						<h:panelGroup rendered="#{requestTable.table4.sortAscending eq true}">
 							      							<span class="arrow-up"></span>
 							      						</h:panelGroup>
-							      						<h:panelGroup rendered="#{requestTableAll.sortAscending eq false}">
+							      						<h:panelGroup rendered="#{requestTable.table4.sortAscending eq false}">
 							      							<span class="arrow-down"></span>
 							      						</h:panelGroup>
 						      						</h:panelGroup>
@@ -157,26 +157,33 @@
 						      					<f:converter converterId="defaultDateConverter" />
 						      				</h:outputText>
 						      			</h:column>
+						      			
+						      			
+							      			<h:column rendered="#{userSession.admin or userSession.requestor}">
+							      				<f:facet name="header"></f:facet>
+						      					<h:commandLink action="#{requestTable.goToOpenNew(dataRequest)}" value="Open As New Request" />
+							      			</h:column>
+						      			
 						      		
 						      		</h:dataTable>
 						      		
-						      		<h:panelGroup rendered="#{requestTableAll.totalPages > 1}">
+						      		<h:panelGroup rendered="#{requestTable.table4.totalPages > 1}">
 							      		<div class="table-control">
-		                                    <h:outputText value="(Page #{requestTableAll.currentPage}/#{requestTableAll.totalPages}) " />
-		                                    <h:commandLink value="« first" action="#{requestTableAll.pageFirst}" rendered="#{requestTableAll.firstRow ne 0}" />
-		                                    <h:commandLink value="‹ prev" action="#{requestTableAll.pagePrevious}" rendered="#{requestTableAll.firstRow ne 0}" />
-		                                    <ui:repeat var="page" value="#{requestTableAll.pages}">
-												<h:commandLink value="#{page}" actionListener="#{requestTableAll.page}" rendered="#{page ne requestTableAll.currentPage}" />
-												<h:outputText value="#{page}" escape="false" rendered="#{page eq requestTableAll.currentPage}" />
+		                                    <h:outputText value="(Page #{requestTable.table4.currentPage}/#{requestTable.table4.totalPages}) " />
+		                                    <h:commandLink value="« first" action="#{requestTable.table4.pageFirst}" rendered="#{requestTable.table4.firstRow ne 0}" />
+		                                    <h:commandLink value="‹ prev" action="#{requestTable.table4.pagePrevious}" rendered="#{requestTable.table4.firstRow ne 0}" />
+		                                    <ui:repeat var="page" value="#{requestTable.table4.pages}">
+												<h:commandLink value="#{page}" actionListener="#{requestTable.table4.page}" rendered="#{page ne requestTable.table4.currentPage}" />
+												<h:outputText value="#{page}" escape="false" rendered="#{page eq requestTable.table4.currentPage}" />
 											</ui:repeat>
-		                                    <h:commandLink value="next ›" action="#{requestTableAll.pageNext}" rendered="#{(requestTableAll.firstRow + requestTableAll.rowsPerPage) lt requestTableAll.totalRows}" />
-							      			<h:commandLink value="last »" action="#{requestTableAll.pageLast}" rendered="#{(requestTableAll.firstRow + requestTableAll.rowsPerPage) lt requestTableAll.totalRows}" />
+		                                    <h:commandLink value="next ›" action="#{requestTable.table4.pageNext}" rendered="#{(requestTable.table4.firstRow + requestTable.table4.rowsPerPage) lt requestTable.table4.totalRows}" />
+							      			<h:commandLink value="last »" action="#{requestTable.table4.pageLast}" rendered="#{(requestTable.table4.firstRow + requestTable.table4.rowsPerPage) lt requestTable.table4.totalRows}" />
 		                                </div>
 	                                </h:panelGroup>
 						      		
 								</h:panelGroup>
 								
-								<h:panelGroup rendered="#{empty requestTableAll.dataRequests}">
+								<h:panelGroup rendered="#{empty requestTable.table4.dataRequests}">
 									<p>There are no data requests.</p>
 								</h:panelGroup>
     	

@@ -62,6 +62,11 @@ public class RequestValidator implements PhaseListener {
 		 */
 		http_response.addHeader("X-FRAME-OPTIONS", "SAMEORIGIN");
 		
+//		if(request_url.contains("/newRequest") == true)
+//		{
+//			faces_context.getExternalContext().getFlash().put("drtsDataRequest", null);
+//		}
+		
 		if(request_url.contains("/error") == false)
 		{
 			if(Utils.isStringEmpty(incoming_user) == false)
