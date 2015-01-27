@@ -51,6 +51,8 @@ public class DataRequest {
 	
 	private int display_id = 1;
 	
+	private String parent_id = null;
+	
 	public DataRequest(){}
 	
 	public void initialize(String created_by)
@@ -419,5 +421,15 @@ public class DataRequest {
 	public void setDateClosed(Date date_closed)
 	{
 		this.date_closed = date_closed;
+	}
+
+	public String getParentId()
+	{
+		return this.parent_id;
+	}
+	
+	public void setParentId(String parent_id)
+	{
+		this.parent_id = parent_id;
 	}
 }

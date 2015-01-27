@@ -80,6 +80,10 @@ public class DataLayer {
 	
 	private static final String QUERY_SELECT_ATTACHMENT_BY_REQUEST_ID = "SELECT * FROM DRTS_ATTACHMENTS WHERE request_id = ?";
 	
+	private static final String QUERY_SELECT_NEXT_ITERATION = "SELECT COALESCE(MAX(iteration), 2) FROM DRTS_ITERATIONS WHERE parent_id = ?";
+	
+	private static final String QUERY_INSERT_ITERATION_ASSOCIATION = "INSERT INTO DRTS_ITERATIONS (parent_id, iteration, child_id) VALUES (?, ?, ?)";
+	
 	public static DataLayer getInstance()
 	{
 		DataLayer dl = new DataLayer();
@@ -1130,6 +1134,111 @@ public class DataLayer {
 			
 			return null;
 		}
+	
+	public int getNextIteration(String request_id)
+		throws Exception
+	{
+		int iteration = 2;
+		Connection oracle_connection = null;
+		ResultSet result_set = null;
+					
+		try 
+		{
+			oracle_connection = OracleFactory.createConnection();
+						
+			PreparedStatement prepared_statement = oracle_connection.prepareStatement(QUERY_SELECT_NEXT_ITERATION);
+			
+			prepared_statement.setString(1, request_id);
+			
+			result_set = prepared_statement.executeQuery();
+						
+			if(result_set.next())
+			{
+				iteration = result_set.getInt(1);
+			}
+		}
+		catch(SQLException sqle)
+		{
+			logger.error("A SQL exception occured in getNextIteration().", sqle);
+			throw sqle;
+		}
+		catch(Exception e) 
+		{
+			logger.error("An exception occured in getNextIteration().", e);
+			throw e;
+		}
+		finally
+		{
+			try 
+			{
+				if(oracle_connection != null)
+				{
+					if(result_set != null) 
+					{
+						result_set.close();
+					}
+									
+					oracle_connection.close();
+				}
+			}
+			catch(SQLException sqle) 
+			{
+				logger.error("A SQL exception occured while trying to close the connection in getNextIteration().", sqle);
+			}
+		}
+					
+		return iteration;
+	}
+	
+	public void insertIterationAssociation(String parent_id, int iteration, String child_id)
+		throws Exception
+	{
+		Connection oracle_connection = null;
+		int sql_result = 0;
+		
+		try 
+		{
+			oracle_connection = OracleFactory.createConnection();
+			
+			PreparedStatement prepared_statement = oracle_connection.prepareStatement(QUERY_INSERT_ITERATION_ASSOCIATION);
+
+			prepared_statement.setString(1, parent_id);
+			prepared_statement.setInt(2, iteration);
+			prepared_statement.setString(3, child_id);
+			
+			sql_result = prepared_statement.executeUpdate();
+			
+			if(sql_result != 1)
+			{
+				logger.error("Insert statement did not insert exactly one row. Inserted: " + sql_result);
+				throw new Exception();
+			}
+		}
+		catch(SQLException sqle) 
+		{
+			logger.error("A SQL exception occured in insertIterationAssociation().", sqle);
+			throw sqle;
+		} 
+		catch(Exception e) 
+		{
+			logger.error("An exception occured in insertIterationAssociation().", e);
+			throw e;
+		}
+		finally
+		{
+			try 
+			{
+				if(oracle_connection != null)
+				{
+					oracle_connection.close();
+				}
+			}
+			catch(SQLException sqle) 
+			{
+				logger.error("A SQL exception occured while trying to close the connection in insertIterationAssociation().", sqle);
+			}
+		}
+	}
 	
 	private Attachment mapAttachment(ResultSet result_set)
 		throws SQLException

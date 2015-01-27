@@ -1,5 +1,6 @@
 package gov.ed.fsa.drts.bean;
 
+import gov.ed.fsa.drts.dataaccess.DataLayer;
 import gov.ed.fsa.drts.object.DataRequest;
 
 import java.io.Serializable;
@@ -74,7 +75,25 @@ public class RequestTable extends PageUtil implements Serializable {
 	
 	public String goToOpenNew(DataRequest dataRequest)
 	{
-		FacesContext.getCurrentInstance().getExternalContext().getFlash().put("drtsDataRequest", dataRequest);
+		int next_iteration = 2;
+		
+		try
+		{
+			next_iteration = DataLayer.getInstance().getNextIteration(dataRequest.getId());
+			
+			DataRequest new_request = new DataRequest();
+			new_request.initialize(this.userSession.getUser().getId());
+			
+			new_request.setIteration(next_iteration);
+			new_request.setDescription(dataRequest.getDescription());
+			new_request.setParentId(dataRequest.getId());
+			
+			FacesContext.getCurrentInstance().getExternalContext().getFlash().put("drtsDataRequest", new_request);
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
 		
 		return "/dataRequest/view.htm?faces-redirect=true";
 	}

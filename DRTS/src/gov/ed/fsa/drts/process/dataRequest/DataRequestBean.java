@@ -71,7 +71,7 @@ public class DataRequestBean extends PageUtil implements Serializable {
 	 */
 	private DataRequest current_data_request = null;
 	
-	// TODO incorporate upload into JSF and same form as request
+	// TODO incorporate upload into JSF and into the same form as request
 	// TODO files are uploaded when chose, so if user doesn't save request need to delete the uploaded file
 	/**
 	 * List of attachments associated with the current request.
@@ -136,13 +136,16 @@ public class DataRequestBean extends PageUtil implements Serializable {
 		}
 		else
 		{
-			try
+			if(this.current_data_request.getParentId() == null)
 			{
-				this.request_attachments = DataLayer.getInstance().getAttachmentByRequestID(this.current_data_request.getId());
-			}
-			catch(Exception e)
-			{
-				e.printStackTrace();
+				try
+				{
+					this.request_attachments = DataLayer.getInstance().getAttachmentByRequestID(this.current_data_request.getId());
+				}
+				catch(Exception e)
+				{
+					e.printStackTrace();
+				}
 			}
 		}
 		
@@ -373,6 +376,11 @@ public class DataRequestBean extends PageUtil implements Serializable {
 			else if(start_new_request == true)
 			{
 				logger.info("Starting a new process instance, and inserting the request");
+				
+				if(this.current_data_request.getParentId() != null)
+				{
+					DataLayer.getInstance().insertIterationAssociation(this.current_data_request.getParentId(), this.current_data_request.getIteration(), this.current_data_request.getId());
+				}
 				
 				ProcessInstance started_process_instance = this.runtime_service.startProcessInstanceByKey(ApplicationProperties.PROCESS_ID_DATA_REQUEST.getStringValue(), this.request_variables);
 				
@@ -647,6 +655,18 @@ public class DataRequestBean extends PageUtil implements Serializable {
 		}
 		
 		return false;
+	}
+	
+	/**
+	 * This method decides if the current request is being opened as a new 
+	 * iteration of another request.
+	 * 
+	 * @return Returns true if the current request is being opened as a new 
+	 * iteration of another request.
+	 */
+	public boolean getRequestIsNewIteration()
+	{
+		return (this.current_data_request.getParentId() != null);
 	}
 	
 	/*

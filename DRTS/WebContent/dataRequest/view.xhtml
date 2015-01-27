@@ -58,8 +58,10 @@
                                             <li><a href="#attachments">Attachments</a></li>
                                         </ul>
                                         <div id="general">
-                                            <h:outputLabel value="ID"/>
-                                            <h:outputText styleClass="form-text" value="#{dataRequest.displayId}" />
+                                        	<h:panelGroup rendered="#{dataRequest.requestIsNewIteration eq false}">
+	                                            <h:outputLabel value="ID"/>
+	                                            <h:outputText styleClass="form-text" value="#{dataRequest.displayId}" />
+                                            </h:panelGroup>
 
 											<h:outputLabel value="Iteration"/>
                                             <h:outputText styleClass="form-text" value="#{dataRequest.iteration}" />
@@ -149,16 +151,23 @@
                         	
                         		</div>
                         		
-                        		<h:panelGroup rendered="#{dataRequest.statusDrafted}">
+                        		<h:panelGroup rendered="#{dataRequest.statusDrafted and (dataRequest.requestIsNewIteration eq false)}">
 	                        		<div class="form-control col-1-1 mobile-col-1-1">
 	                                	<h:commandButton value="Save" styleClass="button" action="#{dataRequest.updateRequest(99)}" />
 	                                	<h:commandButton value="Submit" styleClass="button" action="#{dataRequest.updateRequest(3)}" />
 	                                </div>
                                 </h:panelGroup>
+                                
+                                <h:panelGroup rendered="#{dataRequest.requestIsNewIteration}">
+	                        		<div class="form-control col-1-1 mobile-col-1-1">
+	                                	<h:commandButton value="Save as Draft" styleClass="button" action="#{dataRequest.updateRequest(1)}" />
+                                		<h:commandButton value="Create" styleClass="button" action="#{dataRequest.updateRequest(2)}" />
+	                                </div>
+                                </h:panelGroup>
     	
     						</h:form>
     						
-    						<h:panelGroup rendered="#{dataRequest.statusDrafted}">
+    						<h:panelGroup rendered="#{dataRequest.statusDrafted or dataRequest.requestIsNewIteration}">
 	    						<div id="current_request_id_div" hidden="true"><h:outputText value="#{dataRequest.id}" /></div>
 						    	<div id="fileuploader">Upload</div>
 					    	</h:panelGroup>
