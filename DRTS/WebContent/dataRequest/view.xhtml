@@ -55,6 +55,7 @@
                                             <li><a href="#general">General</a></li>
                                             <li><a href="#requestor">Requestor</a></li>
                                             <li><a href="#receiver">Receiver</a></li>
+                                            <li><a href="#attachments">Attachments</a></li>
                                         </ul>
                                         <div id="general">
                                             <h:outputLabel value="ID"/>
@@ -135,6 +136,15 @@
                                             <h:outputText styleClass="form-text" value="#{dataRequest.receiverEmail}" rendered="#{dataRequest.statusDrafted eq false}" />
                                             <h:inputText value="#{dataRequest.receiverEmail}" rendered="#{dataRequest.statusDrafted eq true}" />
                                         </div>
+                                        <div id="attachments">
+                                        	<label>Attached Files</label>
+                                        	<ui:repeat var="file" value="#{dataRequest.attachments}" varStatus="status">
+                                        		<span class="form-text">
+                                        			#{file.name}
+                                        			<a href="/drts/file?file_id=#{file.id}">View</a>
+                                        		</span>
+                                        	</ui:repeat>
+                                        </div>
                                     </div>
                         	
                         		</div>
@@ -147,6 +157,11 @@
                                 </h:panelGroup>
     	
     						</h:form>
+    						
+    						<h:panelGroup rendered="#{dataRequest.statusDrafted}">
+	    						<div id="current_request_id_div" hidden="true"><h:outputText value="#{dataRequest.id}" /></div>
+						    	<div id="fileuploader">Upload</div>
+					    	</h:panelGroup>
 					    	
                         </section>
                     </div>

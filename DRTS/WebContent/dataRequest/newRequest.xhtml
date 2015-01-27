@@ -118,6 +118,7 @@
                                             <h:inputText value="#{dataRequest.receiverEmail}" />
                                         </div>
                                         <div id="attachments">
+                                        	<label>Attached Files</label>
                                         </div>
                                     </div>
                                 
@@ -129,6 +130,9 @@
                                 </div>
 								
 					    	</h:form>
+					    	
+					    	<div id="current_request_id_div" hidden="true"><h:outputText value="#{dataRequest.id}" /></div>
+					    	<div id="fileuploader">Upload</div>
 					    	
                         </section>
                     </div>

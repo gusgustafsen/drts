@@ -1,8 +1,10 @@
 package gov.ed.fsa.drts.dataaccess;
 
+import gov.ed.fsa.drts.object.Attachment;
 import gov.ed.fsa.drts.object.DataRequest;
 import gov.ed.fsa.drts.util.ApplicationProperties;
 
+import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,14 +15,18 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
 public class DataLayer {
 
 	private static final Logger logger = Logger.getLogger(DataLayer.class);
 	
+	private static final String table = "DRTS_HISTORY";
+	
 	// TODO move columns, tables, etc. to properties
-	private static final String QUERY_INSERT_DATA_REQUEST = "INSERT INTO DRTS_HISTORY ("
+	private static final String QUERY_INSERT_DATA_REQUEST = "INSERT INTO " + table + " ("
 																+ "request_number, request_created_date_time, proc_inst_id, candidate_group, assignee, request_type, request_status, request_created_by, "
 																+ "request_iteration, request_due_date, request_urgent, request_related_requests, request_topic_keywords, request_purpose, "
 																+ "request_special_considerations, request_description, requestor_name, requestor_organization, requestor_phone, requestor_email, "
@@ -40,25 +46,25 @@ public class DataLayer {
 																			+ "WHERE REQUEST_CREATED_BY = ? ORDER BY %s %s) T2) T3 "
 																			+ "WHERE ROW_NUM > ?  AND ROW_NUM <= ?";
 
-	private static final String QUERY_SELECT_DATA_REQUESTS_BY_CREATOR_COUNT = "SELECT COUNT(*) FROM DRTS_HISTORY WHERE REQUEST_CREATED_BY = ?";
+	private static final String QUERY_SELECT_DATA_REQUESTS_BY_CREATOR_COUNT = "SELECT COUNT(*) FROM " + table + " WHERE REQUEST_CREATED_BY = ?";
 	
 	private static final String QUERY_SELECT_DATA_REQUESTS_BY_STATUS = "SELECT * FROM(SELECT T2.*, rownum AS ROW_NUM FROM(SELECT T.* FROM(SELECT * FROM VIEW_CURRENT_REQUESTS_TASKS) T "
 																		+ "WHERE REQUEST_STATUS = ? ORDER BY %s %s) T2) T3 "
 																		+ "WHERE ROW_NUM > ?  AND ROW_NUM <= ?";
 
-	private static final String QUERY_SELECT_DATA_REQUESTS_BY_STATUS_COUNT = "SELECT COUNT(*) FROM DRTS_HISTORY WHERE REQUEST_STATUS = ?";
+	private static final String QUERY_SELECT_DATA_REQUESTS_BY_STATUS_COUNT = "SELECT COUNT(*) FROM " + table + " WHERE REQUEST_STATUS = ?";
 	
 	private static final String QUERY_SELECT_DATA_REQUESTS_BY_ASSOCIATION = "SELECT * FROM(SELECT T2.*, rownum AS ROW_NUM FROM(SELECT T.* FROM(SELECT * FROM VIEW_CURRENT_REQUESTS_TASKS) T "
 																				+ "WHERE assigned_sme = ? OR assigned_validator = ? ORDER BY %s %s) T2) T3 "
 																				+ "WHERE ROW_NUM > ?  AND ROW_NUM <= ?";
 
-	private static final String QUERY_SELECT_DATA_REQUESTS_BY_ASSOCIATION_COUNT = "SELECT COUNT(*) FROM DRTS_HISTORY WHERE assigned_sme = ? OR assigned_validator = ?";
+	private static final String QUERY_SELECT_DATA_REQUESTS_BY_ASSOCIATION_COUNT = "SELECT COUNT(*) FROM " + table + " WHERE assigned_sme = ? OR assigned_validator = ?";
 	
 	private static final String QUERY_SELECT_ALL_DATA_REQUESTS = "SELECT * FROM(SELECT T2.*, rownum AS ROW_NUM FROM(SELECT * FROM VIEW_CURRENT_REQUESTS_TASKS ORDER BY %s %s) T2) T3 WHERE ROW_NUM > ?  AND ROW_NUM <= ?";
 	
-	private static final String QUERY_SELECT_ALL_DATA_REQUESTS_COUNT = "SELECT COUNT(*) FROM DRTS_HISTORY";
+	private static final String QUERY_SELECT_ALL_DATA_REQUESTS_COUNT = "SELECT COUNT(*) FROM " + table + "";
 	
-	private static final String QUERY_UPDATE_DATA_REQUEST = "UPDATE DRTS_HISTORY SET "
+	private static final String QUERY_UPDATE_DATA_REQUEST = "UPDATE " + table + " SET "
 															+ "candidate_group = ?, assignee = ?, request_type = ?, request_status = ?, request_iteration = ?, "
 															+ "request_due_date = ?, request_urgent = ?, request_related_requests = ?, request_topic_keywords = ?, request_purpose = ?, "
 															+ "request_special_considerations = ?, request_description = ?, requestor_name = ?, requestor_organization = ?, requestor_phone = ?, requestor_email = ?, "
@@ -66,7 +72,13 @@ public class DataLayer {
 															+ "assigned_validator = ?, assigned_to_validator = ?, date_validated = ?, date_closed = ?"
 															+ "WHERE request_number = ?";
 	
-	private static final String QUERY_SELECT_NEXT_DATA_REQUEST_ID = "SELECT COALESCE(MAX(request_display_id), 0) + 1 FROM DRTS_HISTORY";
+	private static final String QUERY_SELECT_NEXT_DATA_REQUEST_ID = "SELECT COALESCE(MAX(request_display_id), 0) + 1 FROM " + table + "";
+	
+	private static final String QUERY_INSERT_ATTACHMENT = "INSERT INTO DRTS_ATTACHMENTS (id, request_id, file_name, file_type, file_size, file_content) VALUES (?, ?, ?, ?, ?, ?)";
+	
+	private static final String QUERY_SELECT_ATTACHMENT_BY_ID = "SELECT * FROM DRTS_ATTACHMENTS WHERE id = ?";
+	
+	private static final String QUERY_SELECT_ATTACHMENT_BY_REQUEST_ID = "SELECT * FROM DRTS_ATTACHMENTS WHERE request_id = ?";
 	
 	public static DataLayer getInstance()
 	{
@@ -940,6 +952,201 @@ public class DataLayer {
 		}
 		
 		return result;
+	}
+	
+	public void insertAttachment(String file_id, String current_request_id, FileItem file)
+		throws Exception
+	{
+		Connection oracle_connection = null;
+		int sql_result = 0;
+		
+		String file_name = null;
+		String content_type = null;
+		long file_size = 0;
+		
+		try 
+		{
+			oracle_connection = OracleFactory.createConnection();
+			
+			file_name = FilenameUtils.getName(file.getName());
+			content_type = file.getContentType();
+            file_size = file.getSize();
+			
+			PreparedStatement prepared_statement = oracle_connection.prepareStatement(QUERY_INSERT_ATTACHMENT);
+
+			prepared_statement.setString(1, file_id);
+			prepared_statement.setString(2, current_request_id);
+			prepared_statement.setString(3, file_name);
+			prepared_statement.setString(4, content_type);
+			prepared_statement.setLong(5, file_size);
+			prepared_statement.setBinaryStream(6, file.getInputStream(), file_size);
+			
+			sql_result = prepared_statement.executeUpdate();
+			
+			if(sql_result != 1)
+			{
+				logger.error("Insert statement did not insert exactly one row. Inserted: " + sql_result);
+				throw new Exception();
+			}
+		}
+		catch(SQLException sqle) 
+		{
+			logger.error("A SQL exception occured in insertAttachment().", sqle);
+			throw sqle;
+		} 
+		catch(Exception e) 
+		{
+			logger.error("An exception occured in insertAttachment().", e);
+			throw e;
+		}
+		finally
+		{
+			try 
+			{
+				if(oracle_connection != null)
+				{
+					oracle_connection.close();
+				}
+			}
+			catch(SQLException sqle) 
+			{
+				logger.error("A SQL exception occured while trying to close the connection in insertAttachment().", sqle);
+			}
+		}
+	}
+	
+	public Attachment getAttachmentByID(String id)
+		throws Exception
+	{
+		Connection oracle_connection = null;
+		ResultSet result_set = null;
+		Attachment result = null;
+			        
+		try 
+		{
+			oracle_connection = OracleFactory.createConnection();
+			
+			PreparedStatement prepared_statement = oracle_connection.prepareStatement(QUERY_SELECT_ATTACHMENT_BY_ID);
+			prepared_statement.setString(1, id);
+			
+			result_set = prepared_statement.executeQuery();
+			
+			if(result_set.next())
+			{
+				result = mapAttachment(result_set);
+			}
+		}
+		catch(SQLException sqle)
+		{
+			logger.error("A SQL exception occured in getAttachmentByID().", sqle);
+			throw sqle;
+		} 
+		catch(Exception e) 
+		{
+			logger.error("An exception occured in getAttachmentByID().", e);
+			throw e;
+		}
+		finally
+		{
+			try 
+			{
+				if(oracle_connection != null)
+				{
+					if(result_set != null) 
+					{
+						result_set.close();
+					}
+							
+					oracle_connection.close();
+				}
+			}
+			catch(SQLException sqle) 
+			{
+				logger.error("A SQL exception occured while trying to close the connection in getAttachmentByID().", sqle);
+			}
+		}
+		
+		return result;
+	}
+	
+	public List<Attachment> getAttachmentByRequestID(String request_id)
+		throws Exception
+	{
+		Connection oracle_connection = null;
+		ResultSet result_set = null;
+		List<Attachment> result = new ArrayList<Attachment>();
+		Attachment attachment = null;
+				        
+			try 
+			{
+				oracle_connection = OracleFactory.createConnection();
+				
+				PreparedStatement prepared_statement = oracle_connection.prepareStatement(QUERY_SELECT_ATTACHMENT_BY_REQUEST_ID);
+				prepared_statement.setString(1, request_id);
+				
+				result_set = prepared_statement.executeQuery();
+				
+				while(result_set.next())
+				{
+					attachment = mapAttachment(result_set);
+					
+					result.add(attachment);
+				}
+			}
+			catch(SQLException sqle)
+			{
+				logger.error("A SQL exception occured in getAttachmentByRequestID().", sqle);
+				throw sqle;
+			} 
+			catch(Exception e) 
+			{
+				logger.error("An exception occured in getAttachmentByRequestID().", e);
+				throw e;
+			}
+			finally
+			{
+				try 
+				{
+					if(oracle_connection != null)
+					{
+						if(result_set != null) 
+						{
+							result_set.close();
+						}
+								
+						oracle_connection.close();
+					}
+				}
+				catch(SQLException sqle) 
+				{
+					logger.error("A SQL exception occured while trying to close the connection in getAttachmentByRequestID().", sqle);
+				}
+			}
+			
+			if(result.size() > 0)
+			{
+				return result;
+			}
+			
+			return null;
+		}
+	
+	private Attachment mapAttachment(ResultSet result_set)
+		throws SQLException
+	{
+		Attachment attachment = new Attachment();
+		attachment.setId(result_set.getString("id"));
+		attachment.setName(result_set.getString("file_name"));
+		attachment.setContentType(result_set.getString("file_type"));
+		attachment.setSize(result_set.getLong("file_size"));
+		
+		Blob content = result_set.getBlob("file_content");
+		int blob_length = (int) content.length();  
+		byte[] blob_bytes = content.getBytes(1, blob_length);
+		
+		attachment.setContent(blob_bytes);
+		
+		return attachment;
 	}
 	
 	private DataRequest mapRequest(ResultSet result_set)

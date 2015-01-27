@@ -34,6 +34,10 @@ public class OracleFactory {
 		ORACLE_USER = "tima";
 		ORACLE_PWD = "xmmwoxak47";
 		
+//		ORACLE_URL = "jdbc:oracle:thin:@10.0.0.149:1521:XE";
+//		ORACLE_USER = "drts_admin";
+//		ORACLE_PWD = "drts123";
+		
 		// TODO move to properties
 		String type = "direct";
 		

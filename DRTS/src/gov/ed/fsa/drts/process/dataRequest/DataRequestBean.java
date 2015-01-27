@@ -2,6 +2,7 @@ package gov.ed.fsa.drts.process.dataRequest;
 
 import gov.ed.fsa.drts.bean.PageUtil;
 import gov.ed.fsa.drts.dataaccess.DataLayer;
+import gov.ed.fsa.drts.object.Attachment;
 import gov.ed.fsa.drts.object.DataRequest;
 import gov.ed.fsa.drts.util.ApplicationProperties;
 import gov.ed.fsa.drts.util.Utils;
@@ -69,6 +70,13 @@ public class DataRequestBean extends PageUtil implements Serializable {
 	 * Data request that the bean is working with.
 	 */
 	private DataRequest current_data_request = null;
+	
+	// TODO incorporate upload into JSF and same form as request
+	// TODO files are uploaded when chose, so if user doesn't save request need to delete the uploaded file
+	/**
+	 * List of attachments associated with the current request.
+	 */
+	private List<Attachment> request_attachments = null;
 
 	/**
 	 * Assigned SME user, from the JSF form.
@@ -125,6 +133,17 @@ public class DataRequestBean extends PageUtil implements Serializable {
 		{
 			this.current_data_request = new DataRequest();
 			this.current_data_request.initialize(this.userSession.getUser().getId());
+		}
+		else
+		{
+			try
+			{
+				this.request_attachments = DataLayer.getInstance().getAttachmentByRequestID(this.current_data_request.getId());
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+			}
 		}
 		
 		setSMEUsers();
@@ -635,6 +654,11 @@ public class DataRequestBean extends PageUtil implements Serializable {
 	 * 
 	 */
 	
+	public String getId()
+	{
+		return this.current_data_request.getId();
+	}
+	
 	public String getDisplayId()
 	{
 		return this.current_data_request.getDisplayId();
@@ -873,5 +897,10 @@ public class DataRequestBean extends PageUtil implements Serializable {
 	public Date getDateClosed()
 	{
 		return this.current_data_request.getDateClosed();
+	}
+
+	public List<Attachment> getAttachments()
+	{
+		return this.request_attachments;
 	}
 }

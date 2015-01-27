@@ -1,5 +1,35 @@
 $(document).ready(function(){
-    
+	
+	$("#fileuploader").uploadFile({
+		url: "/drts/file",
+		multiple: true,
+		fileName: "myfile",
+		showStatusAfterSuccess: false,
+		showAbort: false,
+		showDone: false,
+		uploadButtonClass: "upload-button",
+		dragDropStr: "",
+		allowedTypes: "txt",
+		dynamicFormData: function()
+		{
+			var current_request = null;
+			
+			current_request = $("#current_request_id_div").text();
+			
+			console.log("current_request: " + current_request);
+			
+			var data = {current_request_id: current_request}
+			
+			return data;
+		},
+		onSuccess:function(files, data, xhr)
+		{
+			var html_addition = '<span class="form-text">' + data.uploaded_file_name + ' <a href="/drts/file?file_id=' + data.uploaded_file_id + '">View</a></span>';
+			
+			$('#attachments').html($('#attachments').html() + html_addition);
+		}
+	});
+	
     $("#drtsTabs").tabs({
         heightStyle: "content"
     });

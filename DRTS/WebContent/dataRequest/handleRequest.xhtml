@@ -56,6 +56,7 @@
                                             <li><a href="#requestor">Requestor</a></li>
                                             <li><a href="#receiver">Receiver</a></li>
                                             <li><a href="#assignment">Assignment</a></li>
+                                            <li><a href="#attachments">Attachments</a></li>
                                         </ul>
                                         <div id="general">
                                             <h:outputLabel value="ID"/>
@@ -129,6 +130,15 @@
                                             <h:outputLabel value="Comments"/>
                                             <h:inputTextarea value="#{dataRequest.administratorComments}" />
                                         </div>
+                                        <div id="attachments">
+                                        	<label>Attached Files</label>
+                                        	<ui:repeat var="file" value="#{dataRequest.attachments}" varStatus="status">
+                                        		<span class="form-text">
+                                        			#{file.name}
+                                        			<a href="/drts/file?file_id=#{file.id}">View</a>
+                                        		</span>
+                                        	</ui:repeat>
+                                        </div>
                                     </div>  
                                 
                                 </div>
@@ -139,6 +149,9 @@
                                 </div>
     	
     						</h:form>
+    						
+    						<div id="current_request_id_div" hidden="true"><h:outputText value="#{dataRequest.id}" /></div>
+					    	<div id="fileuploader">Upload</div>
 					    	
                         </section>
                     </div>
