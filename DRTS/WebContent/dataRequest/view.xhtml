@@ -55,7 +55,19 @@
                                             <li><a href="#general">General</a></li>
                                             <li><a href="#requestor">Requestor</a></li>
                                             <li><a href="#receiver">Receiver</a></li>
+                                            <h:panelGroup rendered="#{userSession.admin}">
+                                            	<li><a href="#assignment">Assignment</a></li>
+                                            </h:panelGroup>
+                                            <h:panelGroup rendered="#{userSession.sme or userSession.admin}">
+	                                            <li><a href="#resolution">Resolution</a></li>
+	                                        </h:panelGroup>
+	                                      	<h:panelGroup rendered="#{userSession.admin}">
+	                                            <li><a href="#validation">Validation</a></li>
+                                            </h:panelGroup>
                                             <li><a href="#attachments">Attachments</a></li>
+	                                      	<h:panelGroup rendered="#{userSession.admin and dataRequest.canSendEmail}">
+	                                            <li><a href="#email">Email</a></li>
+                                            </h:panelGroup>
                                         </ul>
                                         <div id="general">
                                         	<h:panelGroup rendered="#{dataRequest.requestIsNewIteration eq false}">
@@ -138,6 +150,30 @@
                                             <h:outputText styleClass="form-text" value="#{dataRequest.receiverEmail}" rendered="#{dataRequest.statusDrafted eq false}" />
                                             <h:inputText value="#{dataRequest.receiverEmail}" rendered="#{dataRequest.statusDrafted eq true}" />
                                         </div>
+                                        <h:panelGroup rendered="#{userSession.admin}">
+	                                        <div id="assignment">
+	                                        	<h:outputLabel value="Assigned To"/>
+	                                        	<h:outputText styleClass="form-text" value="#{dataRequest.assignedSme}" />
+		                                           
+		                                       	<h:outputLabel value="Comments"/>
+		                                       	<h:outputText styleClass="form-text" value="#{dataRequest.administratorComments}" />
+		                                  	</div>
+	                                  	</h:panelGroup>
+	                                  	<h:panelGroup rendered="#{userSession.sme or userSession.admin}">
+	                                        <div id="resolution">
+	                                            <h:outputLabel value="Resolution"/>
+	                                            <h:outputText styleClass="form-text" value="#{dataRequest.resolution}" />
+	                                            
+	                                            <h:outputLabel value="Comments"/>
+	                                    		<h:outputText styleClass="form-text" value="#{dataRequest.smeComments}" />
+	                                        </div>
+                                        </h:panelGroup>
+                                        <h:panelGroup rendered="#{userSession.admin}">
+	                                        <div id="validation">
+	                                        	<h:outputLabel value="Assign To"/>
+	                                            <h:outputText styleClass="form-text" value="#{dataRequest.assignedValidator}" />
+	                                        </div>
+                                        </h:panelGroup>
                                         <div id="attachments">
                                         	<label>Attached Files</label>
                                         	<ui:repeat var="file" value="#{dataRequest.attachments}" varStatus="status">
@@ -147,6 +183,18 @@
                                         		</span>
                                         	</ui:repeat>
                                         </div>
+                                        <h:panelGroup rendered="#{userSession.admin and dataRequest.canSendEmail}">
+                                        	<div id="email">
+				      							<h:outputLabel value="To"/>
+				      							<h:inputText value="#{emailBean.to}" />
+				      							
+				      							<h:outputLabel value="Subject"/>
+				      							<h:inputText value="#{emailBean.subject}" />
+				      							
+				      							<h:outputLabel value="Message"/>
+				      							<h:inputTextarea value="#{emailBean.messageContent}" />
+				      						</div>
+                                        </h:panelGroup>
                                     </div>
                         	
                         		</div>
@@ -162,6 +210,12 @@
 	                        		<div class="form-control col-1-1 mobile-col-1-1">
 	                                	<h:commandButton value="Save as Draft" styleClass="button" action="#{dataRequest.updateRequest(1)}" />
                                 		<h:commandButton value="Create" styleClass="button" action="#{dataRequest.updateRequest(2)}" />
+	                                </div>
+                                </h:panelGroup>
+                                
+                                <h:panelGroup rendered="#{userSession.admin and dataRequest.canSendEmail}">
+	                        		<div class="form-control col-1-1 mobile-col-1-1">
+	                                	<h:commandButton value="Send Email" styleClass="button" action="#{emailBean.sendEmail(dataRequest.attachments)}" />
 	                                </div>
                                 </h:panelGroup>
     	

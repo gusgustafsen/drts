@@ -662,11 +662,27 @@ public class DataRequestBean extends PageUtil implements Serializable {
 	 * iteration of another request.
 	 * 
 	 * @return Returns true if the current request is being opened as a new 
-	 * iteration of another request.
+	 * iteration of another request, false otherwise.
 	 */
 	public boolean getRequestIsNewIteration()
 	{
 		return (this.current_data_request.getParentId() != null);
+	}
+	
+	/**
+	 * This method decides if an external email can be sent.
+	 * 
+	 * @return Returns true if an external email can be sent, false otherwise.
+	 */
+	public boolean getCanSendEmail()
+	{
+		if((this.current_data_request.getStatus().equalsIgnoreCase(ApplicationProperties.DATA_REQUEST_STATUS_PENDING_REQUESTOR_APPROVAL.getStringValue()) == true) || 
+				(this.current_data_request.getStatus().equalsIgnoreCase(ApplicationProperties.DATA_REQUEST_STATUS_CLOSED.getStringValue()) == true))
+		{
+			return true;
+		}
+		
+		return false;
 	}
 	
 	/*

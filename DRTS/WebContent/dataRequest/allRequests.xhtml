@@ -158,12 +158,15 @@
 						      				</h:outputText>
 						      			</h:column>
 						      			
+							      		<h:column rendered="#{userSession.admin or userSession.requestor}">
+							      			<f:facet name="header"></f:facet>
+						      				<h:commandLink action="#{requestTable.goToOpenNew(dataRequest)}" value="Open As New Request" />
+							      		</h:column>
 						      			
-							      			<h:column rendered="#{userSession.admin or userSession.requestor}">
-							      				<f:facet name="header"></f:facet>
-						      					<h:commandLink action="#{requestTable.goToOpenNew(dataRequest)}" value="Open As New Request" />
-							      			</h:column>
-						      			
+						      			<h:column>
+						      				<f:facet name="header"></f:facet>
+					      					<h:commandLink action="#{requestTable.viewRequest(dataRequest)}" value="View" />
+						      			</h:column>
 						      		
 						      		</h:dataTable>
 						      		
