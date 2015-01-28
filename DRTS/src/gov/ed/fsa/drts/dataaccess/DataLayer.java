@@ -62,7 +62,7 @@ public class DataLayer {
 	
 	private static final String QUERY_SELECT_ALL_DATA_REQUESTS = "SELECT * FROM(SELECT T2.*, rownum AS ROW_NUM FROM(SELECT * FROM VIEW_CURRENT_REQUESTS_TASKS ORDER BY %s %s) T2) T3 WHERE ROW_NUM > ?  AND ROW_NUM <= ?";
 	
-	private static final String QUERY_SELECT_ALL_DATA_REQUESTS_COUNT = "SELECT COUNT(*) FROM " + table + "";
+	private static final String QUERY_SELECT_ALL_DATA_REQUESTS_COUNT = "SELECT COUNT(*) FROM " + table;
 	
 	private static final String QUERY_UPDATE_DATA_REQUEST = "UPDATE " + table + " SET "
 															+ "candidate_group = ?, assignee = ?, request_type = ?, request_status = ?, request_iteration = ?, "
@@ -72,7 +72,7 @@ public class DataLayer {
 															+ "assigned_validator = ?, assigned_to_validator = ?, date_validated = ?, date_closed = ?"
 															+ "WHERE request_number = ?";
 	
-	private static final String QUERY_SELECT_NEXT_DATA_REQUEST_ID = "SELECT COALESCE(MAX(request_display_id), 0) + 1 FROM " + table + "";
+	private static final String QUERY_SELECT_NEXT_DATA_REQUEST_ID = "SELECT COALESCE(MAX(request_display_id), 0) + 1 FROM " + table;
 	
 	private static final String QUERY_INSERT_ATTACHMENT = "INSERT INTO DRTS_ATTACHMENTS (id, request_id, file_name, file_type, file_size, file_content) VALUES (?, ?, ?, ?, ?, ?)";
 	
@@ -83,6 +83,12 @@ public class DataLayer {
 	private static final String QUERY_SELECT_NEXT_ITERATION = "SELECT COALESCE(MAX(iteration), 2) FROM DRTS_ITERATIONS WHERE parent_id = ?";
 	
 	private static final String QUERY_INSERT_ITERATION_ASSOCIATION = "INSERT INTO DRTS_ITERATIONS (parent_id, iteration, child_id) VALUES (?, ?, ?)";
+	
+	private static final String QUERY_SELECT_DATA_REQUESTS_BY_DISPLAY_ID = "SELECT * FROM(SELECT T2.*, rownum AS ROW_NUM FROM(SELECT T.* FROM(SELECT * FROM VIEW_CURRENT_REQUESTS_TASKS) T "
+																				+ "WHERE SYS_OP_C2C(TO_CHAR(\"REQUEST_CREATED_DATE_TIME\",'YYYY')||'-'||TO_CHAR(\"REQUEST_DISPLAY_ID\")||'-')||'D' like ? "
+																				+ "ORDER BY %s %s) T2) T3 WHERE ROW_NUM > ?  AND ROW_NUM <= ?";
+	
+	private static final String QUERY_SELECT_DATA_REQUESTS_BY_DISPLAY_ID_COUNT = "SELECT COUNT(*) FROM " + table + " WHERE SYS_OP_C2C(TO_CHAR(\"REQUEST_CREATED_DATE_TIME\",'YYYY')||'-'||TO_CHAR(\"REQUEST_DISPLAY_ID\")||'-')||'D' like ?";
 	
 	public static DataLayer getInstance()
 	{
@@ -1238,6 +1244,129 @@ public class DataLayer {
 				logger.error("A SQL exception occured while trying to close the connection in insertIterationAssociation().", sqle);
 			}
 		}
+	}
+	
+	public List<DataRequest> getDataRequestsByDisplayId(String display_id, int first_row, int rows_per_page, String sort_field, boolean sort_ascending)
+		throws Exception
+	{
+		List<DataRequest> data_requests = new ArrayList<DataRequest>();
+		DataRequest request = null;
+		Connection oracle_connection = null;
+		ResultSet result_set = null;
+		String sort_direction = null;
+		String formatted_query = null;
+			        
+		try 
+		{
+			sort_direction = sort_ascending ? "ASC" : "DESC";
+			formatted_query = String.format(QUERY_SELECT_DATA_REQUESTS_BY_DISPLAY_ID, sort_field, sort_direction);
+			
+			oracle_connection = OracleFactory.createConnection();
+			
+			PreparedStatement prepared_statement = oracle_connection.prepareStatement(formatted_query);
+			prepared_statement.setString(1, "%" + display_id + "%");
+			prepared_statement.setInt(2, first_row);
+			prepared_statement.setInt(3, rows_per_page);
+					
+			result_set = prepared_statement.executeQuery();
+						
+			while(result_set.next())
+			{
+				request = mapRequest(result_set);
+					
+				data_requests.add(request);
+			}
+		}
+		catch(SQLException sqle)
+		{
+			logger.error("A SQL exception occured in getDataRequestsByStatus().", sqle);
+			throw sqle;
+		} 
+		catch(Exception e) 
+		{
+			logger.error("An exception occured in getDataRequestsByStatus().", e);
+			throw e;
+		}
+		finally
+		{
+			try 
+			{
+				if(oracle_connection != null)
+				{
+					if(result_set != null) 
+					{
+						result_set.close();
+					}
+							
+					oracle_connection.close();
+				}
+			}
+			catch(SQLException sqle) 
+			{
+				logger.error("A SQL exception occured while trying to close the connection in getDataRequestsByStatus().", sqle);
+			}
+		}
+			
+		if(data_requests.size() > 0)
+		{
+			return data_requests;
+		}
+				
+		return null;
+	}
+			
+	public int getDataRequestsByDisplayIdCount(String display_id)
+		throws Exception
+	{
+		int count = 0;
+		Connection oracle_connection = null;
+		ResultSet result_set = null;
+					
+		try 
+		{
+			oracle_connection = OracleFactory.createConnection();
+						
+			PreparedStatement prepared_statement = oracle_connection.prepareStatement(QUERY_SELECT_DATA_REQUESTS_BY_DISPLAY_ID_COUNT);
+			prepared_statement.setString(1, "%" + display_id + "%");
+						
+			result_set = prepared_statement.executeQuery();
+						
+			if(result_set.next())
+			{
+				count = result_set.getInt(1);
+			}
+		}
+		catch(SQLException sqle)
+		{
+			logger.error("A SQL exception occured in getDataRequestsByStatusCount().", sqle);
+			throw sqle;
+		}
+		catch(Exception e) 
+		{
+			logger.error("An exception occured in getDataRequestsByStatusCount().", e);
+			throw e;
+		}
+		finally
+		{
+			try 
+			{
+				if(oracle_connection != null)
+				{
+					if(result_set != null) 
+					{
+						result_set.close();
+					}
+									
+					oracle_connection.close();
+				}
+			}
+			catch(SQLException sqle) 
+			{
+				logger.error("A SQL exception occured while trying to close the connection in getDataRequestsByStatusCount().", sqle);
+			}
+		}
+					
+		return count;
 	}
 	
 	private Attachment mapAttachment(ResultSet result_set)

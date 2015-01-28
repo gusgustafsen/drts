@@ -2,6 +2,8 @@ package gov.ed.fsa.drts.bean;
 
 import gov.ed.fsa.drts.dataaccess.DataLayer;
 import gov.ed.fsa.drts.object.DataRequest;
+import gov.ed.fsa.drts.table.RequestTablePaginator;
+import gov.ed.fsa.drts.table.TablePaginator;
 
 import java.io.Serializable;
 
@@ -14,8 +16,6 @@ import javax.faces.context.FacesContext;
 public class RequestTable extends PageUtil implements Serializable {
 
 	private static final long serialVersionUID = -859173943018328800L;
-
-//	private static final Logger logger = Logger.getLogger(RequestTable.class);
 	
 	private TablePaginator table_paginator = null;
 	
@@ -23,7 +23,7 @@ public class RequestTable extends PageUtil implements Serializable {
 	{
 		if(this.table_paginator == null)
 		{
-			this.table_paginator = new TablePaginator(1, this.userSession);
+			this.table_paginator = new RequestTablePaginator(1, this.userSession);
 		}
 		
 		return this.table_paginator;
@@ -33,7 +33,7 @@ public class RequestTable extends PageUtil implements Serializable {
 	{
 		if(this.table_paginator == null)
 		{
-			this.table_paginator = new TablePaginator(2, this.userSession);
+			this.table_paginator = new RequestTablePaginator(2, this.userSession);
 		}
 		
 		return this.table_paginator;
@@ -43,7 +43,7 @@ public class RequestTable extends PageUtil implements Serializable {
 	{
 		if(this.table_paginator == null)
 		{
-			this.table_paginator = new TablePaginator(3, this.userSession);
+			this.table_paginator = new RequestTablePaginator(3, this.userSession);
 		}
 		
 		return this.table_paginator;
@@ -53,7 +53,7 @@ public class RequestTable extends PageUtil implements Serializable {
 	{
 		if(this.table_paginator == null)
 		{
-			this.table_paginator = new TablePaginator(4, this.userSession);
+			this.table_paginator = new RequestTablePaginator(4, this.userSession);
 		}
 		
 		return this.table_paginator;
