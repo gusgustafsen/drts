@@ -68,7 +68,9 @@
 	                                      	<h:panelGroup rendered="#{userSession.admin and dataRequest.canSendEmail}">
 	                                            <li><a href="#email">Email</a></li>
                                             </h:panelGroup>
-                                            <li><a href="#comments">Comments</a></li>
+                                            <h:panelGroup rendered="#{userSession.requestor eq false}">
+                                           		<li><a href="#comments">Comments</a></li>
+                                            </h:panelGroup>
                                         </ul>
                                         <div id="general">
                                         	<h:panelGroup rendered="#{dataRequest.requestIsNewIteration eq false}">
@@ -190,13 +192,15 @@
 				      							<h:inputTextarea value="#{emailBean.messageContent}" />
 				      						</div>
                                         </h:panelGroup>
-                                        <div id="comments">
-									   		<h:outputLabel value="Add Comments"/>
-                                            <h:inputTextarea value="#{dataRequest.newComments}" />
-                                            
-                                            <h:outputLabel value="Comments"/>
-                                            <h:outputText value="#{dataRequest.comments}" escape="false" />
-                                        </div>
+                                        <h:panelGroup rendered="#{userSession.requestor eq false}">
+	                                        <div id="comments">
+										   		<h:outputLabel value="Add Comments"/>
+	                                            <h:inputTextarea value="#{dataRequest.newComments}" />
+	                                            
+	                                            <h:outputLabel value="Comments"/>
+	                                            <h:outputText value="#{dataRequest.comments}" escape="false" />
+	                                        </div>
+                                        </h:panelGroup>
                                     </div>
                         	
                         		</div>

@@ -24,6 +24,11 @@
     	<servlet-name>uploadservlet</servlet-name>
     	<url-pattern>/file</url-pattern>
   	</servlet-mapping>
+  	
+  	<context-param>
+  		<param-name>facelets.SKIP_COMMENTS</param-name>
+  		<param-value>true</param-value>
+  	</context-param>
 	
 	<welcome-file-list>
 		<welcome-file>index.htm</welcome-file>

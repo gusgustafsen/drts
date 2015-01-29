@@ -4,13 +4,9 @@ import gov.ed.fsa.drts.util.ApplicationProperties;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
-import java.util.TreeSet;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
@@ -20,121 +16,138 @@ import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
+import org.apache.log4j.Logger;
 
+/**
+ * Managed bean that works with a user's data.
+ *
+ * @author Timur Asanov | tasanov@ppsco.com
+ */
 @ManagedBean(name = "userBean")
 @ViewScoped
 public class UserBean extends PageUtil implements Serializable {
 
 	private static final long serialVersionUID = 612941570092949641L;
 	
+	/**
+	 * Log4j logger.
+	 */
+	private static final Logger logger = Logger.getLogger(UserBean.class);
+	
+	/**
+	 * Activiti process engine.
+	 */
 	private transient ProcessEngine process_engine = null;
+	
+	/**
+	 * Activiti identity service.
+	 */
 	private transient IdentityService identity_service = null;
 
+	/**
+	 * User's ID, from the JSF form.
+	 */
 	private String id = null;
+	
+	/**
+	 * User's first name, from the JSF form.
+	 */
 	private String first_name = null;
+	
+	/**
+	 * User's last name, from the JSF form.
+	 */
 	private String last_name = null;
+	
+	/**
+	 * User's email, from the JSF form.
+	 */
 	private String email = null;
 	
+	/**
+	 * User that the bean is working with.
+	 */
 	private User current_user = null;
 	
-	private List<String> user_current_main_groups = new ArrayList<String>();
-	private List<String> user_current_general_groups = new ArrayList<String>();
+	/**
+	 * User's current main group.
+	 */
+	private String user_current_group;
 	
-	private String[] selected_main_groups;
-	private String[] selected_general_groups;
+	/**
+	 * User's currently selected group, from the JSF form.
+	 */
+	private String selected_group;
 	
+	/**
+	 * Bean constructor.
+	 */
 	@PostConstruct
 	private void init()
 	{
 		this.process_engine = ProcessEngines.getDefaultProcessEngine();
-		
-		if(this.process_engine != null)
-		{
-			this.identity_service = this.process_engine.getIdentityService();
-			
-			if(this.identity_service == null)
-			{
-				// TODO handle error
-			}
-		}
-		else
-		{
-			// TODO handle error
-		}
+		this.identity_service = this.process_engine.getIdentityService();
 		
 		this.current_user = (User) FacesContext.getCurrentInstance().getExternalContext().getFlash().get("drtsUser");
 		
 		if(this.current_user != null)
 		{
+			logger.debug("Received: " + this.current_user.getId() + " from the AdministartorBean.");
+			
 			loadData();
+		}
+		else
+		{
+			logger.error("Did not receive a user object from the AdministartorBean.");
 		}
 	}
 
+	/**
+	 * Method that loads the form variables from the current user's data.
+	 */
 	private void loadData()
 	{
 		this.first_name = this.current_user.getFirstName();
 		this.last_name = this.current_user.getLastName();
 		this.email = this.current_user.getEmail();
 		
-		loadGroups();
+		loadGroup();
 	}
 	
-	private void loadGroups()
+	/**
+	 * Method that retrieves the current user's group.
+	 */
+	private void loadGroup()
 	{
-		List<Group> user_current_main_groups_list = identity_service.createGroupQuery().groupType(ApplicationProperties.GROUP_TYPE_SECURITY.getStringValue()).groupMember(this.current_user.getId()).list();
+		Group group = identity_service.createGroupQuery().groupType(ApplicationProperties.GROUP_TYPE_SECURITY.getStringValue()).groupMember(this.current_user.getId()).singleResult();
 		
-		for(Group group : user_current_main_groups_list)
-		{
-			user_current_main_groups.add(group.getName());
-		}
+		logger.debug("User's current group: " + group.getName());
 		
-		this.selected_main_groups = user_current_main_groups.toArray(new String[user_current_main_groups.size()]);
-		
-		List<Group> user_current_general_groups_list = identity_service.createGroupQuery().groupType(ApplicationProperties.GROUP_TYPE_GENERAL.getStringValue()).groupMember(this.current_user.getId()).list();
-		
-		if(user_current_general_groups_list != null)
-		{
-			for(Group group : user_current_general_groups_list)
-			{
-				user_current_general_groups.add(group.getName());
-			}
-			
-			this.selected_general_groups = user_current_general_groups.toArray(new String[user_current_general_groups.size()]);
-		}
-		else
-		{
-			this.selected_general_groups = new String[]{};
-		}
+		this.user_current_group = group.getName();
+		this.selected_group = group.getName();
 	}
 	
-	private Collection<String> finalGroups()
-	{
-		Collection<String> final_groups = null;
-		
-		if((Arrays.equals(this.user_current_main_groups.toArray(), this.selected_main_groups) == false)
-				|| (Arrays.equals(this.user_current_general_groups.toArray(), this.selected_general_groups) == false))
-		{
-			final_groups = new TreeSet<String>();
-			
-			final_groups.addAll(new ArrayList<String>(Arrays.asList(this.selected_main_groups)));
-			final_groups.addAll(new ArrayList<String>(Arrays.asList(this.selected_general_groups)));
-		}
-		
-		return final_groups;
-	}
-	
+	/**
+	 * Method that saves the current user.
+	 * 
+	 * @param new_user true if a new user is being created, false otherwise
+	 * 
+	 * @return Takes the administrator back to the User Management page.
+	 */
 	public String save(boolean new_user)
 	{
-		Collection<String> final_groups = null;
-		List<String> all_current_groups = null;
 		User updated_user = null;
 		
 		if(new_user == true)
 		{
+			logger.info("Creating a new user: " + this.id);
+			
 			updated_user = this.identity_service.newUser(this.id);
 		}
 		else
 		{
+			logger.info("Updating an existing user: " + this.id);
+			
 			updated_user = this.current_user;
 		}
 		
@@ -144,80 +157,76 @@ public class UserBean extends PageUtil implements Serializable {
 		
 		this.identity_service.saveUser(updated_user);
 		
-		final_groups = finalGroups();
-		
-		if(final_groups != null)
+		if(new_user == true)
 		{
-			all_current_groups = new ArrayList<String>();
+			logger.info("Adding a new user to group: " + this.selected_group);
 			
-			all_current_groups.addAll(this.user_current_main_groups);
-			all_current_groups.addAll(this.user_current_general_groups);
-			
-			for(String old_group : all_current_groups)
+			this.identity_service.createMembership(updated_user.getId(), this.selected_group);
+		}
+		else
+		{
+			if(this.user_current_group.equalsIgnoreCase(this.selected_group) == false)
 			{
-				this.identity_service.deleteMembership(updated_user.getId(), old_group);
-			}
-			
-			for(String new_group : final_groups)
-			{
-				this.identity_service.createMembership(updated_user.getId(), new_group);
+				logger.info("Updating an existing user's group from: " + this.user_current_group + " to: " + this.selected_group);
+				
+				this.identity_service.deleteMembership(updated_user.getId(), this.user_current_group);
+				this.identity_service.createMembership(updated_user.getId(), this.selected_group);
 			}
 		}
 		
+		// TODO check log for warnings
 		FacesContext.getCurrentInstance().getExternalContext().getFlash().put("drtsUser", null);
 		
 		return "/administration/userManagement.htm?faces-redirect=true";
 	}
 	
+	/**
+	 * Method that cancels creation of new user or update of an existing user.
+	 * 
+	 * @return Takes the administrator back to the User Management page.
+	 */
 	public String cancel()
 	{
+		// TODO check log for warnings
 		FacesContext.getCurrentInstance().getExternalContext().getFlash().put("drtsUser", null);
 		
 		return "/administration/userManagement.htm?faces-redirect=true";
 	}
 	
-	public List<String> getMainGroups()
+	/**
+	 * Method that retrieves all groups that exist in the system.
+	 * 
+	 * @return Returns a list of all groups that exist in the system.
+	 */
+	public List<String> getGroups()
 	{
 		List<String> result = null;
-		List<Group> main_groups = identity_service.createGroupQuery().groupType(ApplicationProperties.GROUP_TYPE_SECURITY.getStringValue()).list();
+		List<Group> groups = identity_service.createGroupQuery().groupType(ApplicationProperties.GROUP_TYPE_SECURITY.getStringValue()).list();
 		
-		if(main_groups != null)
+		if(groups != null)
 		{
+			logger.debug("Current number of groups: " + groups.size());
+			
 			result = new ArrayList<String>();
 			
-			for(Group group : main_groups)
+			for(Group group : groups)
 			{
 				result.add(group.getName());
 			}
 		}
-		
-		return result;
-	}
-	
-	public List<String> getGeneralGroups()
-	{
-		List<String> result = null;
-		List<Group> general_groups = identity_service.createGroupQuery().groupType(ApplicationProperties.GROUP_TYPE_GENERAL.getStringValue()).list();
-		
-		if(general_groups != null)
+		else
 		{
-			result = new ArrayList<String>();
-			
-			for(Group group : general_groups)
-			{
-				result.add(group.getName());
-			}
+			logger.error("There are no existing groups in the system.");
 		}
 		
 		return result;
-	}
-	
-	@PreDestroy
-	private void destroy()
-	{
-		
 	}
 
+	/*
+	 * GETTERS AND SETTERS
+	 * 
+	 */
+	
 	public String getId()
 	{
 		return (this.current_user == null ? this.id : this.current_user.getId());
@@ -258,23 +267,13 @@ public class UserBean extends PageUtil implements Serializable {
 		this.email = email;
 	}
 
-	public String[] getSelectedMainGroups()
+	public String getSelectedGroup()
 	{
-		return selected_main_groups;
+		return selected_group;
 	}
 	
-	public void setSelectedMainGroups(String[] selected_main_groups)
+	public void setSelectedGroup(String selected_main_group)
 	{
-		this.selected_main_groups = selected_main_groups;
-	}
-	
-	public String[] getSelectedGeneralGroups()
-	{
-		return selected_general_groups;
-	}
-	
-	public void setSelectedGeneralGroups(String[] selected_general_groups)
-	{
-		this.selected_general_groups = selected_general_groups;
+		this.selected_group = selected_main_group;
 	}
 }

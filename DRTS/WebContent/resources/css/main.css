@@ -601,7 +601,8 @@ label,
 input,
 select,
 textarea,
-span.form-text
+span.form-text,
+fieldset
 {
     float: left;
     clear: both;
@@ -623,7 +624,7 @@ label
     padding-bottom: 3px;
 }
 
-input:not([type='checkbox']),
+input:not([type="radio"]):not([type="checkbox"]):not([type="submit"]),
 select,
 textarea
 {
@@ -649,7 +650,7 @@ fieldset legend
     font-weight: bold;   
 }  
 
-fieldset input[type="checkbox"]
+fieldset input[type="radio"]
 {
     margin: 0;
     padding: 0;
@@ -679,7 +680,7 @@ fieldset table td
 
 fieldset table td
 {
-	width: 120px;
+	width: 100px;
 }
 
 .form-wrapper

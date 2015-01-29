@@ -33,7 +33,7 @@ import org.apache.log4j.Logger;
 /**
  * Managed bean that controls a data request workflow.
  *
- * @author PPS InfoTech LLC
+ * @author Timur Asanov | tasanov@ppsco.com
  */
 @ManagedBean(name = "dataRequest")
 @ViewScoped
@@ -88,6 +88,9 @@ public class DataRequestBean extends PageUtil implements Serializable {
 	 */
 	private String assigned_validator = null;
 	
+	/**
+	 * New comments field, from the JSF form.
+	 */
 	private String new_comments = null;
 	
 	/**

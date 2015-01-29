@@ -53,7 +53,6 @@
                                     <div id="drtsTabs">
                                          <ul>
                                             <li><a href="#information">Information</a></li>
-                                            <li><a href="#groups">Groups</a></li>
                                         </ul>
                                         <div id="information">
 			      							<h:outputLabel value="ID"/>
@@ -67,23 +66,15 @@
 			      							
 			      							<h:outputLabel value="Email"/>
 			      							<h:inputText value="#{userBean.email}" />
+			      							
+			      							<fieldset>
+                                        		<legend>Group</legend>
+				      							<h:selectOneRadio value="#{userBean.selectedGroup}">
+	                                        		<f:selectItems value="#{userBean.groups}" var="group" itemLabel="#{group}" itemValue="#{group}" />
+	                                        	</h:selectOneRadio>
+                                        	</fieldset>
 			      						</div>
-                                        <div id="groups">
-                                        	<fieldset>
-                                        		<legend>Main Groups</legend>
-                                        		
-                                        		<h:selectManyCheckbox value="#{userBean.selectedMainGroups}">
-                                        			<f:selectItems value="#{userBean.mainGroups}" var="group" itemLabel="#{group}" itemValue="#{group}" />
-                                        		</h:selectManyCheckbox>
-                                        	</fieldset>
-                                        	<fieldset>
-                                        		<legend>General Groups</legend>
-                                        		
-                                        		<h:selectManyCheckbox value="#{userBean.selectedGeneralGroups}">
-                                        			<f:selectItems value="#{userBean.generalGroups}" var="group" itemLabel="#{group}" itemValue="#{group}" />
-                                        		</h:selectManyCheckbox>
-                                        	</fieldset>
-                                        </div>
+                                        
 			      					</div>
 			      					
 			      				</div>

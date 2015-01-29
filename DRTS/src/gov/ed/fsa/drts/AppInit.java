@@ -1,31 +1,41 @@
 package gov.ed.fsa.drts;
 
-import java.util.List;
-
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
 
-import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngines;
-import org.activiti.engine.RepositoryService;
-import org.activiti.engine.RuntimeService;
-import org.activiti.engine.repository.Deployment;
-import org.activiti.engine.runtime.ProcessInstance;
+import org.apache.log4j.Logger;
 
+/**
+ * Managed bean that initializes and stops the Activiti Engine when 
+ * the application starts up and shuts down.
+ *
+ * @author Timur Asanov | tasanov@ppsco.com
+ */
 @ManagedBean(eager=true)
 @ApplicationScoped
 public class AppInit {
 
+	/**
+	 * Log4j logger.
+	 */
+	private static final Logger logger = Logger.getLogger(AppInit.class);
+	
+	/**
+	 * Bean constructor.
+	 */
 	@PostConstruct
     public void init()
 	{
+		ProcessEngines.init();
+		
+		logger.debug("Initialized Activiti Engine.");
+		
 //		ProcessEngine process_engine = null;
 //		RepositoryService repository_service = null;
 //		RuntimeService runtime_service = null;
-		
-		ProcessEngines.init();
 		
 //		process_engine = ProcessEngines.getDefaultProcessEngine();
 //		
@@ -51,9 +61,14 @@ public class AppInit {
 //		  			.deploy();
     }
 
+	/**
+	 * Bean destructor.
+	 */
     @PreDestroy
     public void destroy()
     {
     	ProcessEngines.destroy();
+    	
+    	logger.debug("Stopped Activiti Engine.");
     }
 }
