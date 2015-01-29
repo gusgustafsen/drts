@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -88,7 +89,18 @@ public class DataLayer {
 																				+ "WHERE SYS_OP_C2C(TO_CHAR(\"REQUEST_CREATED_DATE_TIME\",'YYYY')||'-'||TO_CHAR(\"REQUEST_DISPLAY_ID\")||'-')||'D' like ? "
 																				+ "ORDER BY %s %s) T2) T3 WHERE ROW_NUM > ?  AND ROW_NUM <= ?";
 	
-	private static final String QUERY_SELECT_DATA_REQUESTS_BY_DISPLAY_ID_COUNT = "SELECT COUNT(*) FROM " + table + " WHERE SYS_OP_C2C(TO_CHAR(\"REQUEST_CREATED_DATE_TIME\",'YYYY')||'-'||TO_CHAR(\"REQUEST_DISPLAY_ID\")||'-')||'D' like ?";
+	private static final String QUERY_SELECT_DATA_REQUESTS_BY_DISPLAY_ID_COUNT = "SELECT COUNT(*) FROM " + table + " WHERE SYS_OP_C2C(TO_CHAR(\"REQUEST_CREATED_DATE_TIME\",'YYYY')||'-'||TO_CHAR(\"REQUEST_DISPLAY_ID\")||'-')||'D' LIKE ?";
+	
+	private static final String QUERY_SELECT_DATA_REQUESTS_BY_FIELDS = "SELECT * FROM(SELECT T2.*, rownum AS ROW_NUM FROM(SELECT T.* FROM(SELECT * FROM VIEW_CURRENT_REQUESTS_TASKS) T "
+																		+ "WHERE %s ORDER BY %s %s) T2) T3 WHERE ROW_NUM > ?  AND ROW_NUM <= ?";
+	
+	private static final String QUERY_SELECT_DATA_REQUESTS_BY_FIELDS_COUNT = "SELECT COUNT(*) FROM " + table + " WHERE %s";
+	
+	private static final String QUERY_SELECT_DATA_REQUESTS_BY_KEYWORD = "SELECT * FROM(SELECT T2.*, rownum AS ROW_NUM FROM(SELECT T.* FROM(SELECT * FROM VIEW_CURRENT_REQUESTS_TASKS) T "
+																			+ "WHERE REQUEST_DESCRIPTION LIKE ? OR REQUEST_PURPOSE LIKE ? ORDER BY %s %s) T2) T3 "
+																			+ "WHERE ROW_NUM > ?  AND ROW_NUM <= ?";
+
+	private static final String QUERY_SELECT_DATA_REQUESTS_BY_KEYWORD_COUNT = "SELECT COUNT(*) FROM " + table + " WHERE REQUEST_DESCRIPTION LIKE ? OR REQUEST_PURPOSE LIKE ?";
 	
 	public static DataLayer getInstance()
 	{
@@ -1279,12 +1291,12 @@ public class DataLayer {
 		}
 		catch(SQLException sqle)
 		{
-			logger.error("A SQL exception occured in getDataRequestsByStatus().", sqle);
+			logger.error("A SQL exception occured in getDataRequestsByDisplayId().", sqle);
 			throw sqle;
 		} 
 		catch(Exception e) 
 		{
-			logger.error("An exception occured in getDataRequestsByStatus().", e);
+			logger.error("An exception occured in getDataRequestsByDisplayId().", e);
 			throw e;
 		}
 		finally
@@ -1303,7 +1315,7 @@ public class DataLayer {
 			}
 			catch(SQLException sqle) 
 			{
-				logger.error("A SQL exception occured while trying to close the connection in getDataRequestsByStatus().", sqle);
+				logger.error("A SQL exception occured while trying to close the connection in getDataRequestsByDisplayId().", sqle);
 			}
 		}
 			
@@ -1328,6 +1340,304 @@ public class DataLayer {
 						
 			PreparedStatement prepared_statement = oracle_connection.prepareStatement(QUERY_SELECT_DATA_REQUESTS_BY_DISPLAY_ID_COUNT);
 			prepared_statement.setString(1, "%" + display_id + "%");
+						
+			result_set = prepared_statement.executeQuery();
+						
+			if(result_set.next())
+			{
+				count = result_set.getInt(1);
+			}
+		}
+		catch(SQLException sqle)
+		{
+			logger.error("A SQL exception occured in getDataRequestsByDisplayIdCount().", sqle);
+			throw sqle;
+		}
+		catch(Exception e) 
+		{
+			logger.error("An exception occured in getDataRequestsByDisplayIdCount().", e);
+			throw e;
+		}
+		finally
+		{
+			try 
+			{
+				if(oracle_connection != null)
+				{
+					if(result_set != null) 
+					{
+						result_set.close();
+					}
+									
+					oracle_connection.close();
+				}
+			}
+			catch(SQLException sqle) 
+			{
+				logger.error("A SQL exception occured while trying to close the connection in getDataRequestsByDisplayIdCount().", sqle);
+			}
+		}
+					
+		return count;
+	}
+	
+	public List<DataRequest> getDataRequestsByFields(LinkedHashMap<String, String> search_parameters, String date_from, String date_to, int first_row, int rows_per_page, String sort_field, boolean sort_ascending)
+		throws Exception
+	{
+		List<DataRequest> data_requests = new ArrayList<DataRequest>();
+		DataRequest request = null;
+		Connection oracle_connection = null;
+		ResultSet result_set = null;
+		String sort_direction = null;
+		String formatted_query = null;
+		int count = 1;
+		boolean date_range = false;
+				        
+		try 
+		{
+			if(date_from != null && date_to != null)
+			{
+				date_range = true;
+			}
+			
+			sort_direction = sort_ascending ? "ASC" : "DESC";
+			formatted_query = String.format(QUERY_SELECT_DATA_REQUESTS_BY_FIELDS, buildWhereClause(search_parameters, date_range), sort_field, sort_direction);
+				
+			System.out.println("formatted_query: " + formatted_query);
+			
+			oracle_connection = OracleFactory.createConnection();
+			
+			PreparedStatement prepared_statement = oracle_connection.prepareStatement(formatted_query);
+			
+			for(Map.Entry<String, String> entry : search_parameters.entrySet())
+			{
+				System.out.println("set: " + count + ", to " + entry.getValue());
+				prepared_statement.setString(count, entry.getValue());
+				count++;
+			}
+			
+			if(date_range == true)
+			{
+				System.out.println("set: " + count + ", to " + date_from);
+				prepared_statement.setString(count, date_from);
+				System.out.println("set: " + (count + 1) + ", to " + date_to);
+				prepared_statement.setString((count + 1), date_to);
+				System.out.println("set: " + (count + 2) + ", to " + first_row);
+				prepared_statement.setInt((count + 2), first_row);
+				System.out.println("set: " + (count + 3) + ", to " + rows_per_page);
+				prepared_statement.setInt((count + 3), rows_per_page);
+			}
+			else
+			{
+				System.out.println("set: " + count + ", to " + first_row);
+				prepared_statement.setInt(count, first_row);
+				System.out.println("set: " + (count + 1) + ", to " + rows_per_page);
+				prepared_statement.setInt((count + 1), rows_per_page);
+			}
+			
+			result_set = prepared_statement.executeQuery();
+							
+			while(result_set.next())
+			{
+				request = mapRequest(result_set);
+						
+				data_requests.add(request);
+			}
+		}
+		catch(SQLException sqle)
+		{
+			logger.error("A SQL exception occured in getDataRequestsByFields().", sqle);
+			throw sqle;
+		} 
+		catch(Exception e) 
+		{
+			logger.error("An exception occured in getDataRequestsByFields().", e);
+			throw e;
+		}
+		finally
+		{
+			try 
+			{
+				if(oracle_connection != null)
+				{
+					if(result_set != null) 
+					{
+						result_set.close();
+					}
+								
+					oracle_connection.close();
+				}
+			}
+			catch(SQLException sqle) 
+			{
+				logger.error("A SQL exception occured while trying to close the connection in getDataRequestsByFields().", sqle);
+			}
+		}
+				
+		if(data_requests.size() > 0)
+		{
+			return data_requests;
+		}
+					
+		return null;
+	}
+				
+	public int getDataRequestsByFieldsCount(LinkedHashMap<String, String> search_parameters, String date_from, String date_to)
+		throws Exception
+	{
+		int count = 0;
+		Connection oracle_connection = null;
+		ResultSet result_set = null;
+		String formatted_query = null;
+		int q_count = 1;
+		boolean date_range = false;
+					
+		try 
+		{
+			if(date_from != null && date_to != null)
+			{
+				date_range = true;
+			}
+			
+			formatted_query = String.format(QUERY_SELECT_DATA_REQUESTS_BY_FIELDS_COUNT, buildWhereClause(search_parameters, date_range));
+			
+			oracle_connection = OracleFactory.createConnection();
+							
+			PreparedStatement prepared_statement = oracle_connection.prepareStatement(formatted_query);
+			
+			for(Map.Entry<String, String> entry : search_parameters.entrySet())
+			{
+				prepared_statement.setString(q_count, entry.getValue());
+				q_count++;
+			}
+			
+			prepared_statement.setString(q_count, date_from);
+			prepared_statement.setString((q_count + 1), date_to);
+			
+			result_set = prepared_statement.executeQuery();
+							
+			if(result_set.next())
+			{
+				count = result_set.getInt(1);
+			}
+		}
+		catch(SQLException sqle)
+		{
+			logger.error("A SQL exception occured in getDataRequestsByFieldsCount().", sqle);
+			throw sqle;
+		}
+		catch(Exception e) 
+		{
+			logger.error("An exception occured in getDataRequestsByFieldsCount().", e);
+			throw e;
+		}
+		finally
+		{
+			try 
+			{
+				if(oracle_connection != null)
+				{
+					if(result_set != null) 
+					{
+						result_set.close();
+					}
+										
+					oracle_connection.close();
+				}
+			}
+			catch(SQLException sqle) 
+			{
+				logger.error("A SQL exception occured while trying to close the connection in getDataRequestsByFieldsCount().", sqle);
+			}
+		}
+						
+		return count;
+	}
+	
+	public List<DataRequest> getDataRequestsByKeyword(String keyword, int first_row, int rows_per_page, String sort_field, boolean sort_ascending)
+		throws Exception
+	{
+		List<DataRequest> data_requests = new ArrayList<DataRequest>();
+		DataRequest request = null;
+		Connection oracle_connection = null;
+		ResultSet result_set = null;
+		String sort_direction = null;
+		String formatted_query = null;
+			        
+		try 
+		{
+			sort_direction = sort_ascending ? "ASC" : "DESC";
+			formatted_query = String.format(QUERY_SELECT_DATA_REQUESTS_BY_KEYWORD, sort_field, sort_direction);
+			
+			oracle_connection = OracleFactory.createConnection();
+						
+			PreparedStatement prepared_statement = oracle_connection.prepareStatement(formatted_query);
+			prepared_statement.setString(1, "%" + keyword + "%");
+			prepared_statement.setString(2, "%" + keyword + "%");
+			prepared_statement.setInt(3, first_row);
+			prepared_statement.setInt(4, rows_per_page);
+					
+			result_set = prepared_statement.executeQuery();
+						
+			while(result_set.next())
+			{
+				request = mapRequest(result_set);
+					
+				data_requests.add(request);
+			}
+		}
+		catch(SQLException sqle)
+		{
+			logger.error("A SQL exception occured in getDataRequestsByKeyword().", sqle);
+			throw sqle;
+		} 
+		catch(Exception e) 
+		{
+			logger.error("An exception occured in getDataRequestsByKeyword().", e);
+			throw e;
+		}
+		finally
+		{
+			try 
+			{
+				if(oracle_connection != null)
+				{
+					if(result_set != null) 
+					{
+						result_set.close();
+					}
+							
+					oracle_connection.close();
+				}
+			}
+			catch(SQLException sqle) 
+			{
+				logger.error("A SQL exception occured while trying to close the connection in getDataRequestsByKeyword().", sqle);
+			}
+		}
+			
+		if(data_requests.size() > 0)
+		{
+			return data_requests;
+		}
+				
+		return null;
+	}
+			
+	public int getDataRequestsByKeywordCount(String keyword)
+		throws Exception
+	{
+		int count = 0;
+		Connection oracle_connection = null;
+		ResultSet result_set = null;
+					
+		try 
+		{
+			oracle_connection = OracleFactory.createConnection();
+						
+			PreparedStatement prepared_statement = oracle_connection.prepareStatement(QUERY_SELECT_DATA_REQUESTS_BY_KEYWORD_COUNT);
+			prepared_statement.setString(1, "%" + keyword + "%");
+			prepared_statement.setString(2, "%" + keyword + "%");
 						
 			result_set = prepared_statement.executeQuery();
 						
@@ -1365,8 +1675,28 @@ public class DataLayer {
 				logger.error("A SQL exception occured while trying to close the connection in getDataRequestsByStatusCount().", sqle);
 			}
 		}
-					
+				
 		return count;
+	}
+	
+	private String buildWhereClause(LinkedHashMap<String, String> search_parameters, boolean date_range)
+	{
+		StringBuilder where_clause = new StringBuilder();
+		
+		for(Map.Entry<String, String> entry : search_parameters.entrySet())
+		{
+			where_clause.append(entry.getKey() + " = ? AND ");
+		}
+		
+		if(date_range == true)
+		{
+			where_clause.append(ApplicationProperties.DATA_REQUEST_FIELD_CREATED_DATE_TIME.getStringValue() + " >= TO_TIMESTAMP(?,'mm-dd-yyyy') AND ");
+			where_clause.append(ApplicationProperties.DATA_REQUEST_FIELD_CREATED_DATE_TIME.getStringValue() + " <  TO_TIMESTAMP(?,'mm-dd-yyyy') AND ");
+		}
+		
+		where_clause.delete(where_clause.length() - 5, where_clause.length());
+		
+		return where_clause.toString();
 	}
 	
 	private Attachment mapAttachment(ResultSet result_set)

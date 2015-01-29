@@ -30,11 +30,33 @@ $(document).ready(function(){
 		}
 	});
 	
+	var active_tab = $("#current_tab").text();
+	
     $("#drtsTabs").tabs({
-        heightStyle: "content"
+        heightStyle: "content",
+        active: active_tab
     });
     
     $(".datepicker").datepicker({
+        minDate: new Date,
+        dateFormat: 'mm-dd-yy'
+    });
+    
+    $(".date-from").datepicker({
+    	dateFormat: 'mm-dd-yy',
+    	onClose: function(selectedDate){
+    		$(".date-to").datepicker("option", "minDate", selectedDate);
+    	}
+    });
+    	
+    $(".date-to").datepicker({
+    	dateFormat: 'mm-dd-yy',
+    	onClose: function(selectedDate){
+    		$(".date-from").datepicker("option", "maxDate", selectedDate);
+    	}
+    });
+    
+    $(".datepicker-range").datepicker({
         minDate: new Date,
         dateFormat: 'mm-dd-yyyy'
     });

@@ -35,27 +35,30 @@ public class DefaultDateConverter extends DateTimeConverter {
 	{
         Date date = null;
         
-        for(String pattern : date_formats)
+        if(Utils.isStringEmpty(value) == false)
         {
-            SimpleDateFormat sdf = new SimpleDateFormat(pattern);
-            sdf.setLenient(false);
-            
-            logger.info("trying pattern: " + pattern);
-            
-            try
-            {
-                date = sdf.parse(value);
-                break;
-            }
-            catch(ParseException ignore)
-            {
-                // ignore
-            }
-        }
-
-        if (date == null)
-        {
-            throw new ConverterException(new FacesMessage("Invalid date format, must match either of " + date_formats));
+	        for(String pattern : date_formats)
+	        {
+	            SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+	            sdf.setLenient(false);
+	            
+	            logger.info("trying pattern: " + pattern);
+	            
+	            try
+	            {
+	                date = sdf.parse(value);
+	                break;
+	            }
+	            catch(ParseException ignore)
+	            {
+	                // ignore
+	            }
+	        }
+	
+	        if (date == null)
+	        {
+	            throw new ConverterException(new FacesMessage("Invalid date format, must match either of " + date_formats));
+	        }
         }
 
         return date;
@@ -65,6 +68,11 @@ public class DefaultDateConverter extends DateTimeConverter {
     public String getAsString(FacesContext context, UIComponent component, Object value) 
     	throws ConverterException
     {
+    	if(value == null)
+    	{
+    		return "";
+    	}
+    	
         return new SimpleDateFormat(date_formats.get(0)).format((Date) value);
     }
 }

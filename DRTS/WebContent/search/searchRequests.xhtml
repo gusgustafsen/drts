@@ -54,20 +54,50 @@
                                          <ul>
                                             <li><a href="#byid">By ID</a></li>
                                             <li><a href="#byfields">By Fields</a></li>
+                                            <li><a href="#bykeyword">By Keyword</a></li>
                                         </ul>
                                         <div id="byid">
                                         	<h:outputLabel value="ID"/>
 	      									<h:inputText value="#{searchBean.displayId}" />
                                         </div>
                                         <div id="byfields">
+                                        	<h:outputLabel value="Requestor"/>
+	      									<h:inputText value="#{searchBean.requestor}" />
+	      									
+	      									<h:outputLabel value="Assignee"/>
+	      									<h:inputText value="#{searchBean.assignee}" />
                                         
+                                        	<h:outputLabel value="Status"/>
+		                                    <h:selectOneMenu value="#{searchBean.status}">
+									   			<f:selectItems value="#{searchBean.statuses}" />
+									   		</h:selectOneMenu>
+									   		
+                                        	<h:outputLabel value="Type"/>
+		                                    <h:selectOneMenu value="#{searchBean.type}">
+									   			<f:selectItems value="#{searchBean.types}" />
+									   		</h:selectOneMenu>
+									   		
+									   		<h:outputLabel value="Created Date From"/>
+                                            <h:inputText styleClass="date-from" value="#{searchBean.createdDateFrom}">
+                                            	<f:converter converterId="defaultDateConverter" />
+                                            </h:inputText>
+                                            
+                                            <h:outputLabel value="Created Date To"/>
+                                            <h:inputText styleClass="date-to" value="#{searchBean.createdDateTo}">
+                                            	<f:converter converterId="defaultDateConverter" />
+                                            </h:inputText>
                                         </div>
+                                        <div id="bykeyword">
+                                        	<h:outputLabel value="Keyword"/>
+	      									<h:inputText value="#{searchBean.keyword}" />
+	      								</div>
                                    	</div>
       							
       							</div>
       							
       							<div class="form-control col-1-1 mobile-col-1-1">
                                 	<h:commandButton value="Search" styleClass="button" action="#{searchBean.search}" />
+                                	<h:commandButton value="Clear" styleClass="button" action="#{searchBean.clear}" />
                                 </div>
                                 
                                 <h:panelGroup rendered="#{searchBean.searchWasRun}">
@@ -187,6 +217,8 @@
                                 </h:panelGroup>
     	
     						</h:form>
+    						
+    						<div id="current_tab" hidden="true"><h:outputText value="#{searchBean.currentTab}" /></div>
 					    	
                         </section>
                     </div>
