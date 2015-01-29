@@ -238,11 +238,7 @@ public enum ApplicationProperties {
 	
 	DATA_REQUEST_FIELD_ASSIGNED_SME(true, false),
 	
-	DATA_REQUEST_FIELD_ADMIN_COMMENTS(true, false),
-	
 	DATA_REQUEST_FIELD_ASSIGNED_SME_FULL_NAME(true, false),
-	
-	DATA_REQUEST_FIELD_SME_COMMENTS(true, false),
 
 	DATA_REQUEST_FIELD_ASSIGNED_TO_SME(true, false),
 	
@@ -257,6 +253,8 @@ public enum ApplicationProperties {
 	DATA_REQUEST_FIELD_DATE_VALIDATED(true, false),
 	
 	DATA_REQUEST_FIELD_DATE_CLOSED(true, false),
+	
+	DATA_REQUEST_FIELD_COMMENTS(true, false),
 	
 	DATA_REQUEST_WORKFLOW_REQUEST_REJECTED_BY_ADMIN(true, false),
 	

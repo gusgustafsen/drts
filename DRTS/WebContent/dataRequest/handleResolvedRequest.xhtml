@@ -59,6 +59,7 @@
                                             <li><a href="#resolution">Resolution</a></li>
                                             <li><a href="#validation">Validation</a></li>
                                             <li><a href="#attachments">Attachments</a></li>
+                                            <li><a href="#comments">Comments</a></li>
                                         </ul>
                                         <div id="general">
                                             <h:outputLabel value="ID"/>
@@ -126,16 +127,10 @@
                                         <div id="assignment">
                                         	<h:outputLabel value="Assigned To"/>
                                         	<h:outputText styleClass="form-text" value="#{dataRequest.assignedSme}" />
-	                                           
-	                                       	<h:outputLabel value="Comments"/>
-	                                       	<h:outputText styleClass="form-text" value="#{dataRequest.administratorComments}" />
 	                                  	</div>
                                         <div id="resolution">
                                             <h:outputLabel value="Resolution"/>
                                             <h:inputTextarea value="#{dataRequest.resolution}" />
-                                            
-                                            <h:outputLabel value="Comments"/>
-                                    		<h:inputTextarea value="#{dataRequest.smeComments}" />
                                         </div>
                                         <div id="validation">
                                         	<h:outputLabel value="Assign To"/>
@@ -151,6 +146,13 @@
                                         			<a href="/drts/file?file_id=#{file.id}">View</a>
                                         		</span>
                                         	</ui:repeat>
+                                        </div>
+                                        <div id="comments">
+									   		<h:outputLabel value="Add Comments"/>
+                                            <h:inputTextarea value="#{dataRequest.newComments}" />
+                                            
+                                            <h:outputLabel value="Comments"/>
+                                            <h:outputText value="#{dataRequest.comments}" escape="false" />
                                         </div>
                                     </div>
                         	

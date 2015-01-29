@@ -69,8 +69,8 @@ public class DataLayer {
 															+ "candidate_group = ?, assignee = ?, request_type = ?, request_status = ?, request_iteration = ?, "
 															+ "request_due_date = ?, request_urgent = ?, request_related_requests = ?, request_topic_keywords = ?, request_purpose = ?, "
 															+ "request_special_considerations = ?, request_description = ?, requestor_name = ?, requestor_organization = ?, requestor_phone = ?, requestor_email = ?, "
-															+ "receiver_name = ?, receiver_email = ?, assigned_sme = ?, assigned_to_sme = ?, admin_comments = ?, date_resolved = ?, resolution = ?, sme_comments = ?, "
-															+ "assigned_validator = ?, assigned_to_validator = ?, date_validated = ?, date_closed = ?"
+															+ "receiver_name = ?, receiver_email = ?, assigned_sme = ?, assigned_to_sme = ?, date_resolved = ?, resolution = ?, "
+															+ "assigned_validator = ?, assigned_to_validator = ?, date_validated = ?, date_closed = ?, comments = ?"
 															+ "WHERE request_number = ?";
 	
 	private static final String QUERY_SELECT_NEXT_DATA_REQUEST_ID = "SELECT COALESCE(MAX(request_display_id), 0) + 1 FROM " + table;
@@ -851,43 +851,42 @@ public class DataLayer {
 			{
 				prepared_statement.setTimestamp(20, null);
 			}
-			prepared_statement.setString(21, (String) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_ADMIN_COMMENTS.getStringValue()));
 			if(request_variables.get("DATE_RESOLVED") != null)
 			{
-				prepared_statement.setTimestamp(22, new Timestamp(((Date) request_variables.get("DATE_RESOLVED")).getTime()));
+				prepared_statement.setTimestamp(21, new Timestamp(((Date) request_variables.get("DATE_RESOLVED")).getTime()));
 			}
 			else
 			{
-				prepared_statement.setTimestamp(22, null);
+				prepared_statement.setTimestamp(21, null);
 			}
-			prepared_statement.setString(23, (String) request_variables.get("RESOLUTION"));
-			prepared_statement.setString(24, (String) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_SME_COMMENTS.getStringValue()));
-			prepared_statement.setString(25, (String) request_variables.get("ASSIGNED_VALIDATOR"));
+			prepared_statement.setString(22, (String) request_variables.get("RESOLUTION"));
+			prepared_statement.setString(23, (String) request_variables.get("ASSIGNED_VALIDATOR"));
 			if(request_variables.get("ASSIGNED_TO_VALIDATOR") != null)
 			{
-				prepared_statement.setTimestamp(26, new Timestamp(((Date) request_variables.get("ASSIGNED_TO_VALIDATOR")).getTime()));
+				prepared_statement.setTimestamp(24, new Timestamp(((Date) request_variables.get("ASSIGNED_TO_VALIDATOR")).getTime()));
+			}
+			else
+			{
+				prepared_statement.setTimestamp(24, null);
+			}
+			if(request_variables.get("DATE_VALIDATED") != null)
+			{
+				prepared_statement.setTimestamp(25, new Timestamp(((Date) request_variables.get("DATE_VALIDATED")).getTime()));
+			}
+			else
+			{
+				prepared_statement.setTimestamp(25, null);
+			}
+			if(request_variables.get("DATE_CLOSED") != null)
+			{
+				prepared_statement.setTimestamp(26, new Timestamp(((Date) request_variables.get("DATE_CLOSED")).getTime()));
 			}
 			else
 			{
 				prepared_statement.setTimestamp(26, null);
 			}
-			if(request_variables.get("DATE_VALIDATED") != null)
-			{
-				prepared_statement.setTimestamp(27, new Timestamp(((Date) request_variables.get("DATE_VALIDATED")).getTime()));
-			}
-			else
-			{
-				prepared_statement.setTimestamp(27, null);
-			}
-			if(request_variables.get("DATE_CLOSED") != null)
-			{
-				prepared_statement.setTimestamp(28, new Timestamp(((Date) request_variables.get("DATE_CLOSED")).getTime()));
-			}
-			else
-			{
-				prepared_statement.setTimestamp(28, null);
-			}
-			prepared_statement.setString(29, request_id);
+			prepared_statement.setString(27, (String) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_COMMENTS.getStringValue()));
+			prepared_statement.setString(28, request_id);
 			
 			sql_result = prepared_statement.executeUpdate();
 			
@@ -1744,10 +1743,8 @@ public class DataLayer {
 		request.setReceiverEmail(result_set.getString(ApplicationProperties.DATA_REQUEST_FIELD_RECEIVER_EMAIL.getStringValue()));
 		request.setAssignedSme(result_set.getString(ApplicationProperties.DATA_REQUEST_FIELD_ASSIGNED_SME.getStringValue()));
 		request.setDateAssignedToSme(result_set.getDate(ApplicationProperties.DATA_REQUEST_FIELD_ASSIGNED_TO_SME.getStringValue()));
-		request.setAdministratorComments(result_set.getString(ApplicationProperties.DATA_REQUEST_FIELD_ADMIN_COMMENTS.getStringValue()));
 		request.setDateResolved(result_set.getDate(ApplicationProperties.DATA_REQUEST_FIELD_DATE_RESOLVED.getStringValue()));
 		request.setResolution(result_set.getString(ApplicationProperties.DATA_REQUEST_FIELD_RESOLUTION.getStringValue()));
-		request.setSmeComments(result_set.getString(ApplicationProperties.DATA_REQUEST_FIELD_SME_COMMENTS.getStringValue()));
 		request.setCurrentTaskId(result_set.getString("CURRENT_TASK_ID"));
 		request.setCurrentTaskName(result_set.getString("CURRENT_TASK_NAME"));
 		request.setCurrentTaskFormKey(result_set.getString("CURRENT_TASK_FORM_KEY"));
@@ -1756,6 +1753,7 @@ public class DataLayer {
 		request.setDateAssignedToValidator(result_set.getDate(ApplicationProperties.DATA_REQUEST_FIELD_ASSIGNED_TO_VALIDATOR.getStringValue()));
 		request.setDateValidated(result_set.getDate(ApplicationProperties.DATA_REQUEST_FIELD_DATE_VALIDATED.getStringValue()));
 		request.setDateClosed(result_set.getDate(ApplicationProperties.DATA_REQUEST_FIELD_DATE_CLOSED.getStringValue()));
+		request.setComments(result_set.getString(ApplicationProperties.DATA_REQUEST_FIELD_COMMENTS.getStringValue()));
 		
 		return request;
 	}

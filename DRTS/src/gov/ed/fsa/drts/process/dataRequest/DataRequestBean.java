@@ -88,6 +88,8 @@ public class DataRequestBean extends PageUtil implements Serializable {
 	 */
 	private String assigned_validator = null;
 	
+	private String new_comments = null;
+	
 	/**
 	 * A map of tokens that have to be replaced with request values 
 	 * in the emails that are sent.
@@ -438,14 +440,13 @@ public class DataRequestBean extends PageUtil implements Serializable {
 		this.request_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_STATUS.getStringValue(), status);
 		this.request_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_ASSIGNED_SME.getStringValue(), assigned_sme);
 		this.request_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_ASSIGNED_TO_SME.getStringValue(), this.getDateAssignedToSme());
-		this.request_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_ADMIN_COMMENTS.getStringValue(), this.getAdministratorComments());
 		this.request_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_DATE_RESOLVED.getStringValue(), this.getDateResolved());
 		this.request_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_RESOLUTION.getStringValue(), this.getResolution());
-		this.request_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_SME_COMMENTS.getStringValue(), this.getSmeComments());
 		this.request_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_ASSIGNED_VALIDATOR.getStringValue(), assigned_validator);
 		this.request_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_ASSIGNED_TO_VALIDATOR.getStringValue(), this.getDateAssignedToValidator());
 		this.request_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_DATE_VALIDATED.getStringValue(), this.getDateValidated());
 		this.request_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_DATE_CLOSED.getStringValue(), this.getDateClosed());
+		this.request_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_COMMENTS.getStringValue(), this.getAllComments());
 		
 		// email content replacement
 		this.email_replace_tokens.put(ApplicationProperties.DATA_REQUEST_FIELD_ID.getStringValue(), this.current_data_request.getId());
@@ -455,7 +456,6 @@ public class DataRequestBean extends PageUtil implements Serializable {
 		this.email_replace_tokens.put(ApplicationProperties.DATA_REQUEST_FIELD_CREATED_DATE_TIME.getStringValue(), this.getCreatedDateTime().toString());
 		this.email_replace_tokens.put(ApplicationProperties.DATA_REQUEST_FIELD_CREATED_BY.getStringValue(), this.getCreatedBy());
 		this.email_replace_tokens.put(ApplicationProperties.DATA_REQUEST_FIELD_REQUESTOR_EMAIL.getStringValue(), this.getRequestorEmail());
-		this.email_replace_tokens.put(ApplicationProperties.DATA_REQUEST_FIELD_ADMIN_COMMENTS.getStringValue(), this.getAdministratorComments());
 		
 		// email to notify the administrators and the DRTs about a new request TODO add DRT emails
 		this.request_variables.put(ApplicationProperties.EMAIL_LABEL_NOTIFY_ADMIN_DRT_TO.getStringValue(), getAdminEmails());
@@ -875,16 +875,6 @@ public class DataRequestBean extends PageUtil implements Serializable {
 		return this.current_data_request.getDateAssignedToSme();
 	}
 	
-	public String getAdministratorComments()
-	{
-		return this.current_data_request.getAdministratorComments();
-	}
-	
-	public void setAdministratorComments(String administrator_comments)
-	{
-		this.current_data_request.setAdministratorComments(administrator_comments);
-	}
-	
 	public Date getDateResolved()
 	{
 		return this.current_data_request.getDateResolved();
@@ -900,16 +890,6 @@ public class DataRequestBean extends PageUtil implements Serializable {
 		this.current_data_request.setResolution(resolution);
 	}
 	
-	public String getSmeComments()
-	{
-		return this.current_data_request.getSmeComments();
-	}
-	
-	public void setSmeComments(String sme_comments)
-	{
-		this.current_data_request.setSmeComments(sme_comments);
-	}
-
 	public String getAssignedValidator()
 	{
 		return this.current_data_request.getAssignedValidator();
@@ -938,5 +918,42 @@ public class DataRequestBean extends PageUtil implements Serializable {
 	public List<Attachment> getAttachments()
 	{
 		return this.request_attachments;
+	}
+
+	private String getAllComments()
+	{
+		String all_comments = this.current_data_request.getComments();
+		
+		if(all_comments == null)
+		{
+			if(Utils.isStringEmpty(this.new_comments) == false)
+			{
+				all_comments = "<span class=\"form-text\">" + this.new_comments + "</span>";
+			}
+		}
+		else
+		{
+			if(Utils.isStringEmpty(this.new_comments) == false)
+			{
+				all_comments += "<span class=\"form-text\">" + this.new_comments + "</span>";
+			}
+		}
+		
+		return all_comments;
+	}
+	
+	public String getComments()
+	{
+		return this.current_data_request.getComments();
+	}
+	
+	public String getNewComments()
+	{
+		return this.new_comments;
+	}
+	
+	public void setNewComments(String new_comments)
+	{
+		this.new_comments = new_comments;
 	}
 }

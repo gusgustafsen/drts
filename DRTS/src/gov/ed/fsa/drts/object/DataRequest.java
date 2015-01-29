@@ -27,14 +27,13 @@ public class DataRequest {
 	private String requestor_email = null;
 	private String receiver_name = null;
 	private String receiver_email = null;
+	private String comments = null;
 	
 	private String assigned_sme = null;
 	private Date date_assigned_to_sme = null;
-	private String administrator_comments = null;
 	
 	private Date date_resolved = null;
 	private String resolution = null;
-	private String sme_comments = null;
 	
 	private String current_task_id = null;
 	private String current_task_name = null;
@@ -304,16 +303,6 @@ public class DataRequest {
 		this.date_assigned_to_sme = date_assigned_to_sme;
 	}
 
-	public String getAdministratorComments()
-	{
-		return administrator_comments;
-	}
-
-	public void setAdministratorComments(String administrator_comments)
-	{
-		this.administrator_comments = administrator_comments;
-	}
-
 	public Date getDateResolved()
 	{
 		return date_resolved;
@@ -332,16 +321,6 @@ public class DataRequest {
 	public void setResolution(String resolution)
 	{
 		this.resolution = resolution;
-	}
-
-	public String getSmeComments()
-	{
-		return sme_comments;
-	}
-
-	public void setSmeComments(String sme_comments)
-	{
-		this.sme_comments = sme_comments;
 	}
 
 	public String getDisplayId()
@@ -431,5 +410,15 @@ public class DataRequest {
 	public void setParentId(String parent_id)
 	{
 		this.parent_id = parent_id;
+	}
+
+	public String getComments()
+	{
+		return this.comments;
+	}
+	
+	public void setComments(String comments)
+	{
+		this.comments = comments;
 	}
 }
