@@ -450,6 +450,7 @@ public class DataRequestBean extends PageUtil implements Serializable {
 		this.request_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_DATE_VALIDATED.getStringValue(), this.getDateValidated());
 		this.request_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_DATE_CLOSED.getStringValue(), this.getDateClosed());
 		this.request_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_COMMENTS.getStringValue(), this.getAllComments());
+		this.request_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_PII_FLAG.getStringValue(), this.isPii());
 		
 		// email content replacement
 		this.email_replace_tokens.put(ApplicationProperties.DATA_REQUEST_FIELD_ID.getStringValue(), this.current_data_request.getId());
@@ -460,8 +461,8 @@ public class DataRequestBean extends PageUtil implements Serializable {
 		this.email_replace_tokens.put(ApplicationProperties.DATA_REQUEST_FIELD_CREATED_BY.getStringValue(), this.getCreatedBy());
 		this.email_replace_tokens.put(ApplicationProperties.DATA_REQUEST_FIELD_REQUESTOR_EMAIL.getStringValue(), this.getRequestorEmail());
 		
-		// email to notify the administrators and the DRTs about a new request TODO add DRT emails
-		this.request_variables.put(ApplicationProperties.EMAIL_LABEL_NOTIFY_ADMIN_DRT_TO.getStringValue(), getAdminEmails());
+		// email to notify the administrators and the DRTs about a new request
+		this.request_variables.put(ApplicationProperties.EMAIL_LABEL_NOTIFY_ADMIN_DRT_TO.getStringValue(), getAdminDRTEmails());
 		this.request_variables.put(ApplicationProperties.EMAIL_LABEL_NOTIFY_ADMIN_DRT_CC.getStringValue(), ApplicationProperties.EMAIL_NOTIFY_ADMIN_DRT_CC.getStringValue());
 		this.request_variables.put(ApplicationProperties.EMAIL_LABEL_NOTIFY_ADMIN_DRT_FROM.getStringValue(), ApplicationProperties.EMAIL_NOTIFY_ADMIN_DRT_FROM.getStringValue());
 		this.request_variables.put(ApplicationProperties.EMAIL_LABEL_NOTIFY_ADMIN_DRT_SUBJECT.getStringValue(), Utils.replaceAll(ApplicationProperties.EMAIL_NOTIFY_ADMIN_DRT_SUBJECT.getStringValue(), this.email_replace_tokens));
@@ -637,6 +638,40 @@ public class DataRequestBean extends PageUtil implements Serializable {
 		
 		        email_list_delimiter = ",";
 		    }
+		}
+		
+		return sb.toString();
+	}
+	
+	/**
+	 * This method creates a string with a comma separated list 
+	 * of administrator and DRT emails.
+	 * 
+	 * @return Returns a string with a comma separated list of administrator 
+	 * and DRT emails.
+	 */
+	private String getAdminDRTEmails()
+	{
+		StringBuilder sb = new StringBuilder();
+	    String email_list_delimiter = "";
+	    String admin_emails = getAdminEmails();
+		
+		List<User> users = this.identity_service.createUserQuery().memberOfGroup("drt").list();
+		
+		if(users != null && users.size() > 0)
+		{
+			for(User user : users)
+			{
+				sb.append(email_list_delimiter);
+		        sb.append(user.getEmail());            
+		
+		        email_list_delimiter = ",";
+		    }
+			
+			if(Utils.isStringEmpty(admin_emails) == false)
+			{
+				sb.append("," + admin_emails);
+			}
 		}
 		
 		return sb.toString();
@@ -958,5 +993,15 @@ public class DataRequestBean extends PageUtil implements Serializable {
 	public void setNewComments(String new_comments)
 	{
 		this.new_comments = new_comments;
+	}
+
+	public boolean isPii()
+	{
+		return this.current_data_request.isPii();
+	}
+
+	public void setPii(boolean pii)
+	{
+		this.current_data_request.setPiiFlag(pii);
 	}
 }

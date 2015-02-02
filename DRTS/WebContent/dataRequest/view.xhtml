@@ -107,6 +107,10 @@
                                             <h:outputText styleClass="form-text" value="#{dataRequest.urgent}" rendered="#{dataRequest.statusDrafted eq false}" />
                                             <h:selectBooleanCheckbox value="#{dataRequest.urgent}" rendered="#{dataRequest.statusDrafted eq true}" />
                                             
+                                            <h:outputLabel value="PII Flag"/>
+                                            <h:outputText styleClass="form-text" value="#{dataRequest.pii}" rendered="#{dataRequest.statusDrafted eq false}" />
+                                            <h:selectBooleanCheckbox value="#{dataRequest.pii}" rendered="#{dataRequest.statusDrafted eq true}" />
+                                            
                                             <h:outputLabel value="Related Requests"/>
                                             <h:outputText styleClass="form-text" value="#{dataRequest.relatedRequests}" rendered="#{dataRequest.statusDrafted eq false}" />
                                             <h:inputTextarea value="#{dataRequest.relatedRequests}" rendered="#{dataRequest.statusDrafted eq true}" />
@@ -182,6 +186,13 @@
                                         </div>
                                         <h:panelGroup rendered="#{userSession.admin and dataRequest.canSendEmail}">
                                         	<div id="email">
+                                        	
+                                        		<h:panelGroup rendered="#{dataRequest.pii}">
+	                                        		<p>
+	                                        		PII warning here.
+	                                        		</p>
+                                        		</h:panelGroup>
+                                        	
 				      							<h:outputLabel value="To"/>
 				      							<h:inputText value="#{emailBean.to}" />
 				      							

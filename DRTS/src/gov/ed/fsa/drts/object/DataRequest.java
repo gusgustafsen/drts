@@ -48,6 +48,9 @@ public class DataRequest {
 	
 	private Date date_closed = null;
 	
+	private Date last_updated_date = null;
+	private boolean pii_flag = false;
+	
 	private int display_id = 1;
 	
 	private String parent_id = null;
@@ -420,5 +423,25 @@ public class DataRequest {
 	public void setComments(String comments)
 	{
 		this.comments = comments;
+	}
+
+	public Date getLastUpdatedDate()
+	{
+		return last_updated_date;
+	}
+
+	public void setLastUpdatedDate(Date last_updated_date)
+	{
+		this.last_updated_date = last_updated_date;
+	}
+	
+	public boolean isPii()
+	{
+		return pii_flag;
+	}
+
+	public void setPiiFlag(boolean pii_flag)
+	{
+		this.pii_flag = pii_flag;
 	}
 }

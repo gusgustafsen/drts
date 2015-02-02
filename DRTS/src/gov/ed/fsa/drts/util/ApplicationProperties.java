@@ -256,6 +256,10 @@ public enum ApplicationProperties {
 	
 	DATA_REQUEST_FIELD_COMMENTS(true, false),
 	
+	DATA_REQUEST_FIELD_LAST_UPDATED_DATE(true, false),
+	
+	DATA_REQUEST_FIELD_PII_FLAG(true, false),
+	
 	DATA_REQUEST_WORKFLOW_REQUEST_REJECTED_BY_ADMIN(true, false),
 	
 	DATA_REQUEST_WORKFLOW_REQUEST_REJECTED_BY_SME(true, false),

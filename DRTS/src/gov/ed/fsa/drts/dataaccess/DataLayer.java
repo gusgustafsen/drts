@@ -31,10 +31,10 @@ public class DataLayer {
 																+ "request_number, request_created_date_time, proc_inst_id, candidate_group, assignee, request_type, request_status, request_created_by, "
 																+ "request_iteration, request_due_date, request_urgent, request_related_requests, request_topic_keywords, request_purpose, "
 																+ "request_special_considerations, request_description, requestor_name, requestor_organization, requestor_phone, requestor_email, "
-																+ "receiver_name, receiver_email, request_display_id"
+																+ "receiver_name, receiver_email, request_display_id, pii_flag"
 																+ ") "
 																+ "VALUES ("
-																+ "?, SYSDATE, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?"
+																+ "?, SYSDATE, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?"
 																+ ")";
 	
 	private static final String QUERY_SELECT_DATA_REQUESTS_BY_GROUP_OR_ASSIGNEE = "SELECT * FROM(SELECT T2.*, rownum AS ROW_NUM FROM(SELECT T.* FROM(SELECT * FROM VIEW_CURRENT_REQUESTS_TASKS) T "
@@ -70,7 +70,7 @@ public class DataLayer {
 															+ "request_due_date = ?, request_urgent = ?, request_related_requests = ?, request_topic_keywords = ?, request_purpose = ?, "
 															+ "request_special_considerations = ?, request_description = ?, requestor_name = ?, requestor_organization = ?, requestor_phone = ?, requestor_email = ?, "
 															+ "receiver_name = ?, receiver_email = ?, assigned_sme = ?, assigned_to_sme = ?, date_resolved = ?, resolution = ?, "
-															+ "assigned_validator = ?, assigned_to_validator = ?, date_validated = ?, date_closed = ?, comments = ?"
+															+ "assigned_validator = ?, assigned_to_validator = ?, date_validated = ?, date_closed = ?, comments = ?, updated_date = SYSDATE, pii_flag = ? "
 															+ "WHERE request_number = ?";
 	
 	private static final String QUERY_SELECT_NEXT_DATA_REQUEST_ID = "SELECT COALESCE(MAX(request_display_id), 0) + 1 FROM " + table;
@@ -133,7 +133,14 @@ public class DataLayer {
 			prepared_statement.setString(6, (String) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_STATUS.getStringValue()));
 			prepared_statement.setString(7, (String) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_CREATED_BY.getStringValue()));
 			prepared_statement.setInt(8, (Integer) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_ITERATION.getStringValue()));
-			prepared_statement.setTimestamp(9, new Timestamp(((Date) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_DUE_DATE.getStringValue())).getTime()));
+			if(request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_DUE_DATE.getStringValue()) != null)
+			{
+				prepared_statement.setTimestamp(9, new Timestamp(((Date) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_DUE_DATE.getStringValue())).getTime()));
+			}
+			else
+			{
+				prepared_statement.setTimestamp(9, null);
+			}
 			prepared_statement.setString(10, ((Boolean) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_URGENT.getStringValue())).toString());
 			prepared_statement.setString(11, (String) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_RELATED_REQUESTS.getStringValue()));
 			prepared_statement.setString(12, (String) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_TOPIC_KEYWORDS.getStringValue()));
@@ -147,6 +154,7 @@ public class DataLayer {
 			prepared_statement.setString(20, (String) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_RECEIVER_NAME.getStringValue()));
 			prepared_statement.setString(21, (String) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_RECEIVER_EMAIL.getStringValue()));
 			prepared_statement.setInt(22, next_id);
+			prepared_statement.setString(23, ((Boolean) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_PII_FLAG.getStringValue())).toString());
 			
 			sql_result = prepared_statement.executeUpdate();
 			
@@ -886,7 +894,8 @@ public class DataLayer {
 				prepared_statement.setTimestamp(26, null);
 			}
 			prepared_statement.setString(27, (String) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_COMMENTS.getStringValue()));
-			prepared_statement.setString(28, request_id);
+			prepared_statement.setString(28, ((Boolean) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_PII_FLAG.getStringValue())).toString());
+			prepared_statement.setString(29, request_id);
 			
 			sql_result = prepared_statement.executeUpdate();
 			
@@ -1754,6 +1763,8 @@ public class DataLayer {
 		request.setDateValidated(result_set.getDate(ApplicationProperties.DATA_REQUEST_FIELD_DATE_VALIDATED.getStringValue()));
 		request.setDateClosed(result_set.getDate(ApplicationProperties.DATA_REQUEST_FIELD_DATE_CLOSED.getStringValue()));
 		request.setComments(result_set.getString(ApplicationProperties.DATA_REQUEST_FIELD_COMMENTS.getStringValue()));
+		request.setLastUpdatedDate(result_set.getDate(ApplicationProperties.DATA_REQUEST_FIELD_LAST_UPDATED_DATE.getStringValue()));
+		request.setPiiFlag(Boolean.parseBoolean(result_set.getString(ApplicationProperties.DATA_REQUEST_FIELD_PII_FLAG.getStringValue())));
 		
 		return request;
 	}

@@ -699,6 +699,12 @@ fieldset table td
     line-height: 1.6em;
 }
 
+.form-wrapper p
+{
+	margin: 0 10px 10px 0;
+    padding-top: 0;
+}
+
 .form-control
 {
     float: left;
