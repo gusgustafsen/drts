@@ -358,6 +358,11 @@ public class DataRequestBean extends PageUtil implements Serializable {
 				complete_task = true;
 				break;
 			
+			// administrator put request on hold
+			case 17:
+				status = ApplicationProperties.DATA_REQUEST_STATUS_ON_HOLD.getStringValue();
+				break;
+			
 			// a request was updated, but a workflow action has not been made
 			default:
 				break;
@@ -721,6 +726,17 @@ public class DataRequestBean extends PageUtil implements Serializable {
 		}
 		
 		return false;
+	}
+	
+	/**
+	 * This method decides if the current request is in the "On Hold" state.
+	 * 
+	 * @return Returns true if the current request is in the "On Hold" state, 
+	 * false otherwise.
+	 */
+	public boolean getStatusOnHold()
+	{
+		return (this.current_data_request.getStatus().equalsIgnoreCase(ApplicationProperties.DATA_REQUEST_STATUS_ON_HOLD.getStringValue()) == true);
 	}
 	
 	/*

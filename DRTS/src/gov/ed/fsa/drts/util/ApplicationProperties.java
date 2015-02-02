@@ -291,6 +291,8 @@ public enum ApplicationProperties {
 	DATA_REQUEST_STATUS_CLOSED(true, false),
 
 	DATA_REQUEST_STATUS_VALIDATED(true, false),
+
+	DATA_REQUEST_STATUS_ON_HOLD(true, false),
 	
 	DATA_REQUEST_TYPES(true, true);
 	

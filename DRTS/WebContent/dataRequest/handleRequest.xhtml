@@ -153,6 +153,7 @@
                                 
                                 <div class="form-control col-1-1 mobile-col-1-1">
                                 	<h:commandButton styleClass="button" value="Update" action="#{dataRequest.updateRequest(4)}" />
+                                	<h:commandButton styleClass="button" value="Put On Hold" action="#{dataRequest.updateRequest(17)}" rendered="#{dataRequest.statusOnHold eq false}" />
 						      		<h:commandButton styleClass="button" value="Reject" action="#{dataRequest.updateRequest(5)}" />
                                 </div>
     	
