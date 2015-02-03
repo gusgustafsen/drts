@@ -55,6 +55,9 @@
                                             <li><a href="#general">General</a></li>
                                             <li><a href="#requestor">Requestor</a></li>
                                             <li><a href="#receiver">Receiver</a></li>
+                                            <h:panelGroup rendered="#{userSession.admin}">
+                                            	<li><a href="#assignment">Assignment</a></li>
+                                            </h:panelGroup>
                                             <li><a href="#resolution">Resolution</a></li>
                                             <h:panelGroup rendered="#{userSession.admin}">
                                             	<li><a href="#validation">Validation</a></li>
@@ -128,9 +131,14 @@
                                         	<h:outputLabel value="Receiver Email"/>
                                             <h:outputText styleClass="form-text" value="#{dataRequest.receiverEmail}" />
                                         </div>
+                                        <h:panelGroup rendered="#{userSession.admin}">
+	                                        <div id="assignment">
+	                                        	<h:outputLabel value="Assigned To"/>
+	                                        	<h:outputText styleClass="form-text" value="#{dataRequest.assignedSme}" />
+		                                  	</div>
+	                                  	</h:panelGroup>
                                         <div id="resolution">
-                                            <h:outputLabel value="Resolution"/>
-                                            <h:inputTextarea value="#{dataRequest.resolution}" />
+                                            
                                         </div>
                                         <h:panelGroup rendered="#{userSession.admin}">
 	                                        <div id="validation">
@@ -163,6 +171,7 @@
                                 <div class="form-control col-1-1 mobile-col-1-1">
                                 	<h:commandButton styleClass="button" value="Update" action="#{dataRequest.updateRequest(12)}" />
                                 	<h:commandButton styleClass="button" value="Validate" action="#{dataRequest.updateRequest(13)}" />
+                                	<h:commandButton styleClass="button" value="Reject" action="#{dataRequest.updateRequest(18)}" />
                                 </div>
     	
     						</h:form>

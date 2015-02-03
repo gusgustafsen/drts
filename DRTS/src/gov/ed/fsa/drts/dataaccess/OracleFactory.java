@@ -1,5 +1,7 @@
 package gov.ed.fsa.drts.dataaccess;
 
+import gov.ed.fsa.drts.util.ApplicationProperties;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -29,26 +31,20 @@ public class OracleFactory {
 	
 	static 
 	{
-		// TODO move to properties
-		ORACLE_URL = "jdbc:oracle:thin:@127.0.0.1:1521:XE";
-		ORACLE_USER = "tima";
-		ORACLE_PWD = "xmmwoxak47";
+		ORACLE_URL = ApplicationProperties.ORACLE_URL.getStringValue();
+		ORACLE_USER = ApplicationProperties.ORACLE_USER.getStringValue();
+		ORACLE_PWD = ApplicationProperties.ORACLE_PASSWORD.getStringValue();
 		
-//		ORACLE_URL = "jdbc:oracle:thin:@10.0.0.149:1521:XE";
-//		ORACLE_USER = "drts_admin";
-//		ORACLE_PWD = "drts123";
-		
-		// TODO move to properties
-		String type = "direct";
+		String type = ApplicationProperties.ORACLE_CONNECTION_TYPE.getStringValue();
 		
 		// make a direct connection
-		if(type.equalsIgnoreCase("direct"))
+		if(type.equalsIgnoreCase(ApplicationProperties.ORACLE_CONNECTION_TYPE_DIRECT.getStringValue()))
 		{
 			connection_type = CONNECTION_DIRECT_TYPE;
 			getConnected();
 		}
 		// JNDI connection
-		else if(type.equalsIgnoreCase("jndi"))
+		else if(type.equalsIgnoreCase(ApplicationProperties.ORACLE_CONNECTION_TYPE_JNDI.getStringValue()))
 		{
 			connection_type = CONNECTION_JNDI_TYPE;
 		}
@@ -121,7 +117,7 @@ public class OracleFactory {
 					if(ds_drts == null)
 					{
 						// TODO move to properties
-						JNDI_ENV_NAME_DRTS = "jdbc/drts";
+						JNDI_ENV_NAME_DRTS = ApplicationProperties.ORACLE_JNDI.getStringValue();
 						
 						InitialContext ctx_aims = new InitialContext();
 						ds_drts = (DataSource) ctx_aims.lookup(JNDI_ENV_NAME_DRTS);

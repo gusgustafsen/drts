@@ -69,7 +69,7 @@
     </sequenceFlow>
     <sequenceFlow id="flow8" sourceRef="mailtask_notify_admin_drt" targetRef="usertask_administrator_action_1"></sequenceFlow>
     <sequenceFlow id="flow9" sourceRef="usertask_administrator_action_1" targetRef="exclusivegateway1"></sequenceFlow>
-    <userTask id="usertask_sme_resolve_request" name="SME Resolve Request" activiti:assignee="${ASSIGNED_SME}" activiti:candidateGroups="admin" activiti:formKey="/dataRequest/completeRequest.htm"></userTask>
+    <userTask id="usertask_sme_resolve_request" name="SME Resolve Request" activiti:assignee="${SME}" activiti:candidateGroups="admin" activiti:formKey="/dataRequest/completeRequest.htm"></userTask>
     <sequenceFlow id="flow10" sourceRef="mailtask_notify_sme_new_request" targetRef="usertask_sme_resolve_request"></sequenceFlow>
     <exclusiveGateway id="exclusivegateway2" name="Exclusive Gateway"></exclusiveGateway>
     <sequenceFlow id="flow11" sourceRef="usertask_sme_resolve_request" targetRef="exclusivegateway2"></sequenceFlow>
@@ -107,7 +107,7 @@
     <sequenceFlow id="flow15" name="Submitted" sourceRef="exclusivegateway3" targetRef="mailtask_notify_admin_drt">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${REQUEST_DRAFTED == 2}]]></conditionExpression>
     </sequenceFlow>
-    <userTask id="usertask1" name="Drafted" activiti:assignee="${REQUEST_CREATED_BY}" activiti:formKey="/dataRequest/view.htm"></userTask>
+    <userTask id="usertask1" name="Drafted" activiti:assignee="${CREATED_BY}" activiti:formKey="/dataRequest/view.htm"></userTask>
     <sequenceFlow id="flow16" name="Drafted" sourceRef="exclusivegateway3" targetRef="usertask1">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${REQUEST_DRAFTED == 1}]]></conditionExpression>
     </sequenceFlow>
@@ -188,7 +188,7 @@
     <sequenceFlow id="flow38" sourceRef="mailtask_notify_request_closed" targetRef="endevent1"></sequenceFlow>
     <endEvent id="endevent2" name="End"></endEvent>
     <sequenceFlow id="flow40" sourceRef="mailtask_notify_request_pending_approval" targetRef="usertask4"></sequenceFlow>
-    <userTask id="usertask2" name="Validator Action" activiti:assignee="${ASSIGNED_VALIDATOR}" activiti:candidateGroups="admin" activiti:formKey="/dataRequest/validateRequest.htm"></userTask>
+    <userTask id="usertask2" name="Validator Action" activiti:assignee="${VALIDATION_SME}" activiti:candidateGroups="admin" activiti:formKey="/dataRequest/validateRequest.htm"></userTask>
     <sequenceFlow id="flow41" sourceRef="mailtask_notify_validator" targetRef="usertask2"></sequenceFlow>
     <serviceTask id="mailtask_notify_admin_request_validated" name="Notify Administrator" activiti:type="mail">
       <extensionElements>
@@ -229,6 +229,32 @@
     </sequenceFlow>
     <userTask id="usertask4" name="Administratior Action" activiti:formKey="/dataRequest/closeRequest.htm"></userTask>
     <sequenceFlow id="flow50" name="Closed" sourceRef="usertask4" targetRef="endevent2"></sequenceFlow>
+    <serviceTask id="mailtask_notify_admin_validation_rejected" name="Notify Administrator" activiti:type="mail">
+      <extensionElements>
+        <activiti:field name="to">
+          <activiti:expression>${email_notify_admin_validation_rejected_to}</activiti:expression>
+        </activiti:field>
+        <activiti:field name="from">
+          <activiti:expression>${email_notify_admin_validation_rejected_from}</activiti:expression>
+        </activiti:field>
+        <activiti:field name="subject">
+          <activiti:expression>${email_notify_admin_validation_rejected_subject}</activiti:expression>
+        </activiti:field>
+        <activiti:field name="cc">
+          <activiti:expression>${email_notify_admin_validation_rejected_cc}</activiti:expression>
+        </activiti:field>
+        <activiti:field name="html">
+          <activiti:expression>${email_notify_admin_validation_rejected_content}</activiti:expression>
+        </activiti:field>
+      </extensionElements>
+    </serviceTask>
+    <sequenceFlow id="flow51" name="Validation Rejected" sourceRef="exclusivegateway5" targetRef="mailtask_notify_admin_validation_rejected">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${REQUEST_VALIDATED == 3}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow52" sourceRef="mailtask_notify_admin_validation_rejected" targetRef="usertask_administrator_action_1"></sequenceFlow>
+    <sequenceFlow id="flow53" name="Go To Validation" sourceRef="exclusivegateway2" targetRef="mailtask_notify_validator">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${REQUEST_REJECTED_BY_SME == 4}]]></conditionExpression>
+    </sequenceFlow>
   </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_datarequest">
     <bpmndi:BPMNPlane bpmnElement="datarequest" id="BPMNPlane_datarequest">
@@ -304,6 +330,9 @@
       <bpmndi:BPMNShape bpmnElement="usertask4" id="BPMNShape_usertask4">
         <omgdc:Bounds height="55.0" width="105.0" x="1150.0" y="140.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="mailtask_notify_admin_validation_rejected" id="BPMNShape_mailtask_notify_admin_validation_rejected">
+        <omgdc:Bounds height="55.0" width="105.0" x="807.0" y="460.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge bpmnElement="assigned_to_sme" id="BPMNEdge_assigned_to_sme">
         <omgdi:waypoint x="843.0" y="818.0"></omgdi:waypoint>
         <omgdi:waypoint x="920.0" y="819.0"></omgdi:waypoint>
@@ -337,7 +366,7 @@
         <omgdi:waypoint x="703.0" y="610.0"></omgdi:waypoint>
         <omgdi:waypoint x="703.0" y="788.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="12.0" width="75.0" x="794.0" y="610.0"></omgdc:Bounds>
+          <omgdc:Bounds height="12.0" width="75.0" x="928.0" y="610.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="request_resolved" id="BPMNEdge_request_resolved">
@@ -481,6 +510,30 @@
         <omgdi:waypoint x="870.0" y="57.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
           <omgdc:Bounds height="12.0" width="34.0" x="981.0" y="64.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow51" id="BPMNEdge_flow51">
+        <omgdi:waypoint x="732.0" y="387.0"></omgdi:waypoint>
+        <omgdi:waypoint x="732.0" y="425.0"></omgdi:waypoint>
+        <omgdi:waypoint x="859.0" y="425.0"></omgdi:waypoint>
+        <omgdi:waypoint x="859.0" y="460.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="12.0" width="92.0" x="764.0" y="409.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow52" id="BPMNEdge_flow52">
+        <omgdi:waypoint x="859.0" y="515.0"></omgdi:waypoint>
+        <omgdi:waypoint x="859.0" y="610.0"></omgdi:waypoint>
+        <omgdi:waypoint x="703.0" y="610.0"></omgdi:waypoint>
+        <omgdi:waypoint x="703.0" y="788.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow53" id="BPMNEdge_flow53">
+        <omgdi:waypoint x="1042.0" y="590.0"></omgdi:waypoint>
+        <omgdi:waypoint x="948.0" y="547.0"></omgdi:waypoint>
+        <omgdi:waypoint x="948.0" y="339.0"></omgdi:waypoint>
+        <omgdi:waypoint x="842.0" y="308.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="12.0" width="80.0" x="932.0" y="573.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>

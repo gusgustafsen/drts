@@ -1,5 +1,6 @@
 package gov.ed.fsa.drts.bean;
 
+import gov.ed.fsa.drts.object.DataRequest;
 import gov.ed.fsa.drts.table.SearchTablePaginator;
 import gov.ed.fsa.drts.table.TablePaginator;
 import gov.ed.fsa.drts.util.ApplicationProperties;
@@ -13,6 +14,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 
 @ManagedBean(name = "searchBean")
 @ViewScoped
@@ -100,6 +102,13 @@ public class SearchBean extends PageUtil implements Serializable {
 		this.table_paginator = null;
 		
 		this.search_was_run = false;
+	}
+	
+	public String viewRequest(DataRequest dataRequest)
+	{
+		FacesContext.getCurrentInstance().getExternalContext().getFlash().put("drtsDataRequest", dataRequest);
+		
+		return "/dataRequest/view.htm?faces-redirect=true";
 	}
 	
 	public Map<String, String> getStatuses()

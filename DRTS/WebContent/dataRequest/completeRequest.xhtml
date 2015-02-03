@@ -59,6 +59,9 @@
                                             	<li><a href="#assignment">Assignment</a></li>
                                             </h:panelGroup>
                                             <li><a href="#resolution">Resolution</a></li>
+                                            <h:panelGroup rendered="#{userSession.admin}">
+                                            	<li><a href="#validation">Validation</a></li>
+                                            </h:panelGroup>
                                             <li><a href="#attachments">Attachments</a></li>
                                             <li><a href="#comments">Comments</a></li>
                                         </ul>
@@ -137,9 +140,16 @@
 	                                        </div>
                                         </h:panelGroup>
                                         <div id="resolution">
-                                            <h:outputLabel value="Resolution"/>
-                                            <h:inputTextarea value="#{dataRequest.resolution}" />
+                                            
                                         </div>
+                                        <h:panelGroup rendered="#{userSession.admin}">
+                                        	<div id="validation">
+		                                        <h:outputLabel value="Assigned To"/>
+	                                            <h:selectOneMenu value="#{dataRequest.assignedValidator}">
+										   			<f:selectItems value="#{dataRequest.smes}" />
+										   		</h:selectOneMenu>
+										   	</div>
+                                        </h:panelGroup>
                                         <div id="attachments">
                                         	<label>Attached Files</label>
                                         	<ui:repeat var="file" value="#{dataRequest.attachments}" varStatus="status">

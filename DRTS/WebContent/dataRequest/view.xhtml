@@ -58,7 +58,7 @@
                                             <h:panelGroup rendered="#{userSession.admin}">
                                             	<li><a href="#assignment">Assignment</a></li>
                                             </h:panelGroup>
-                                            <h:panelGroup rendered="#{userSession.sme or userSession.admin}">
+                                            <h:panelGroup rendered="#{userSession.drt or userSession.sme or userSession.admin}">
 	                                            <li><a href="#resolution">Resolution</a></li>
 	                                        </h:panelGroup>
 	                                      	<h:panelGroup rendered="#{userSession.admin}">
@@ -68,9 +68,7 @@
 	                                      	<h:panelGroup rendered="#{userSession.admin and dataRequest.canSendEmail}">
 	                                            <li><a href="#email">Email</a></li>
                                             </h:panelGroup>
-                                            <h:panelGroup rendered="#{userSession.requestor eq false}">
-                                           		<li><a href="#comments">Comments</a></li>
-                                            </h:panelGroup>
+                                           	<li><a href="#comments">Comments</a></li>
                                         </ul>
                                         <div id="general">
                                         	<h:panelGroup rendered="#{dataRequest.requestIsNewIteration eq false}">
@@ -165,8 +163,7 @@
 	                                  	</h:panelGroup>
 	                                  	<h:panelGroup rendered="#{userSession.sme or userSession.admin}">
 	                                        <div id="resolution">
-	                                            <h:outputLabel value="Resolution"/>
-	                                            <h:outputText styleClass="form-text" value="#{dataRequest.resolution}" />
+	                                            
 	                                        </div>
                                         </h:panelGroup>
                                         <h:panelGroup rendered="#{userSession.admin}">
@@ -186,13 +183,12 @@
                                         </div>
                                         <h:panelGroup rendered="#{userSession.admin and dataRequest.canSendEmail}">
                                         	<div id="email">
-                                        	
                                         		<h:panelGroup rendered="#{dataRequest.pii}">
 	                                        		<p>
 	                                        		PII warning here.
 	                                        		</p>
                                         		</h:panelGroup>
-                                        	
+                                        		
 				      							<h:outputLabel value="To"/>
 				      							<h:inputText value="#{emailBean.to}" />
 				      							
@@ -203,15 +199,13 @@
 				      							<h:inputTextarea value="#{emailBean.messageContent}" />
 				      						</div>
                                         </h:panelGroup>
-                                        <h:panelGroup rendered="#{userSession.requestor eq false}">
-	                                        <div id="comments">
-										   		<h:outputLabel value="Add Comments"/>
-	                                            <h:inputTextarea value="#{dataRequest.newComments}" />
-	                                            
-	                                            <h:outputLabel value="Comments"/>
-	                                            <h:outputText value="#{dataRequest.comments}" escape="false" />
-	                                        </div>
-                                        </h:panelGroup>
+                                        <div id="comments">
+										   	<h:outputLabel value="Add Comments"/>
+										   	<h:inputTextarea value="#{dataRequest.newComments}" />
+										   	
+										   	<h:outputLabel value="Comments"/>
+										   	<h:outputText value="#{dataRequest.comments}" escape="false" />
+										</div>
                                     </div>
                         	
                         		</div>

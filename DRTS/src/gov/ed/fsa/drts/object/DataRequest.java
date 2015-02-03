@@ -33,7 +33,6 @@ public class DataRequest {
 	private Date date_assigned_to_sme = null;
 	
 	private Date date_resolved = null;
-	private String resolution = null;
 	
 	private String current_task_id = null;
 	private String current_task_name = null;
@@ -314,16 +313,6 @@ public class DataRequest {
 	public void setDateResolved(Date date_resolved)
 	{
 		this.date_resolved = date_resolved;
-	}
-
-	public String getResolution()
-	{
-		return resolution;
-	}
-
-	public void setResolution(String resolution)
-	{
-		this.resolution = resolution;
 	}
 
 	public String getDisplayId()

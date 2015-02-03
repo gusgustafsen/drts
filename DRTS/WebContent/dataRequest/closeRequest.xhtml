@@ -59,6 +59,7 @@
                                             <li><a href="#resolution">Resolution</a></li>
                                             <li><a href="#validation">Validation</a></li>
                                             <li><a href="#attachments">Attachments</a></li>
+                                            <li><a href="#email">Email</a></li>
                                             <li><a href="#comments">Comments</a></li>
                                         </ul>
                                         <div id="general">
@@ -132,8 +133,7 @@
                                         	<h:outputText styleClass="form-text" value="#{dataRequest.assignedSme}" />
 	                                  	</div>
                                         <div id="resolution">
-                                            <h:outputLabel value="Resolution"/>
-                                            <h:inputTextarea value="#{dataRequest.resolution}" />
+                                            
                                         </div>
                                         <div id="validation">
                                         	<h:outputLabel value="Assign To"/>
@@ -148,6 +148,20 @@
                                         		</span>
                                         	</ui:repeat>
                                         </div>
+                                        <div id="email">
+                                        	<h:panelGroup rendered="#{dataRequest.pii}">
+	                                        	<p>PII warning here.</p>
+                                        	</h:panelGroup>
+                                        		
+				      						<h:outputLabel value="To"/>
+				      						<h:inputText value="#{emailBean.to}" />
+				      							
+				      						<h:outputLabel value="Subject"/>
+				      						<h:inputText value="#{emailBean.subject}" />
+				      							
+				      						<h:outputLabel value="Message"/>
+				      						<h:inputTextarea value="#{emailBean.messageContent}" />
+				      					</div>
                                         <div id="comments">
 									   		<h:outputLabel value="Add Comments"/>
                                             <h:inputTextarea value="#{dataRequest.newComments}" />

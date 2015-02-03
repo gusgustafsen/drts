@@ -196,6 +196,10 @@
 							      					<f:converter converterId="defaultDateConverter" />
 							      				</h:outputText>
 							      			</h:column>
+							      			<h:column>
+							      				<f:facet name="header"></f:facet>
+						      					<h:commandLink action="#{searchBean.viewRequest(dataRequest)}" value="View" />
+							      			</h:column>
 	                                	</h:dataTable>
 	                                	<h:panelGroup rendered="#{searchBean.resultsTable.totalPages > 1}">
 								      		<div class="table-control">

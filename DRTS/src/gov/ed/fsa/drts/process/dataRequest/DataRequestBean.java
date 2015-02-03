@@ -253,12 +253,27 @@ public class DataRequestBean extends PageUtil implements Serializable {
 			
 			// SME resolved a request
 			case 7:
-				status = ApplicationProperties.DATA_REQUEST_STATUS_RESOLVED.getStringValue();
-				this.request_variables.put(ApplicationProperties.DATA_REQUEST_WORKFLOW_REQUEST_REJECTED_BY_SME.getStringValue(), 1);
-				this.current_data_request.setDateResolved(new Date());
-				candidate_group = ApplicationProperties.GROUP_ADMIN.getStringValue();
-				assignee = null;
-				complete_task = true;
+				// if a validator has not been picked by administrator before
+				if(Utils.isStringEmpty(this.current_data_request.getAssignedValidator()) == true)
+				{
+					status = ApplicationProperties.DATA_REQUEST_STATUS_RESOLVED.getStringValue();
+					this.request_variables.put(ApplicationProperties.DATA_REQUEST_WORKFLOW_REQUEST_REJECTED_BY_SME.getStringValue(), 1);
+					this.current_data_request.setDateResolved(new Date());
+					candidate_group = ApplicationProperties.GROUP_ADMIN.getStringValue();
+					assignee = null;
+					complete_task = true;
+				}
+				// if a validator has already been picked by administrator
+				else
+				{
+					status = ApplicationProperties.DATA_REQUEST_STATUS_ASSIGNED_TO_VALIDATOR.getStringValue();
+					this.request_variables.put(ApplicationProperties.DATA_REQUEST_WORKFLOW_REQUEST_REJECTED_BY_SME.getStringValue(), 4);
+					this.current_data_request.setDateAssignedToValidator(new Date());
+					candidate_group = ApplicationProperties.GROUP_ADMIN.getStringValue();
+					assignee = this.current_data_request.getAssignedValidator();
+					assigned_validator = this.current_data_request.getAssignedValidator();
+					complete_task = true;
+				}
 				break;
 			
 			// SME rejected a request
@@ -363,6 +378,15 @@ public class DataRequestBean extends PageUtil implements Serializable {
 				status = ApplicationProperties.DATA_REQUEST_STATUS_ON_HOLD.getStringValue();
 				break;
 			
+			// validator rejected a request
+			case 18:
+				status = ApplicationProperties.DATA_REQUEST_STATUS_VALIDATION_REJECTED.getStringValue();
+				this.request_variables.put(ApplicationProperties.DATA_REQUEST_WORKFLOW_REQUEST_VALIDATED.getStringValue(), 3);
+				candidate_group = ApplicationProperties.GROUP_ADMIN.getStringValue();
+				assignee = null;
+				complete_task = true;
+				break;
+			
 			// a request was updated, but a workflow action has not been made
 			default:
 				break;
@@ -449,7 +473,6 @@ public class DataRequestBean extends PageUtil implements Serializable {
 		this.request_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_ASSIGNED_SME.getStringValue(), assigned_sme);
 		this.request_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_ASSIGNED_TO_SME.getStringValue(), this.getDateAssignedToSme());
 		this.request_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_DATE_RESOLVED.getStringValue(), this.getDateResolved());
-		this.request_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_RESOLUTION.getStringValue(), this.getResolution());
 		this.request_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_ASSIGNED_VALIDATOR.getStringValue(), assigned_validator);
 		this.request_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_ASSIGNED_TO_VALIDATOR.getStringValue(), this.getDateAssignedToValidator());
 		this.request_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_DATE_VALIDATED.getStringValue(), this.getDateValidated());
@@ -521,6 +544,13 @@ public class DataRequestBean extends PageUtil implements Serializable {
 		this.request_variables.put(ApplicationProperties.EMAIL_LABEL_NOTIFY_REQUEST_CLOSED_FROM.getStringValue(), ApplicationProperties.EMAIL_NOTIFY_REQUEST_CLOSED_FROM.getStringValue());
 		this.request_variables.put(ApplicationProperties.EMAIL_LABEL_NOTIFY_REQUEST_CLOSED_SUBJECT.getStringValue(), Utils.replaceAll(ApplicationProperties.EMAIL_NOTIFY_REQUEST_CLOSED_SUBJECT.getStringValue(), this.email_replace_tokens));
 		this.request_variables.put(ApplicationProperties.EMAIL_LABEL_NOTIFY_REQUEST_CLOSED_CONTENT.getStringValue(), Utils.replaceAll(ApplicationProperties.EMAIL_NOTIFY_REQUEST_CLOSED_CONTENT.getStringValue(), this.email_replace_tokens));
+		
+		// email to notify the administrators that a SME rejected validation of a request
+		this.request_variables.put(ApplicationProperties.EMAIL_LABEL_NOTIFY_ADMIN_VALIDATION_REJECTED_TO.getStringValue(), getAdminEmails());
+		this.request_variables.put(ApplicationProperties.EMAIL_LABEL_NOTIFY_ADMIN_VALIDATION_REJECTED_CC.getStringValue(), ApplicationProperties.EMAIL_NOTIFY_ADMIN_VALIDATION_REJECTED_CC.getStringValue());
+		this.request_variables.put(ApplicationProperties.EMAIL_LABEL_NOTIFY_ADMIN_VALIDATION_REJECTED_FROM.getStringValue(), ApplicationProperties.EMAIL_NOTIFY_ADMIN_VALIDATION_REJECTED_FROM.getStringValue());
+		this.request_variables.put(ApplicationProperties.EMAIL_LABEL_NOTIFY_ADMIN_VALIDATION_REJECTED_SUBJECT.getStringValue(), Utils.replaceAll(ApplicationProperties.EMAIL_NOTIFY_ADMIN_VALIDATION_REJECTED_SUBJECT.getStringValue(), this.email_replace_tokens));
+		this.request_variables.put(ApplicationProperties.EMAIL_LABEL_NOTIFY_ADMIN_VALIDATION_REJECTED_CONTENT.getStringValue(), Utils.replaceAll(ApplicationProperties.EMAIL_NOTIFY_ADMIN_VALIDATION_REJECTED_CONTENT.getStringValue(), this.email_replace_tokens));
 	}
 	
 	/**
@@ -932,16 +962,6 @@ public class DataRequestBean extends PageUtil implements Serializable {
 	public Date getDateResolved()
 	{
 		return this.current_data_request.getDateResolved();
-	}
-	
-	public String getResolution()
-	{
-		return this.current_data_request.getResolution();
-	}
-	
-	public void setResolution(String resolution)
-	{
-		this.current_data_request.setResolution(resolution);
 	}
 	
 	public String getAssignedValidator()

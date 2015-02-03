@@ -20,6 +20,20 @@ public enum ApplicationProperties {
 	
 	DATE_TIME_FORMATS(true, true),
 	
+	ORACLE_URL(true, false),
+	
+	ORACLE_USER(true, false),
+	
+	ORACLE_PASSWORD(true, false),
+	
+	ORACLE_CONNECTION_TYPE(true, false),
+	
+	ORACLE_CONNECTION_TYPE_DIRECT(true, false),
+	
+	ORACLE_CONNECTION_TYPE_JNDI(true, false),
+	
+	ORACLE_JNDI(true, false),
+	
 	GROUP_ADMIN(true, false),
 	
 	GROUP_SME(true, false),
@@ -198,6 +212,32 @@ public enum ApplicationProperties {
 	
 	EMAIL_NOTIFY_ADMIN_REQUEST_VALIDATED_CONTENT(true, false),
 	
+	EMAIL_LABEL_NOTIFY_ADMIN_VALIDATION_REJECTED_TO(true, false),
+	
+	EMAIL_LABEL_NOTIFY_ADMIN_VALIDATION_REJECTED_CC(true, false),
+	
+	EMAIL_LABEL_NOTIFY_ADMIN_VALIDATION_REJECTED_FROM(true, false),
+	
+	EMAIL_LABEL_NOTIFY_ADMIN_VALIDATION_REJECTED_SUBJECT(true, false),
+	
+	EMAIL_LABEL_NOTIFY_ADMIN_VALIDATION_REJECTED_CONTENT(true, false),
+	
+	EMAIL_NOTIFY_ADMIN_VALIDATION_REJECTED_CC(true, false),
+	
+	EMAIL_NOTIFY_ADMIN_VALIDATION_REJECTED_FROM(true, false),
+	
+	EMAIL_NOTIFY_ADMIN_VALIDATION_REJECTED_SUBJECT(true, false),
+	
+	EMAIL_NOTIFY_ADMIN_VALIDATION_REJECTED_CONTENT(true, false),
+	
+	DATA_REQUEST_TABLE(true, false),
+	
+	DATA_ATTACHMENT_TABLE(true, false),
+	
+	DATA_ITERATION_TABLE(true, false),
+	
+	DATA_REQUEST_VIEW(true, false),
+	
 	DATA_REQUEST_FIELD_ID(true, false),
 	
 	DATA_REQUEST_FIELD_ITERATION(true, false),
@@ -244,8 +284,6 @@ public enum ApplicationProperties {
 	
 	DATA_REQUEST_FIELD_DATE_RESOLVED(true, false),
 	
-	DATA_REQUEST_FIELD_RESOLUTION(true, false),
-	
 	DATA_REQUEST_FIELD_ASSIGNED_VALIDATOR(true, false),
 	
 	DATA_REQUEST_FIELD_ASSIGNED_TO_VALIDATOR(true, false),
@@ -259,6 +297,12 @@ public enum ApplicationProperties {
 	DATA_REQUEST_FIELD_LAST_UPDATED_DATE(true, false),
 	
 	DATA_REQUEST_FIELD_PII_FLAG(true, false),
+	
+	DATA_REQUEST_FIELD_PROCESS_INSTANCE_ID(true, false),
+	
+	DATA_REQUEST_FIELD_CANDIDATE_GROUP(true, false),
+	
+	DATA_REQUEST_FIELD_ASSIGNEE(true, false),
 	
 	DATA_REQUEST_WORKFLOW_REQUEST_REJECTED_BY_ADMIN(true, false),
 	
@@ -293,8 +337,28 @@ public enum ApplicationProperties {
 	DATA_REQUEST_STATUS_VALIDATED(true, false),
 
 	DATA_REQUEST_STATUS_ON_HOLD(true, false),
+
+	DATA_REQUEST_STATUS_VALIDATION_REJECTED(true, false),
 	
-	DATA_REQUEST_TYPES(true, true);
+	DATA_REQUEST_TYPES(true, true),
+	
+	ATTACHMENT_FIELD_ID(true, false),
+	
+	ATTACHMENT_FIELD_REQUEST_ID(true, false),
+	
+	ATTACHMENT_FIELD_FILE_NAME(true, false),
+	
+	ATTACHMENT_FIELD_FILE_TYPE(true, false),
+	
+	ATTACHMENT_FIELD_FILE_SIZE(true, false),
+	
+	ATTACHMENT_FIELD_FILE_CONTENT(true, false),
+	
+	ITERATION_FIELD_PARENT_ID(true, false),
+	
+	ITERATION_FIELD_ITERATION(true, false),
+	
+	ITERATION_FIELD_CHILD_ID(true, false);
 	
 	private static final String LIST_DELIMITER = "\\|";
 	
