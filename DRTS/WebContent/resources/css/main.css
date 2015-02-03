@@ -20,7 +20,8 @@ img
 
 .grid header .col-1-1,
 .grid header.col-1-1,
-#site-logo.col-6-12
+#site-logo.col-6-12,
+footer nav.right
 {
     padding-right: 0;
 }
@@ -129,6 +130,29 @@ p
 
 /*
  * TOP MENU
+ */
+ 
+#header-wrapper header nav ul li
+{
+    float: right;
+}
+
+#header-wrapper header nav ul li a
+{
+    color: #000000;
+    font-family: "News Cycle",Arial,Tahoma,sans-serif;
+    font-size: 0.75em;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+
+#header-wrapper header nav ul li a:hover
+{
+    text-decoration: underline;
+}
+
+/*
+ * MAIN MENU
  */
 
 #menu-wrapper
@@ -461,9 +485,10 @@ section form.col-1-1
  * FOOTER
  */
 
-footer
+.grid footer
 {
     margin-top: 10px;
+    padding-right: 0;
 }
 
 footer nav ul li
@@ -485,6 +510,11 @@ footer nav ul li a
     font-size: 0.7em;
 }
 
+footer nav.right ul
+{
+    float: right;
+}
+
 /*
  * TABLES
  */
@@ -497,7 +527,6 @@ table
 	border-right: 1px solid #000000;
 	clear: both;
 	margin: 0;
-	/*table-layout:fixed;*/
 }
 
 th

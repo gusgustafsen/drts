@@ -1,5 +1,15 @@
 $(document).ready(function(){
 	
+	// Set the unload message whenever any input element get changed.
+    $('#request-form :input').on('change', function() {
+        setConfirmUnload(true);
+    });
+
+    // Turn off the unload message whenever a form get submitted properly.
+    $('form#request-form').on('submit', function() {
+        setConfirmUnload(false);
+    });
+	
 	$("#fileuploader").uploadFile({
 		url: "/drts/file",
 		multiple: true,
@@ -83,4 +93,10 @@ $(document).ready(function(){
 		}
 	);
 });
+
+function setConfirmUnload(on)
+{
+    var message = "You have made changes to the request. Do you want to leave the page without saving the changes?";
+    window.onbeforeunload = (on) ? function() { return message; } : null;
+}
 
