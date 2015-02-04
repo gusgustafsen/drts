@@ -2,9 +2,13 @@ package gov.ed.fsa.drts.dataaccess;
 
 import gov.ed.fsa.drts.object.Attachment;
 import gov.ed.fsa.drts.object.AuditField;
+import gov.ed.fsa.drts.bean.OpenClosedReqBean;
+import gov.ed.fsa.drts.bean.assignedSmeBean;
+import gov.ed.fsa.drts.bean.overdueReportBean;
 import gov.ed.fsa.drts.object.DataRequest;
 import gov.ed.fsa.drts.util.ApplicationProperties;
 import gov.ed.fsa.drts.util.Utils;
+import gov.ed.fsa.drts.bean.AverageAgeBean;
 
 import java.sql.Blob;
 import java.sql.Connection;
@@ -170,6 +174,18 @@ public class DataLayer {
 															+ ApplicationProperties.AUDIT_FIELD_MODIFIED_DATE.getStringValue() + ", "
 															+ ApplicationProperties.AUDIT_FIELD_MODIFIED_BY.getStringValue()
 															+ ") VALUES (?, ?, ?, ?, ?, SYSDATE, ?)";
+	
+	
+	private static final String QUERY_UPDATE_DATA_REQUEST_REJECTED_BY_SME = "UPDATE DRTS_HISTORY SET candidate_group = ?, assignee = ?, request_status = ?, sme_comments = ? WHERE request_number = ?";
+	
+	private static final String QUERY_GET_OPEN_CLOSED_REQS = "select * from OPEN_CLOSED_REQUESTS ORDER BY %s %s";
+		
+	private static final String QUERY_GET_SME_ASSIGNED_REPORT = "select * from SME_ASSIGNED_REPORT ORDER BY %s %s";
+		
+	private static final String QUERY_GET_AVERAGE_AGE_REPORT = "select (sysdate-%d) as REPORT_DATE, NUM_OPEN_REQUESTS, TOTAL_AGE, ROUND(((coalesce(TOTAL_AGE,0))/(case NUM_OPEN_REQUESTS when 0 then 1 else NUM_OPEN_REQUESTS end)),0) as AVG_AGE from(select count(REQUEST_NUMBER) as NUM_OPEN_REQUESTS, SUM(trunc(sysdate-%d) - trunc(DRT_REQUEST_DATE)) as TOTAL_AGE from DRTS_HISTORY where DRT_REQUEST_DATE < (sysdate-%d) and ((CLOSED_DATE is null) or (CLOSED_DATE > (sysdate-%d))))";
+		
+	private static final String QUERY_OVERDUE_REPORT = "select * from OVERDUE_REQUESTS ORDER BY %s %s";
+	
 	
 	public static DataLayer getInstance()
 	{
@@ -2186,4 +2202,275 @@ public class DataLayer {
 		
 		return request;
 	}
+	
+	// *** Added by Denis for Reports ***
+	
+	// Get Open-Closed Requests by Day beans
+	public List<OpenClosedReqBean> getOpenClosedReqReport(String sortField, boolean sortAsc)
+			throws Exception
+		{
+			List<OpenClosedReqBean> beans = new ArrayList<OpenClosedReqBean>();
+			
+			Connection con = null;
+			ResultSet resultSet = null;
+			String sortDir = null;
+			String formattedQuery = null;
+				        
+			try 
+			{
+				sortDir = sortAsc ? "ASC" : "DESC";
+				formattedQuery = String.format(QUERY_GET_OPEN_CLOSED_REQS, sortField, sortDir);
+				        	
+				con = OracleFactory.createConnection();		
+				PreparedStatement preparedStatement = con.prepareStatement(formattedQuery);
+						
+				resultSet = preparedStatement.executeQuery();			
+				while(resultSet.next())
+				{
+					OpenClosedReqBean bean = new OpenClosedReqBean();
+					bean.setReportDate(resultSet.getDate("DATE_DAY"));
+					bean.setOpenedRequests(resultSet.getInt("OPENED_REQS"));
+					bean.setClosedRequests(resultSet.getInt("CLOSED_REQS"));
+					beans.add(bean);
+				}
+			}
+			catch(SQLException sqle)
+			{
+				logger.error("A SQL exception occured in getOpenClosedReqReport().", sqle);
+				throw sqle;
+			} 
+			catch(Exception e) 
+			{
+				logger.error("An exception occured in getOpenClosedReqReport().", e);
+				throw e;
+			}
+			finally
+			{
+				try 
+				{
+					if(con != null)
+					{
+						if(resultSet != null) 
+						{
+							resultSet.close();
+						}	
+						con.close();
+					}
+				}
+				catch(SQLException sqle) 
+				{
+					logger.error("A SQL exception occured while trying to close the connection in getOpenClosedReqReport().", sqle);
+				}
+			}
+				
+			if(beans.size() > 0)
+			{
+				return beans;
+			}		
+			return null;
+		}
+	
+		// Get Assigned SME beans
+		public List<assignedSmeBean> getAssignedSmeReport(String sortField, boolean sortAsc)
+				throws Exception
+			{
+				List<assignedSmeBean> beans = new ArrayList<assignedSmeBean>();
+				
+				Connection con = null;
+				ResultSet resultSet = null;
+				String sortDir = null;
+				String formattedQuery = null;
+					        
+				try 
+				{
+					sortDir = sortAsc ? "ASC" : "DESC";
+					formattedQuery = String.format(QUERY_GET_SME_ASSIGNED_REPORT, sortField, sortDir);
+					        	
+					con = OracleFactory.createConnection();		
+					PreparedStatement preparedStatement = con.prepareStatement(formattedQuery);
+							
+					resultSet = preparedStatement.executeQuery();			
+					while(resultSet.next())
+					{
+						assignedSmeBean bean = new assignedSmeBean();
+						bean.setName(resultSet.getString("SME"));
+						bean.setSmeCount(resultSet.getInt("SMECNT"));
+						bean.setValidatorCount(resultSet.getInt("VALSMECNT"));
+						bean.setTotalCount(resultSet.getInt("TOTAL"));
+						beans.add(bean);
+					}
+				}
+				catch(SQLException sqle)
+				{
+					logger.error("A SQL exception occured in getAssignedSmeReport().", sqle);
+					throw sqle;
+				} 
+				catch(Exception e) 
+				{
+					logger.error("An exception occured in getAssignedSmeReport().", e);
+					throw e;
+				}
+				finally
+				{
+					try 
+					{
+						if(con != null)
+						{
+							if(resultSet != null) 
+							{
+								resultSet.close();
+							}	
+							con.close();
+						}
+					}
+					catch(SQLException sqle) 
+					{
+						logger.error("A SQL exception occured while trying to close the connection in getAssignedSmeReport().", sqle);
+					}
+				}
+					
+				if(beans.size() > 0)
+				{
+					return beans;
+				}		
+				return null;
+			}
+
+		
+		
+		// Get Average Age Report beans
+		public List<AverageAgeBean> getAverageAgeReport(int iDay)
+				throws Exception
+			{
+				List<AverageAgeBean> beans = new ArrayList<AverageAgeBean>();
+				
+				Connection con = null;
+				ResultSet resultSet = null;
+				String formattedQuery = null;
+					        
+				try 
+				{
+					formattedQuery = String.format(QUERY_GET_AVERAGE_AGE_REPORT, iDay, iDay, iDay, iDay);
+					        	
+					con = OracleFactory.createConnection();		
+					PreparedStatement preparedStatement = con.prepareStatement(formattedQuery);
+							
+					resultSet = preparedStatement.executeQuery();			
+					if(resultSet.next())
+					{
+						AverageAgeBean bean = new AverageAgeBean();
+						bean.setReportDate(resultSet.getDate("REPORT_DATE"));
+						bean.setRequestNumber(resultSet.getInt("NUM_OPEN_REQUESTS"));
+						bean.setTotalAge(resultSet.getInt("TOTAL_AGE"));
+						bean.setAverageAge(resultSet.getInt("AVG_AGE"));
+						beans.add(bean);
+					}
+				}
+				catch(SQLException sqle)
+				{
+					logger.error("A SQL exception occured in getAverageAgeReport().", sqle);
+					throw sqle;
+				} 
+				catch(Exception e) 
+				{
+					logger.error("An exception occured in getAverageAgeReport().", e);
+					throw e;
+				}
+				finally
+				{
+					try 
+					{
+						if(con != null)
+						{
+							if(resultSet != null) 
+							{
+								resultSet.close();
+							}	
+							con.close();
+						}
+					}
+					catch(SQLException sqle) 
+					{
+						logger.error("A SQL exception occured while trying to close the connection in getAverageAgeReport().", sqle);
+					}
+				}
+					
+				if(beans.size() > 0)
+				{
+					return beans;
+				}		
+				return null;
+			}		
+
+		// Get Overdue Request beans
+				public List<overdueReportBean> getOverdueReport(String sortField, boolean sortAsc)
+						throws Exception
+					{
+						List<overdueReportBean> beans = new ArrayList<overdueReportBean>();
+						
+						Connection con = null;
+						ResultSet resultSet = null;
+						String sortDir = null;
+						String formattedQuery = null;
+							        
+						try 
+						{
+							sortDir = sortAsc ? "ASC" : "DESC";
+							formattedQuery = String.format(QUERY_OVERDUE_REPORT, sortField, sortDir);
+							        	
+							con = OracleFactory.createConnection();		
+							PreparedStatement preparedStatement = con.prepareStatement(formattedQuery);
+									
+							resultSet = preparedStatement.executeQuery();			
+							while(resultSet.next())
+							{
+								overdueReportBean bean = new overdueReportBean();
+								bean.setTrackingNumber(resultSet.getString("TRACKING_NUMBER"));
+								bean.setDescription(resultSet.getString("REQUEST_DESCR"));
+								bean.setRequestorName(resultSet.getString("REQUESTOR_NAME"));
+								bean.setStatus(resultSet.getString("REQUEST_STATUS"));
+								bean.setUrgencyFlag(resultSet.getString("URGENCY_FLAG"));
+								bean.setRequestedDueDate(resultSet.getDate("REQUESTED_DUE_DATE"));
+								bean.setSme(resultSet.getString("SME"));
+								bean.setRequestType(resultSet.getString("REQUEST_TYPE"));
+								bean.setSystemName(resultSet.getString("SYSTEM_NAME"));
+								beans.add(bean);
+							}
+						}
+						catch(SQLException sqle)
+						{
+							logger.error("A SQL exception occured in getOverdueReport().", sqle);
+							throw sqle;
+						} 
+						catch(Exception e) 
+						{
+							logger.error("An exception occured in getOverdueReport().", e);
+							throw e;
+						}
+						finally
+						{
+							try 
+							{
+								if(con != null)
+								{
+									if(resultSet != null) 
+									{
+										resultSet.close();
+									}	
+									con.close();
+								}
+							}
+							catch(SQLException sqle) 
+							{
+								logger.error("A SQL exception occured while trying to close the connection in getOverdueReport().", sqle);
+							}
+						}
+							
+						if(beans.size() > 0)
+						{
+							return beans;
+						}		
+						return null;
+					}		
+			
 }

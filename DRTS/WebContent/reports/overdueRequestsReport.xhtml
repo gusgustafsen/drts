@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+
+<html xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:pf="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core" lang="en-us"
+	xmlns="http://www.w3.org/1999/xhtml" class="no-js">
+
+	<c:set var="root" value="#{request.requestURL.substring(0, request.requestURL.length() - request.requestURI.length())}#{request.contextPath}/" scope="request" />
+
+    <h:head>
+    	
+    	<ui:include src="#{root}includes/scripts.xhtml" />
+
+	   	<title>Data Request Tracking System | Federal Student Aid</title>
+    
+    </h:head>
+    
+    <h:body class="section-four">
+    
+    	<ui:include src="#{root}includes/header.xhtml">
+    		<ui:param name="active" value="4" />
+    	</ui:include>
+    	
+    	<div id="content-wrapper">
+            <div class="grid">
+                <div id="breadcrumb" class="col-1-1 mobile-col-1-1">
+                    <h:link value="Home" outcome="#{userSession.user.homePage}" /> » Overdue Requests Report
+                </div>
+                <section class="col-1-1 mobile-col-1-1">
+                    <header id="content-header" class="col-1-1 mobile-col-1-1">
+                        <span class="content-header-box">
+                            <h1>Overdue Requests Report</h1>
+                        </span>
+                    </header>
+                    <div id="main-content" class="col-1-1 mobile-col-1-1">
+                        <section class="col-1-1 mobile-col-1-1">
+                        
+                        	<h:form id="reportForm" styleClass="col-1-1 mobile-col-1-1">
+                        	
+                        			   <p>This report displays the list all overdue requests sorted by requested due date.</p>
+                        	           <h:panelGroup layout="block" styleClass="errorMessage" rendered="#{not empty overdueReport.errorMessage}">
+                        					<p class="errorMessage">#{overdueReport.errorMessage}</p>
+                        				</h:panelGroup>
+                        				
+                        				<p>&#160;</p>
+                        	
+										<pf:dataTable id="tbl1" var="row" styleClass="drtsTable"
+											value="#{overdueReport.rows}"
+											paginator="true" rows="10">
+											<pf:columnGroup type="header">
+												<pf:row>  
+													<pf:column headerText="Request Number"/>  
+													<pf:column headerText="Request Details"/>
+													<pf:column headerText="Requestor"/>
+													<pf:column headerText="Status"/>
+													<pf:column headerText="Priority"/>
+													<pf:column headerText="Requested Due Date"/>
+													<pf:column headerText="Assigned SME"/>
+													<pf:column headerText="Type"/>
+													<pf:column headerText="System"/>
+												</pf:row>  
+											</pf:columnGroup>
+												<pf:column styleClass="drtsReportColumn" sortBy="#{row.trackingNumber}">    
+											        <h:outputText value=" #{row.trackingNumber}"/>  
+											    </pf:column>
+											    <pf:column styleClass="drtsReportColumn" >  
+											        <h:outputText value=" #{row.descriptionTruncated}"/>  
+											    </pf:column>
+											    <pf:column styleClass="drtsReportColumn" >  
+											        <h:outputText value=" #{row.requestorName}"/>  
+											    </pf:column>
+											    <pf:column styleClass="drtsReportColumn" >  
+											        <h:outputText value=" #{row.status}"/>  
+											    </pf:column>
+											    <pf:column styleClass="drtsReportColumn" >  
+											        <h:outputText value=" #{row.urgencyFlag}"/>  
+											    </pf:column>
+											    <pf:column styleClass="drtsReportColumn" sortBy="#{row.requestedDueDate}">  
+											        <h:outputText value=" #{row.requestedDueDate}"/>  
+											    </pf:column>
+											    <pf:column styleClass="drtsReportColumn" >  
+											        <h:outputText value=" #{row.sme}"/>  
+											    </pf:column>
+											    <pf:column styleClass="drtsReportColumn" >  
+											        <h:outputText value=" #{row.requestType}"/>  
+											    </pf:column>
+											    <pf:column styleClass="drtsReportColumn" >  
+											        <h:outputText value=" #{row.systemName}"/>  
+											    </pf:column>
+										</pf:dataTable>
+										
+										<p>&#160;</p>
+										
+										<div id="buttons">
+							            	<h:commandButton id="rptExportPdf" styleClass="pull-right" value="Export Table to PDF" rendered="#{userSession.allowedToExportReports eq true}">
+							                	<pe:exporter type="pdf" tableTitle="Overdue Requests" target=":reportForm:tbl1" fileName="overdue_requests_report.pdf" subTable="false" orientation="Landscape"/>               
+							            	</h:commandButton>
+
+	                                	</div>
+    	
+    						</h:form>
+					    	
+                        </section>
+                    </div>
+                </section>
+            </div>
+        </div>
+    	
+    </h:body>
+    
+    
+</html>

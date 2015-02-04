@@ -26,4 +26,8 @@
 	<classpathentry kind="lib" path="/opt/IBM/WebSphere/drtslib/commons-email-1.2.jar"/>
 	<classpathentry kind="lib" path="/opt/IBM/WebSphere/drtslib/mail-1.4.1.jar"/>
 	<classpathentry kind="output" path="WebContent/WEB-INF/classes"/>
+	<classpathentry kind="lib" path="/opt/IBM/WebSphere/drtslib/primefaces-5.1.jar"/>
+	<classpathentry kind="lib" path="/opt/IBM/WebSphere/drtslib/primefaces-extensions-3.0.0-20140829.162811-10.jar"/>
+	<classpathentry kind="lib" path="/opt/IBM/WebSphere/drtslib/itext-2.1.7.jar"/>
+	<classpathentry kind="lib" path="/opt/IBM/WebSphere/drtslib/itextpdf-5.5.2.jar"/>
 </classpath>
