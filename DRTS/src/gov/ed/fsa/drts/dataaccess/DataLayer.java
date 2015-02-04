@@ -1,6 +1,7 @@
 package gov.ed.fsa.drts.dataaccess;
 
 import gov.ed.fsa.drts.object.Attachment;
+import gov.ed.fsa.drts.object.AuditField;
 import gov.ed.fsa.drts.object.DataRequest;
 import gov.ed.fsa.drts.util.ApplicationProperties;
 import gov.ed.fsa.drts.util.Utils;
@@ -159,6 +160,16 @@ public class DataLayer {
 													+ "WHERE %s ORDER BY %s %s) T2) T3 WHERE ROW_NUM > ?  AND ROW_NUM <= ?";
 	
 	private static final String QUERY_REPORT_1_COUNT = "SELECT COUNT(*) FROM " + ApplicationProperties.DATA_REQUEST_TABLE.getStringValue() + " WHERE %s";
+	
+	private static final String QUERY_INSERT_AUDIT_FIELD = "INSERT INTO " + ApplicationProperties.DATA_AUDIT_TABLE.getStringValue() + " ("
+															+ ApplicationProperties.AUDIT_FIELD_ID.getStringValue() + ", "
+															+ ApplicationProperties.AUDIT_FIELD_REQUEST_NUMBER.getStringValue() + ", "
+															+ ApplicationProperties.AUDIT_FIELD_FIELD_NAME.getStringValue() + ", "
+															+ ApplicationProperties.AUDIT_FIELD_OLD_VALUE.getStringValue() + ", "
+															+ ApplicationProperties.AUDIT_FIELD_NEW_VALUE.getStringValue() + ", "
+															+ ApplicationProperties.AUDIT_FIELD_MODIFIED_DATE.getStringValue() + ", "
+															+ ApplicationProperties.AUDIT_FIELD_MODIFIED_BY.getStringValue()
+															+ ") VALUES (?, ?, ?, ?, ?, SYSDATE, ?)";
 	
 	public static DataLayer getInstance()
 	{
@@ -2035,6 +2046,63 @@ public class DataLayer {
 		}
 				
 		return count;
+	}
+	
+	public void insertAuditFields(List<AuditField> fields)
+	{
+		Connection oracle_connection = null;
+		int sql_result;
+		
+		try 
+		{
+			oracle_connection = OracleFactory.createConnection();
+			
+			PreparedStatement prepared_statement = null;
+			
+			for(AuditField field : fields)
+			{
+				sql_result = 0;
+				
+				prepared_statement = oracle_connection.prepareStatement(QUERY_INSERT_AUDIT_FIELD);
+				
+				prepared_statement.setString(1, field.getId());
+				prepared_statement.setString(2, field.getRequestId());
+				prepared_statement.setString(3, field.getColumnName());
+				prepared_statement.setString(4, field.getOldValue());
+				prepared_statement.setString(5, field.getNewValue());
+				prepared_statement.setString(6, field.getModifiedBy());
+				
+				sql_result = prepared_statement.executeUpdate();
+				
+				if(sql_result != 1)
+				{
+					logger.error("Insert statement did not insert exactly one row. Inserted: " + sql_result);
+					throw new Exception();
+				}
+			}
+		}
+		catch(SQLException sqle) 
+		{
+			logger.error("A SQL exception occured in insertAuditFields().", sqle);
+		} 
+		catch(Exception e) 
+		{
+			logger.error("An exception occured in insertAuditFields().", e);
+		}
+		finally
+		{
+			try 
+			{
+				if(oracle_connection != null)
+				{
+					oracle_connection.close();
+				}
+			}
+			catch(SQLException sqle) 
+			{
+				logger.error("A SQL exception occured while trying to close the connection in insertAuditFields().", sqle);
+			}
+		}
 	}
 	
 	private String buildWhereClause(LinkedHashMap<String, String> search_parameters, boolean date_range)

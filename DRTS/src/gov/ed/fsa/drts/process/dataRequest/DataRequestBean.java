@@ -3,6 +3,7 @@ package gov.ed.fsa.drts.process.dataRequest;
 import gov.ed.fsa.drts.bean.PageUtil;
 import gov.ed.fsa.drts.dataaccess.DataLayer;
 import gov.ed.fsa.drts.object.Attachment;
+import gov.ed.fsa.drts.object.AuditField;
 import gov.ed.fsa.drts.object.DataRequest;
 import gov.ed.fsa.drts.util.ApplicationProperties;
 import gov.ed.fsa.drts.util.Utils;
@@ -93,6 +94,12 @@ public class DataRequestBean extends PageUtil implements Serializable {
 	 */
 	private String new_comments = null;
 	
+	private String original_description = null;
+	private String original_sme = null;
+	private String original_status = null;
+	private String original_type = null;
+	private String original_system = null;
+	
 	/**
 	 * A map of tokens that have to be replaced with request values 
 	 * in the emails that are sent.
@@ -153,6 +160,11 @@ public class DataRequestBean extends PageUtil implements Serializable {
 				}
 			}
 		}
+		this.original_description = this.current_data_request.getDescription();
+		this.original_sme = this.current_data_request.getAssignedSme();
+		this.original_status = this.current_data_request.getStatus();
+		this.original_type = this.current_data_request.getType();
+		this.original_system = this.current_data_request.getSystem();
 		
 		setSMEUsers();
 		setCreators();
@@ -397,6 +409,33 @@ public class DataRequestBean extends PageUtil implements Serializable {
 			// update data request, workflow and email variables
 			updateVariables(status, assigned_sme, assigned_validator);
 			
+			List<AuditField> updated_fields = new ArrayList<AuditField>();
+			
+			if(Utils.areStringsEqual(this.original_description, this.current_data_request.getDescription()) == false)
+			{
+				updated_fields.add(new AuditField(this.current_data_request.getId(), ApplicationProperties.DATA_REQUEST_FIELD_DESCRIPTION.getStringValue(), this.original_description, this.current_data_request.getDescription(), this.userSession.getUser().getId()));
+			}
+			
+			if(Utils.areStringsEqual(this.original_sme, this.current_data_request.getAssignedSme()) == false)
+			{
+				updated_fields.add(new AuditField(this.current_data_request.getId(), ApplicationProperties.DATA_REQUEST_FIELD_ASSIGNED_SME.getStringValue(), this.original_sme, this.current_data_request.getAssignedSme(), this.userSession.getUser().getId()));
+			}
+			
+			if(Utils.areStringsEqual(this.original_status, this.current_data_request.getStatus()) == false)
+			{
+				updated_fields.add(new AuditField(this.current_data_request.getId(), ApplicationProperties.DATA_REQUEST_FIELD_STATUS.getStringValue(), this.original_status, this.current_data_request.getStatus(), this.userSession.getUser().getId()));
+			}
+			
+			if(Utils.areStringsEqual(this.original_system, this.current_data_request.getSystem()) == false)
+			{
+				updated_fields.add(new AuditField(this.current_data_request.getId(), ApplicationProperties.DATA_REQUEST_FIELD_SYSTEM.getStringValue(), this.original_system, this.current_data_request.getSystem(), this.userSession.getUser().getId()));
+			}
+			
+			if(Utils.areStringsEqual(this.original_type, this.current_data_request.getType()) == false)
+			{
+				updated_fields.add(new AuditField(this.current_data_request.getId(), ApplicationProperties.DATA_REQUEST_FIELD_TYPE.getStringValue(), this.original_type, this.current_data_request.getType(), this.userSession.getUser().getId()));
+			}
+			
 			// user action resulted in a completion of a workflow task
 			if(complete_task == true)
 			{
@@ -405,6 +444,11 @@ public class DataRequestBean extends PageUtil implements Serializable {
 				this.task_service.complete(this.current_data_request.getCurrentTaskId(), this.request_variables);
 				
 				DataLayer.getInstance().updateDataRequest(this.current_data_request.getId(), this.request_variables, candidate_group, assignee);
+				
+				if(updated_fields.size() > 0)
+				{
+					DataLayer.getInstance().insertAuditFields(updated_fields);
+				}
 			}
 			// user action resulted in a new data request
 			else if(start_new_request == true)
@@ -426,6 +470,11 @@ public class DataRequestBean extends PageUtil implements Serializable {
 				logger.info("Updating the request");
 				
 				DataLayer.getInstance().updateDataRequest(this.current_data_request.getId(), this.request_variables, candidate_group, assignee);
+				
+				if(updated_fields.size() > 0)
+				{
+					DataLayer.getInstance().insertAuditFields(updated_fields);
+				}
 			}
 		}
 		catch(Exception e)

@@ -103,4 +103,21 @@ public class Utils {
 		
 		return false;
 	}
+
+	public static boolean areStringsEqual(String string1, String string2)
+	{
+		if(isStringEmpty(string1) == true && isStringEmpty(string2) == true)
+		{
+			return true;
+		}
+		else if((isStringEmpty(string1) == true && isStringEmpty(string2) == false) ||
+				(isStringEmpty(string1) == false && isStringEmpty(string2) == true))
+		{
+			return false;
+		}
+		else
+		{
+			return string1.equalsIgnoreCase(string2);
+		}
+	}
 }

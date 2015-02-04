@@ -236,6 +236,8 @@ public enum ApplicationProperties {
 	
 	DATA_ITERATION_TABLE(true, false),
 	
+	DATA_AUDIT_TABLE(true, false),
+	
 	DATA_REQUEST_VIEW(true, false),
 	
 	DATA_REQUEST_FIELD_ID(true, false),
@@ -362,7 +364,21 @@ public enum ApplicationProperties {
 	
 	ITERATION_FIELD_ITERATION(true, false),
 	
-	ITERATION_FIELD_CHILD_ID(true, false);
+	ITERATION_FIELD_CHILD_ID(true, false),
+	
+	AUDIT_FIELD_ID(true, false),
+	
+	AUDIT_FIELD_REQUEST_NUMBER(true, false),
+
+	AUDIT_FIELD_FIELD_NAME(true, false),
+	
+	AUDIT_FIELD_OLD_VALUE(true, false),
+	
+	AUDIT_FIELD_NEW_VALUE(true, false),
+
+	AUDIT_FIELD_MODIFIED_DATE(true, false),
+	
+	AUDIT_FIELD_MODIFIED_BY(true, false);
 	
 	private static final String LIST_DELIMITER = "\\|";
 	
