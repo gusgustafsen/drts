@@ -7,6 +7,7 @@ import gov.ed.fsa.drts.bean.overdueReportBean;
 import gov.ed.fsa.drts.object.DataRequest;
 import gov.ed.fsa.drts.util.ApplicationProperties;
 import gov.ed.fsa.drts.util.Utils;
+import gov.ed.fsa.drts.bean.AverageAgeBean;
 
 import java.sql.Blob;
 import java.sql.Connection;
@@ -162,6 +163,18 @@ public class DataLayer {
 													+ "WHERE %s ORDER BY %s %s) T2) T3 WHERE ROW_NUM > ?  AND ROW_NUM <= ?";
 	
 	private static final String QUERY_REPORT_1_COUNT = "SELECT COUNT(*) FROM " + ApplicationProperties.DATA_REQUEST_TABLE.getStringValue() + " WHERE %s";
+	
+	
+	private static final String QUERY_UPDATE_DATA_REQUEST_REJECTED_BY_SME = "UPDATE DRTS_HISTORY SET candidate_group = ?, assignee = ?, request_status = ?, sme_comments = ? WHERE request_number = ?";
+	
+	private static final String QUERY_GET_OPEN_CLOSED_REQS = "select * from OPEN_CLOSED_REQUESTS ORDER BY %s %s";
+		
+	private static final String QUERY_GET_SME_ASSIGNED_REPORT = "select * from SME_ASSIGNED_REPORT ORDER BY %s %s";
+		
+	private static final String QUERY_GET_AVERAGE_AGE_REPORT = "select (sysdate-%d) as REPORT_DATE, NUM_OPEN_REQUESTS, TOTAL_AGE, ROUND(((coalesce(TOTAL_AGE,0))/(case NUM_OPEN_REQUESTS when 0 then 1 else NUM_OPEN_REQUESTS end)),0) as AVG_AGE from(select count(REQUEST_NUMBER) as NUM_OPEN_REQUESTS, SUM(trunc(sysdate-%d) - trunc(DRT_REQUEST_DATE)) as TOTAL_AGE from DRTS_HISTORY where DRT_REQUEST_DATE < (sysdate-%d) and ((CLOSED_DATE is null) or (CLOSED_DATE > (sysdate-%d))))";
+		
+	private static final String QUERY_OVERDUE_REPORT = "select * from OVERDUE_REQUESTS ORDER BY %s %s";
+	
 	
 	public static DataLayer getInstance()
 	{
