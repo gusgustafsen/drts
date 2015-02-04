@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+
+<html xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:pf="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core" lang="en-us"
+	xmlns="http://www.w3.org/1999/xhtml" class="no-js">
+
+	<c:set var="root" value="#{request.requestURL.substring(0, request.requestURL.length() - request.requestURI.length())}#{request.contextPath}/" scope="request" />
+
+    <h:head>
+    	
+    	<ui:include src="#{root}includes/scripts.xhtml" />
+
+	   	<title>Data Request Tracking System | Federal Student Aid</title>
+    
+    </h:head>
+    
+    <h:body class="section-four">
+    
+    	<ui:include src="#{root}includes/header.xhtml">
+    		<ui:param name="active" value="4" />
+    	</ui:include>
+    	
+    	<div id="content-wrapper">
+            <div class="grid">
+                <div id="breadcrumb" class="col-1-1 mobile-col-1-1">
+                    <h:link value="Home" outcome="#{userSession.user.homePage}" /> » Requests Assigned to SMEs Report
+                </div>
+                <section class="col-1-1 mobile-col-1-1">
+                    <header id="content-header" class="col-1-1 mobile-col-1-1">
+                        <span class="content-header-box">
+                            <h1>Requests Assigned to SMEs Report</h1>
+                        </span>
+                    </header>
+                    <div id="main-content" class="col-1-1 mobile-col-1-1">
+                        <section class="col-1-1 mobile-col-1-1">
+                        
+                        	<h:form id="reportForm" styleClass="col-1-1 mobile-col-1-1">
+                        	
+                        				<p>This report displays he number of open requests assigned to each SME.</p>
+                        				<h:panelGroup layout="block" styleClass="errorMessage" rendered="#{not empty assignedSmeReport.errorMessage}">
+                        					<p class="errorMessage">#{assignedSmeReport.errorMessage}</p>
+                        				</h:panelGroup>
+                        				
+                        				<p>&#160;</p>
+                        				
+                        				<pf:chart type="pie" model="#{assignedSmeReport.pieModel}" style="width:800px;height:500px" />
+                        				
+                        				<p>&#160;</p>
+                        				
+										<pf:dataTable id="tbl1" var="row" styleClass="drtsTable"
+											value="#{assignedSmeReport.rows}"
+											paginator="false">
+											<pf:columnGroup type="header">
+												<pf:row>  
+													<pf:column headerText="SME Name"/>  
+													<pf:column headerText="Requests assigned for resolution"/>
+													<pf:column headerText="Requests assigned for validation"/>
+													<pf:column headerText="Total Number of Requests"/>
+												</pf:row>  
+											</pf:columnGroup>
+												<pf:column styleClass="drtsReportColumn" >  
+											        <h:outputText value=" #{row.name}"/>  
+											    </pf:column>
+											    <pf:column styleClass="drtsReportColumn" >  
+											        <h:outputText value=" #{row.smeCount}"/>  
+											    </pf:column>
+											    <pf:column styleClass="drtsReportColumn" >  
+											        <h:outputText value=" #{row.validatorCount}"/>  
+											    </pf:column>
+											    <pf:column styleClass="drtsReportColumn" >  
+											        <h:outputText value=" #{row.totalCount}"/>  
+											    </pf:column>
+										</pf:dataTable>
+										
+										<p>&#160;</p>
+										
+										<div id="buttons">
+							            	<h:commandButton id="rptExportPdf" styleClass="pull-right" value="Export Table to PDF" rendered="#{userSession.allowedToExportReports eq true}">
+							                	<pe:exporter type="pdf" tableTitle="Requests Assigned to SMEs Report" target=":reportForm:tbl1" fileName="assigned_sme_report.pdf" subTable="false" orientation="Landscape"/>               
+							            	</h:commandButton>
+
+	                                	</div>
+    	
+    						</h:form>
+					    	
+                        </section>
+                    </div>
+                </section>
+            </div>
+        </div>
+    	
+    </h:body>
+    
+    
+</html>

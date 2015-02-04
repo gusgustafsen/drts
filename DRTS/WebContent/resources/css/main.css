@@ -1278,3 +1278,14 @@ ui-datepicker a.ui-datepicker-prev-hover
     margin-left: 1px;
     margin-top: 10px;
 }
+
+.drtsReportColumn
+{
+	text-align: center;
+}
+
+.errorMessage
+{
+	color: red;	
+	font-weight: bold;
+}
