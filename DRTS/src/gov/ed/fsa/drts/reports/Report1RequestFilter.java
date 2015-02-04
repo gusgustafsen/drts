@@ -70,7 +70,10 @@ public class Report1RequestFilter extends PageUtil implements Serializable {
 			search_parameters.put(ApplicationProperties.DATA_REQUEST_FIELD_SYSTEM.getStringValue(), this.system);
 		}
 		
-		search_parameters.put(ApplicationProperties.DATA_REQUEST_FIELD_URGENT.getStringValue(), Boolean.valueOf(this.urgent).toString());
+		if(this.urgent == true)
+		{
+			search_parameters.put(ApplicationProperties.DATA_REQUEST_FIELD_URGENT.getStringValue(), Boolean.valueOf(this.urgent).toString());
+		}
 		
 		this.table_paginator = new ReportTablePaginator(1, this.userSession, this.display_id, this.keyword, search_parameters, this.requested_due_date_from, 
 															this.requested_due_date_to, this.resolved_date_from, this.resolved_date_to, 

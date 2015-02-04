@@ -235,6 +235,10 @@ public class DataRequestBean extends PageUtil implements Serializable {
 					assigned_sme = this.assigned_sme;
 					complete_task = true;
 				}
+				if(Utils.isStringEmpty(this.assigned_validator) == false)
+				{
+					assigned_validator = this.assigned_validator;
+				}
 				break;
 				
 			// administrator rejected a request
@@ -413,26 +417,33 @@ public class DataRequestBean extends PageUtil implements Serializable {
 			
 			if(Utils.areStringsEqual(this.original_description, this.current_data_request.getDescription()) == false)
 			{
+				System.out.println("description was changed.");
 				updated_fields.add(new AuditField(this.current_data_request.getId(), ApplicationProperties.DATA_REQUEST_FIELD_DESCRIPTION.getStringValue(), this.original_description, this.current_data_request.getDescription(), this.userSession.getUser().getId()));
 			}
 			
-			if(Utils.areStringsEqual(this.original_sme, this.current_data_request.getAssignedSme()) == false)
+			System.out.println("original sme: " + this.original_sme);
+			System.out.println("current sme: " + this.current_data_request.getAssignedSme());
+			if(Utils.areStringsEqual(this.original_sme, this.assigned_sme) == false)
 			{
-				updated_fields.add(new AuditField(this.current_data_request.getId(), ApplicationProperties.DATA_REQUEST_FIELD_ASSIGNED_SME.getStringValue(), this.original_sme, this.current_data_request.getAssignedSme(), this.userSession.getUser().getId()));
+				System.out.println("assigned sme was changed.");
+				updated_fields.add(new AuditField(this.current_data_request.getId(), ApplicationProperties.DATA_REQUEST_FIELD_ASSIGNED_SME.getStringValue(), this.original_sme, this.assigned_sme, this.userSession.getUser().getId()));
 			}
 			
-			if(Utils.areStringsEqual(this.original_status, this.current_data_request.getStatus()) == false)
+			if(Utils.areStringsEqual(this.original_status, status) == false)
 			{
-				updated_fields.add(new AuditField(this.current_data_request.getId(), ApplicationProperties.DATA_REQUEST_FIELD_STATUS.getStringValue(), this.original_status, this.current_data_request.getStatus(), this.userSession.getUser().getId()));
+				System.out.println("status was changed.");
+				updated_fields.add(new AuditField(this.current_data_request.getId(), ApplicationProperties.DATA_REQUEST_FIELD_STATUS.getStringValue(), this.original_status, status, this.userSession.getUser().getId()));
 			}
 			
 			if(Utils.areStringsEqual(this.original_system, this.current_data_request.getSystem()) == false)
 			{
+				System.out.println("system was changed.");
 				updated_fields.add(new AuditField(this.current_data_request.getId(), ApplicationProperties.DATA_REQUEST_FIELD_SYSTEM.getStringValue(), this.original_system, this.current_data_request.getSystem(), this.userSession.getUser().getId()));
 			}
 			
 			if(Utils.areStringsEqual(this.original_type, this.current_data_request.getType()) == false)
 			{
+				System.out.println("type was changed.");
 				updated_fields.add(new AuditField(this.current_data_request.getId(), ApplicationProperties.DATA_REQUEST_FIELD_TYPE.getStringValue(), this.original_type, this.current_data_request.getType(), this.userSession.getUser().getId()));
 			}
 			

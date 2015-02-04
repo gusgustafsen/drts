@@ -34,7 +34,7 @@ $(document).ready(function(){
 		},
 		onSuccess:function(files, data, xhr)
 		{
-			var html_addition = '<span class="form-text">' + data.uploaded_file_name + ' <a href="/drts/file?file_id=' + data.uploaded_file_id + '">View</a></span>';
+			var html_addition = '<span class="form-text">' + data.uploaded_file_name + ' <a href="/drts/file?file_id=' + data.uploaded_file_id + '" target="_blank">View</a></span>';
 			
 			$('#attachments').html($('#attachments').html() + html_addition);
 		}
@@ -65,11 +65,6 @@ $(document).ready(function(){
     		$(".date-from").datepicker("option", "maxDate", selectedDate);
     	}
     });
-    
-//    $(".datepicker-range").datepicker({
-//        minDate: new Date,
-//        dateFormat: 'mm-dd-yyyy'
-//    });
     
     $(".requested-date-from").datepicker({
     	dateFormat: 'mm-dd-yy',

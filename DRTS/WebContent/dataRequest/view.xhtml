@@ -55,13 +55,10 @@
                                             <li><a href="#general">General</a></li>
                                             <li><a href="#requestor">Requestor</a></li>
                                             <li><a href="#receiver">Receiver</a></li>
-                                            <h:panelGroup rendered="#{userSession.admin}">
+                                            <h:panelGroup rendered="#{userSession.admin and (dataRequest.statusDrafted eq false)}">
                                             	<li><a href="#assignment">Assignment</a></li>
                                             </h:panelGroup>
-                                            <h:panelGroup rendered="#{userSession.drt or userSession.sme or userSession.admin}">
-	                                            <li><a href="#resolution">Resolution</a></li>
-	                                        </h:panelGroup>
-	                                      	<h:panelGroup rendered="#{userSession.admin}">
+	                                      	<h:panelGroup rendered="#{userSession.admin and (dataRequest.statusDrafted eq false)}">
 	                                            <li><a href="#validation">Validation</a></li>
                                             </h:panelGroup>
                                             <li><a href="#attachments">Attachments</a></li>
@@ -161,18 +158,13 @@
                                             <h:outputText styleClass="form-text" value="#{dataRequest.receiverEmail}" rendered="#{dataRequest.statusDrafted eq false}" />
                                             <h:inputText value="#{dataRequest.receiverEmail}" rendered="#{dataRequest.statusDrafted eq true}" />
                                         </div>
-                                        <h:panelGroup rendered="#{userSession.admin}">
+                                        <h:panelGroup rendered="#{userSession.admin and (dataRequest.statusDrafted eq false)}">
 	                                        <div id="assignment">
 	                                        	<h:outputLabel value="Assigned To"/>
 	                                        	<h:outputText styleClass="form-text" value="#{dataRequest.assignedSme}" />
 		                                  	</div>
 	                                  	</h:panelGroup>
-	                                  	<h:panelGroup rendered="#{userSession.sme or userSession.admin}">
-	                                        <div id="resolution">
-	                                            
-	                                        </div>
-                                        </h:panelGroup>
-                                        <h:panelGroup rendered="#{userSession.admin}">
+                                        <h:panelGroup rendered="#{userSession.admin and (dataRequest.statusDrafted eq false)}">
 	                                        <div id="validation">
 	                                        	<h:outputLabel value="Assign To"/>
 	                                            <h:outputText styleClass="form-text" value="#{dataRequest.assignedValidator}" />
@@ -206,8 +198,10 @@
 				      						</div>
                                         </h:panelGroup>
                                         <div id="comments">
-										   	<h:outputLabel value="Add Comments"/>
-										   	<h:inputTextarea value="#{dataRequest.newComments}" />
+                                        	<h:panelGroup rendered="#{dataRequest.statusDrafted eq true}">
+											   	<h:outputLabel value="Add Comments"/>
+											   	<h:inputTextarea value="#{dataRequest.newComments}" />
+										   	</h:panelGroup>
 										   	
 										   	<h:outputLabel value="Comments"/>
 										   	<h:outputText value="#{dataRequest.comments}" escape="false" />

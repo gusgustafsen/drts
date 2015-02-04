@@ -56,7 +56,6 @@
                                             <li><a href="#requestor">Requestor</a></li>
                                             <li><a href="#receiver">Receiver</a></li>
                                             <li><a href="#assignment">Assignment</a></li>
-                                            <li><a href="#resolution">Resolution</a></li>
                                             <li><a href="#validation">Validation</a></li>
                                             <li><a href="#attachments">Attachments</a></li>
                                             <li><a href="#email">Email</a></li>
@@ -137,9 +136,6 @@
                                         	<h:outputLabel value="Assigned To"/>
                                         	<h:outputText styleClass="form-text" value="#{dataRequest.assignedSme}" />
 	                                  	</div>
-                                        <div id="resolution">
-                                            
-                                        </div>
                                         <div id="validation">
                                         	<h:outputLabel value="Assign To"/>
                                             <h:outputText styleClass="form-text" value="#{dataRequest.assignedValidator}" />
@@ -180,6 +176,9 @@
                                 
                                 <div class="form-control col-1-1 mobile-col-1-1">
                                 	<h:commandButton styleClass="button" value="Put On Hold" action="#{dataRequest.updateRequest(17)}" rendered="#{dataRequest.statusOnHold eq false}" />
+                                	<h:panelGroup rendered="#{userSession.admin and dataRequest.canSendEmail}">
+		                                <h:commandButton value="Send Email" styleClass="button" action="#{emailBean.sendEmail(dataRequest.attachments)}" />
+	                                </h:panelGroup>
 						      		<h:commandButton styleClass="button" value="Close" action="#{dataRequest.updateRequest(16)}" />
                                 </div>
     	

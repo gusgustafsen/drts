@@ -76,7 +76,7 @@ public class SearchBean extends PageUtil implements Serializable {
 			
 			if(Utils.isStringEmpty(this.assignee) == false)
 			{
-				search_parameters.put("ASSIGNEE", this.assignee);
+				search_parameters.put(ApplicationProperties.DATA_REQUEST_FIELD_ASSIGNEE.getStringValue(), this.assignee);
 			}
 			
 			if(Utils.isStringEmpty(this.requestor) == false)

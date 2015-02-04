@@ -15,7 +15,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -962,7 +961,6 @@ public class DataLayer {
 			}
 			if(request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_DATE_CLOSED.getStringValue()) != null)
 			{
-				prepared_statement.setTimestamp(24, new Timestamp(((Date) request_variables.get("DATE_CLOSED")).getTime()));
 				prepared_statement.setDate(24, new java.sql.Date(((Date) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_DATE_CLOSED.getStringValue())).getTime()));
 			}
 			else
@@ -1489,6 +1487,8 @@ public class DataLayer {
 			
 			formatted_query = String.format(QUERY_SELECT_DATA_REQUESTS_BY_FIELDS, buildWhereClause(search_parameters, date_range), sort_field, sort_direction);
 			
+			System.out.println("searching sql: " + formatted_query);
+			
 			oracle_connection = OracleFactory.createConnection();
 			
 			PreparedStatement prepared_statement = oracle_connection.prepareStatement(formatted_query);
@@ -1588,8 +1588,11 @@ public class DataLayer {
 				q_count++;
 			}
 			
-			prepared_statement.setString(q_count, date_from);
-			prepared_statement.setString((q_count + 1), date_to);
+			if(date_range == true)
+			{
+				prepared_statement.setString(q_count, date_from);
+				prepared_statement.setString((q_count + 1), date_to);
+			}
 			
 			result_set = prepared_statement.executeQuery();
 							
@@ -1771,7 +1774,7 @@ public class DataLayer {
 		
 		if(Utils.isStringEmpty(display_id) == false)
 		{
-			sb.append("request_display_id LIKE ? AND ");
+			sb.append("SYS_OP_C2C(TO_CHAR(\"" + ApplicationProperties.DATA_REQUEST_FIELD_CREATED_DATE_TIME.getStringValue() + "\",'YYYY')||'-'||TO_CHAR(\"REQUEST_DISPLAY_ID\")||'-')||'D' LIKE ? AND ");
 		}
 		
 		if(Utils.isStringEmpty(keyword) == false)
@@ -1942,7 +1945,7 @@ public class DataLayer {
 		
 		if(Utils.isStringEmpty(display_id) == false)
 		{
-			sb.append("request_display_id LIKE ? AND ");
+			sb.append("SYS_OP_C2C(TO_CHAR(\"" + ApplicationProperties.DATA_REQUEST_FIELD_CREATED_DATE_TIME.getStringValue() + "\",'YYYY')||'-'||TO_CHAR(\"REQUEST_DISPLAY_ID\")||'-')||'D' LIKE ? AND ");
 		}
 		
 		if(Utils.isStringEmpty(keyword) == false)
