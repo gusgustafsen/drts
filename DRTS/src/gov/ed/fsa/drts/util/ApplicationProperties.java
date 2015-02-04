@@ -304,6 +304,8 @@ public enum ApplicationProperties {
 	
 	DATA_REQUEST_FIELD_ASSIGNEE(true, false),
 	
+	DATA_REQUEST_FIELD_SYSTEM(true, false),
+	
 	DATA_REQUEST_WORKFLOW_REQUEST_REJECTED_BY_ADMIN(true, false),
 	
 	DATA_REQUEST_WORKFLOW_REQUEST_REJECTED_BY_SME(true, false),
@@ -341,6 +343,8 @@ public enum ApplicationProperties {
 	DATA_REQUEST_STATUS_VALIDATION_REJECTED(true, false),
 	
 	DATA_REQUEST_TYPES(true, true),
+	
+	DATA_REQUEST_SYSTEMS(true, true),
 	
 	ATTACHMENT_FIELD_ID(true, false),
 	

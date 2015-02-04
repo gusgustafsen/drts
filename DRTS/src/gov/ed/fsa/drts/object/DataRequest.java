@@ -28,6 +28,7 @@ public class DataRequest {
 	private String receiver_name = null;
 	private String receiver_email = null;
 	private String comments = null;
+	private String system = null;
 	
 	private String assigned_sme = null;
 	private Date date_assigned_to_sme = null;
@@ -432,5 +433,15 @@ public class DataRequest {
 	public void setPiiFlag(boolean pii_flag)
 	{
 		this.pii_flag = pii_flag;
+	}
+
+	public String getSystem()
+	{
+		return this.system;
+	}
+	
+	public void setSystem(String system)
+	{
+		this.system = system;
 	}
 }

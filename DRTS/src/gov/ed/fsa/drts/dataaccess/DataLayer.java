@@ -3,6 +3,7 @@ package gov.ed.fsa.drts.dataaccess;
 import gov.ed.fsa.drts.object.Attachment;
 import gov.ed.fsa.drts.object.DataRequest;
 import gov.ed.fsa.drts.util.ApplicationProperties;
+import gov.ed.fsa.drts.util.Utils;
 
 import java.sql.Blob;
 import java.sql.Connection;
@@ -47,10 +48,11 @@ public class DataLayer {
 																+ ApplicationProperties.DATA_REQUEST_FIELD_REQUESTOR_EMAIL.getStringValue() + ", "
 																+ ApplicationProperties.DATA_REQUEST_FIELD_RECEIVER_NAME.getStringValue() + ", "
 																+ ApplicationProperties.DATA_REQUEST_FIELD_RECEIVER_EMAIL.getStringValue() + ", "
+																+ ApplicationProperties.DATA_REQUEST_FIELD_SYSTEM.getStringValue() + ", "
 																+ "request_display_id, "
 																+ ApplicationProperties.DATA_REQUEST_FIELD_PII_FLAG.getStringValue()
 																+ ") "
-																+ "VALUES (?, SYSDATE, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+																+ "VALUES (?, SYSDATE, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 	
 	private static final String QUERY_SELECT_DATA_REQUESTS_BY_GROUP_OR_ASSIGNEE = "SELECT * FROM(SELECT T2.*, rownum AS ROW_NUM FROM(SELECT T.* FROM(SELECT * FROM " + ApplicationProperties.DATA_REQUEST_VIEW.getStringValue() + ") T "
 																					+ "WHERE " + ApplicationProperties.DATA_REQUEST_FIELD_CANDIDATE_GROUP.getStringValue() + " IN (%s) OR " + ApplicationProperties.DATA_REQUEST_FIELD_ASSIGNEE.getStringValue()
@@ -108,6 +110,7 @@ public class DataLayer {
 															+ ApplicationProperties.DATA_REQUEST_FIELD_DATE_CLOSED.getStringValue() + " = ?, "
 															+ ApplicationProperties.DATA_REQUEST_FIELD_COMMENTS.getStringValue() + " = ?, "
 															+ ApplicationProperties.DATA_REQUEST_FIELD_LAST_UPDATED_DATE.getStringValue() + " = SYSDATE, "
+															+ ApplicationProperties.DATA_REQUEST_FIELD_SYSTEM.getStringValue() + " = ?, "
 															+ ApplicationProperties.DATA_REQUEST_FIELD_PII_FLAG.getStringValue() + " = ? "
 															+ "WHERE request_number = ?";
 	
@@ -151,6 +154,11 @@ public class DataLayer {
 
 	private static final String QUERY_SELECT_DATA_REQUESTS_BY_KEYWORD_COUNT = "SELECT COUNT(*) FROM " + ApplicationProperties.DATA_REQUEST_TABLE.getStringValue() + " WHERE " + ApplicationProperties.DATA_REQUEST_FIELD_DESCRIPTION.getStringValue() + " LIKE ? OR " 
 																				+ ApplicationProperties.DATA_REQUEST_FIELD_PURPOSE.getStringValue() + " LIKE ?";
+	
+	private static final String QUERY_REPORT_1 = "SELECT * FROM(SELECT T2.*, rownum AS ROW_NUM FROM(SELECT T.* FROM(SELECT * FROM " + ApplicationProperties.DATA_REQUEST_VIEW.getStringValue() + ") T "
+													+ "WHERE %s ORDER BY %s %s) T2) T3 WHERE ROW_NUM > ?  AND ROW_NUM <= ?";
+	
+	private static final String QUERY_REPORT_1_COUNT = "SELECT COUNT(*) FROM " + ApplicationProperties.DATA_REQUEST_TABLE.getStringValue() + " WHERE %s";
 	
 	public static DataLayer getInstance()
 	{
@@ -203,8 +211,9 @@ public class DataLayer {
 			prepared_statement.setString(19, (String) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_REQUESTOR_EMAIL.getStringValue()));
 			prepared_statement.setString(20, (String) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_RECEIVER_NAME.getStringValue()));
 			prepared_statement.setString(21, (String) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_RECEIVER_EMAIL.getStringValue()));
-			prepared_statement.setInt(22, next_id);
-			prepared_statement.setInt(23, ((Boolean) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_PII_FLAG.getStringValue())) ? 1 : 0);
+			prepared_statement.setString(22, (String) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_SYSTEM.getStringValue()));
+			prepared_statement.setInt(23, next_id);
+			prepared_statement.setInt(24, ((Boolean) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_PII_FLAG.getStringValue())) ? 1 : 0);
 			
 			sql_result = prepared_statement.executeUpdate();
 			
@@ -938,8 +947,9 @@ public class DataLayer {
 				prepared_statement.setDate(24, null);
 			}
 			prepared_statement.setString(25, (String) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_COMMENTS.getStringValue()));
-			prepared_statement.setInt(26, ((Boolean) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_PII_FLAG.getStringValue())) ? 1 : 0);
-			prepared_statement.setString(27, request_id);
+			prepared_statement.setString(26, (String) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_SYSTEM.getStringValue()));
+			prepared_statement.setInt(27, ((Boolean) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_PII_FLAG.getStringValue())) ? 1 : 0);
+			prepared_statement.setString(28, request_id);
 			
 			sql_result = prepared_statement.executeUpdate();
 			
@@ -1453,7 +1463,9 @@ public class DataLayer {
 			}
 			
 			sort_direction = sort_ascending ? "ASC" : "DESC";
+			
 			formatted_query = String.format(QUERY_SELECT_DATA_REQUESTS_BY_FIELDS, buildWhereClause(search_parameters, date_range), sort_field, sort_direction);
+			
 			oracle_connection = OracleFactory.createConnection();
 			
 			PreparedStatement prepared_statement = oracle_connection.prepareStatement(formatted_query);
@@ -1721,6 +1733,310 @@ public class DataLayer {
 		return count;
 	}
 	
+	// TODO redo/optimize
+	public List<DataRequest> report1(String display_id, String keyword, LinkedHashMap<String, String> search_parameters, String requested_due_date_from, String requested_due_date_to, String resolved_date_from,
+										String resolved_date_to, String updated_date_from, String updated_date_to, int first_row, int rows_per_page, String sort_field, 
+										boolean sort_ascending)
+		throws Exception
+	{
+		StringBuilder sb = new StringBuilder();
+		
+		for(Map.Entry<String, String> entry : search_parameters.entrySet())
+		{
+			sb.append(entry.getKey() + " = ? AND ");
+		}
+		
+		if(Utils.isStringEmpty(display_id) == false)
+		{
+			sb.append("request_display_id LIKE ? AND ");
+		}
+		
+		if(Utils.isStringEmpty(keyword) == false)
+		{
+			sb.append(ApplicationProperties.DATA_REQUEST_FIELD_DESCRIPTION.getStringValue() + " LIKE ? AND ");
+		}
+		
+		if(requested_due_date_from != null && requested_due_date_to != null)
+		{
+			sb.append(ApplicationProperties.DATA_REQUEST_FIELD_DUE_DATE.getStringValue() + " >= TO_TIMESTAMP(?, 'mm-dd-yyyy') AND ");
+			sb.append(ApplicationProperties.DATA_REQUEST_FIELD_DUE_DATE.getStringValue() + " <  TO_TIMESTAMP(?, 'mm-dd-yyyy') AND ");
+		}
+		
+		if(resolved_date_from != null && resolved_date_to != null)
+		{
+			sb.append(ApplicationProperties.DATA_REQUEST_FIELD_DATE_RESOLVED.getStringValue() + " >= TO_TIMESTAMP(?, 'mm-dd-yyyy') AND ");
+			sb.append(ApplicationProperties.DATA_REQUEST_FIELD_DATE_RESOLVED.getStringValue() + " <  TO_TIMESTAMP(?, 'mm-dd-yyyy') AND ");
+		}
+		
+		if(updated_date_from != null && updated_date_to != null)
+		{
+			sb.append(ApplicationProperties.DATA_REQUEST_FIELD_LAST_UPDATED_DATE.getStringValue() + " >= TO_TIMESTAMP(?, 'mm-dd-yyyy') AND ");
+			sb.append(ApplicationProperties.DATA_REQUEST_FIELD_LAST_UPDATED_DATE.getStringValue() + " <  TO_TIMESTAMP(?, 'mm-dd-yyyy') AND ");
+		}
+		
+		sb.delete(sb.length() - 5, sb.length());
+		
+		
+		List<DataRequest> data_requests = new ArrayList<DataRequest>();
+		DataRequest request = null;
+		Connection oracle_connection = null;
+		ResultSet result_set = null;
+		String sort_direction = null;
+		String formatted_query = null;
+		int count = 1;
+		
+		try 
+		{
+			sort_direction = sort_ascending ? "ASC" : "DESC";
+			formatted_query = String.format(QUERY_REPORT_1, sb.toString(), sort_field, sort_direction);
+			
+			System.out.println("formatted: " + formatted_query);
+			
+			oracle_connection = OracleFactory.createConnection();
+			
+			PreparedStatement prepared_statement = oracle_connection.prepareStatement(formatted_query);
+			
+			for(Map.Entry<String, String> entry : search_parameters.entrySet())
+			{
+				System.out.println("set count: " + count + ", to: " + entry.getValue());
+				prepared_statement.setString(count, entry.getValue());
+				count++;
+			}
+			
+			if(Utils.isStringEmpty(display_id) == false)
+			{
+				System.out.println("set count: " + count + ", to: " + display_id);
+				prepared_statement.setString(count, "%" + display_id + "%");
+				count++;
+			}
+			
+			if(Utils.isStringEmpty(keyword) == false)
+			{
+				System.out.println("set count: " + count + ", to: " + keyword);
+				prepared_statement.setString(count, "%" + keyword + "%");
+				count++;
+			}
+			
+			if(requested_due_date_from != null && requested_due_date_to != null)
+			{
+				System.out.println("set count: " + count + ", to: " + requested_due_date_from);
+				prepared_statement.setString(count, requested_due_date_from);
+				count++;
+				System.out.println("set count: " + count + ", to: " + requested_due_date_to);
+				prepared_statement.setString(count, requested_due_date_to);
+				count++;
+			}
+			
+			if(resolved_date_from != null && resolved_date_to != null)
+			{
+				System.out.println("set count: " + count + ", to: " + resolved_date_from);
+				prepared_statement.setString(count, resolved_date_from);
+				count++;
+				System.out.println("set count: " + count + ", to: " + resolved_date_to);
+				prepared_statement.setString(count, resolved_date_to);
+				count++;
+			}
+			
+			if(updated_date_from != null && updated_date_to != null)
+			{
+				System.out.println("set count: " + count + ", to: " + updated_date_from);
+				prepared_statement.setString(count, updated_date_from);
+				count++;
+				System.out.println("set count: " + count + ", to: " + updated_date_to);
+				prepared_statement.setString(count, updated_date_to);
+				count++;
+			}
+			
+			System.out.println("set count: " + count + ", to: " + first_row);
+			prepared_statement.setInt(count, first_row);
+			count++;
+			System.out.println("set count: " + count + ", to: " + rows_per_page);
+			prepared_statement.setInt(count, rows_per_page);
+			
+			result_set = prepared_statement.executeQuery();
+			
+			while(result_set.next())
+			{
+				request = mapRequest(result_set);
+						
+				data_requests.add(request);
+			}
+		}
+		catch(SQLException sqle)
+		{
+			logger.error("A SQL exception occured in report1().", sqle);
+			throw sqle;
+		} 
+		catch(Exception e) 
+		{
+			logger.error("An exception occured in report1().", e);
+			throw e;
+		}
+		finally
+		{
+			try 
+			{
+				if(oracle_connection != null)
+				{
+					if(result_set != null) 
+					{
+						result_set.close();
+					}
+								
+					oracle_connection.close();
+				}
+			}
+			catch(SQLException sqle) 
+			{
+				logger.error("A SQL exception occured while trying to close the connection in report1().", sqle);
+			}
+		}
+				
+		if(data_requests.size() > 0)
+		{
+			return data_requests;
+		}
+					
+		return null;
+	}
+	
+	public int report1count(String display_id, String keyword, LinkedHashMap<String, String> search_parameters, String requested_due_date_from, String requested_due_date_to, String resolved_date_from,
+								String resolved_date_to, String updated_date_from, String updated_date_to)
+		throws Exception
+	{
+		int count = 0;
+		Connection oracle_connection = null;
+		ResultSet result_set = null;
+		String formatted_query = null;
+		int q_count = 1;
+		
+		StringBuilder sb = new StringBuilder();
+		
+		for(Map.Entry<String, String> entry : search_parameters.entrySet())
+		{
+			sb.append(entry.getKey() + " = ? AND ");
+		}
+		
+		if(Utils.isStringEmpty(display_id) == false)
+		{
+			sb.append("request_display_id LIKE ? AND ");
+		}
+		
+		if(Utils.isStringEmpty(keyword) == false)
+		{
+			sb.append(ApplicationProperties.DATA_REQUEST_FIELD_DESCRIPTION.getStringValue() + " LIKE ? AND ");
+		}
+		
+		if(requested_due_date_from != null && requested_due_date_to != null)
+		{
+			sb.append(ApplicationProperties.DATA_REQUEST_FIELD_DUE_DATE.getStringValue() + " >= TO_TIMESTAMP(?, 'mm-dd-yyyy') AND ");
+			sb.append(ApplicationProperties.DATA_REQUEST_FIELD_DUE_DATE.getStringValue() + " <  TO_TIMESTAMP(?, 'mm-dd-yyyy') AND ");
+		}
+		
+		if(resolved_date_from != null && resolved_date_to != null)
+		{
+			sb.append(ApplicationProperties.DATA_REQUEST_FIELD_DATE_RESOLVED.getStringValue() + " >= TO_TIMESTAMP(?, 'mm-dd-yyyy') AND ");
+			sb.append(ApplicationProperties.DATA_REQUEST_FIELD_DATE_RESOLVED.getStringValue() + " <  TO_TIMESTAMP(?, 'mm-dd-yyyy') AND ");
+		}
+		
+		if(updated_date_from != null && updated_date_to != null)
+		{
+			sb.append(ApplicationProperties.DATA_REQUEST_FIELD_LAST_UPDATED_DATE.getStringValue() + " >= TO_TIMESTAMP(?, 'mm-dd-yyyy') AND ");
+			sb.append(ApplicationProperties.DATA_REQUEST_FIELD_LAST_UPDATED_DATE.getStringValue() + " <  TO_TIMESTAMP(?, 'mm-dd-yyyy') AND ");
+		}
+		
+		sb.delete(sb.length() - 5, sb.length());
+		
+		try 
+		{
+			formatted_query = String.format(QUERY_REPORT_1_COUNT, sb.toString());
+			
+			oracle_connection = OracleFactory.createConnection();
+						
+			PreparedStatement prepared_statement = oracle_connection.prepareStatement(formatted_query);
+			
+			for(Map.Entry<String, String> entry : search_parameters.entrySet())
+			{
+				prepared_statement.setString(q_count, entry.getValue());
+				q_count++;
+			}
+			
+			if(Utils.isStringEmpty(display_id) == false)
+			{
+				prepared_statement.setString(q_count, "%" + display_id + "%");
+				q_count++;
+			}
+			
+			if(Utils.isStringEmpty(keyword) == false)
+			{
+				prepared_statement.setString(q_count, "%" + keyword + "%");
+				q_count++;
+			}
+			
+			if(requested_due_date_from != null && requested_due_date_to != null)
+			{
+				prepared_statement.setString(q_count, requested_due_date_from);
+				q_count++;
+				prepared_statement.setString(q_count, requested_due_date_to);
+				q_count++;
+			}
+			
+			if(resolved_date_from != null && resolved_date_to != null)
+			{
+				prepared_statement.setString(q_count, resolved_date_from);
+				q_count++;
+				prepared_statement.setString(q_count, resolved_date_to);
+				q_count++;
+			}
+			
+			if(updated_date_from != null && updated_date_to != null)
+			{
+				prepared_statement.setString(q_count, updated_date_from);
+				q_count++;
+				prepared_statement.setString(q_count, updated_date_to);
+				q_count++;
+			}
+			
+			result_set = prepared_statement.executeQuery();
+			
+			if(result_set.next())
+			{
+				count = result_set.getInt(1);
+			}
+		}
+		catch(SQLException sqle)
+		{
+			logger.error("A SQL exception occured in report1count().", sqle);
+			throw sqle;
+		}
+		catch(Exception e) 
+		{
+			logger.error("An exception occured in report1count().", e);
+			throw e;
+		}
+		finally
+		{
+			try 
+			{
+				if(oracle_connection != null)
+				{
+					if(result_set != null) 
+					{
+						result_set.close();
+					}
+									
+					oracle_connection.close();
+				}
+			}
+			catch(SQLException sqle) 
+			{
+				logger.error("A SQL exception occured while trying to close the connection in report1count().", sqle);
+			}
+		}
+				
+		return count;
+	}
+	
 	private String buildWhereClause(LinkedHashMap<String, String> search_parameters, boolean date_range)
 	{
 		StringBuilder where_clause = new StringBuilder();
@@ -1798,6 +2114,7 @@ public class DataLayer {
 		request.setComments(result_set.getString(ApplicationProperties.DATA_REQUEST_FIELD_COMMENTS.getStringValue()));
 		request.setLastUpdatedDate(result_set.getDate(ApplicationProperties.DATA_REQUEST_FIELD_LAST_UPDATED_DATE.getStringValue()));
 		request.setPiiFlag(result_set.getInt(ApplicationProperties.DATA_REQUEST_FIELD_PII_FLAG.getStringValue()) != 0);
+		request.setSystem(result_set.getString(ApplicationProperties.DATA_REQUEST_FIELD_SYSTEM.getStringValue()));
 		
 		return request;
 	}

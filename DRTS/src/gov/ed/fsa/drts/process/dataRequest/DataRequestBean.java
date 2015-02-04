@@ -479,6 +479,7 @@ public class DataRequestBean extends PageUtil implements Serializable {
 		this.request_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_DATE_CLOSED.getStringValue(), this.getDateClosed());
 		this.request_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_COMMENTS.getStringValue(), this.getAllComments());
 		this.request_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_PII_FLAG.getStringValue(), this.isPii());
+		this.request_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_SYSTEM.getStringValue(), this.getSystem());
 		
 		// email content replacement
 		this.email_replace_tokens.put(ApplicationProperties.DATA_REQUEST_FIELD_ID.getStringValue(), this.current_data_request.getId());
@@ -571,6 +572,26 @@ public class DataRequestBean extends PageUtil implements Serializable {
 		}
 			
 		return request_types;
+	}
+	
+	/**
+	 * This method creates a map of systems, for 
+	 * use in a dropdown.
+	 * 
+	 * @return Returns a map of systems.
+	 */
+	public Map<String, String> getSystems()
+	{
+		Map<String, String> systems = new LinkedHashMap<String, String>();
+		
+		systems.put("", "");
+		
+		for(String type : ApplicationProperties.DATA_REQUEST_SYSTEMS.getListValue())
+		{
+			systems.put(type, type);
+		}
+			
+		return systems;
 	}
 	
 	/**
@@ -1039,5 +1060,15 @@ public class DataRequestBean extends PageUtil implements Serializable {
 	public void setPii(boolean pii)
 	{
 		this.current_data_request.setPiiFlag(pii);
+	}
+
+	public String getSystem()
+	{
+		return this.current_data_request.getSystem();
+	}
+
+	public void setSystem(String system)
+	{
+		this.current_data_request.setSystem(system);;
 	}
 }

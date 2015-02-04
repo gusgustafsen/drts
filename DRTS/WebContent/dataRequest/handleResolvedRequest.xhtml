@@ -80,6 +80,11 @@
 		                                    <h:selectOneMenu value="#{dataRequest.type}">
 									   			<f:selectItems value="#{dataRequest.types}" />
 									   		</h:selectOneMenu>
+									   		
+									   		<h:outputLabel value="System"/>
+		                                    <h:selectOneMenu value="#{dataRequest.system}">
+									   			<f:selectItems value="#{dataRequest.systems}" />
+									   		</h:selectOneMenu>
                                             
                                             <h:outputLabel value="Due Date"/>
                                             <h:inputText styleClass="datepicker" value="#{dataRequest.dueDate}">

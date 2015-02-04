@@ -92,6 +92,12 @@
 								      		<h:selectOneMenu value="#{dataRequest.type}" rendered="#{dataRequest.statusDrafted eq true}">
 									   			<f:selectItems value="#{dataRequest.types}" />
 									   		</h:selectOneMenu>
+									   		
+									   		<h:outputLabel value="System"/>
+									   		<h:outputText styleClass="form-text" value="#{dataRequest.system}" rendered="#{dataRequest.statusDrafted eq false}" />
+		                                    <h:selectOneMenu value="#{dataRequest.system}" rendered="#{dataRequest.statusDrafted eq true}">
+									   			<f:selectItems value="#{dataRequest.systems}" />
+									   		</h:selectOneMenu>
                                             
                                             <h:outputLabel value="Due Date"/>
                                             <h:outputText styleClass="form-text" value="#{dataRequest.dueDate}" rendered="#{dataRequest.statusDrafted eq false}">

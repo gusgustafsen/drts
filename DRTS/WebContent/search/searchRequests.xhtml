@@ -77,12 +77,10 @@
 									   			<f:selectItems value="#{searchBean.types}" />
 									   		</h:selectOneMenu>
 									   		
-									   		<h:outputLabel value="Created Date From"/>
+									   		<h:outputLabel value="Created Date Between"/>
                                             <h:inputText styleClass="date-from" value="#{searchBean.createdDateFrom}">
                                             	<f:converter converterId="defaultDateConverter" />
                                             </h:inputText>
-                                            
-                                            <h:outputLabel value="Created Date To"/>
                                             <h:inputText styleClass="date-to" value="#{searchBean.createdDateTo}">
                                             	<f:converter converterId="defaultDateConverter" />
                                             </h:inputText>
