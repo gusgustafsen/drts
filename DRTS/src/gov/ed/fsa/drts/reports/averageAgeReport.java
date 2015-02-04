@@ -1,6 +1,7 @@
-package gov.ed.fsa.drts.bean;
+package gov.ed.fsa.drts.reports;
 
 import gov.ed.fsa.drts.dataaccess.DataLayer;
+import gov.ed.fsa.drts.object.AverageAgeBean;
 
 import java.io.Serializable;
 import java.util.ArrayList;

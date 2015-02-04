@@ -94,29 +94,27 @@
 	                                    	</h:link>
 	                               		</li>
 	                               		<li>
-	                                    		<a href="openClosedReport.htm">
-	                               				<span>Open-Closed Requests by Day</span>
-	                               			</a>
+	                               			<h:link outcome="/reports/openClosedReport">
+	                                    		<span>Open-Closed Requests by Day</span>
+	                                    	</h:link>
 	                                    </li>
 	                                    <li>
-	                                    		<a href="assignedSmeReport.htm">
+	                                    	<h:link outcome="/reports/assignedSmeReport">
 	                                    		<span>Number of Requests Assigned to SME</span>
-	                                    	</a>
+	                                    	</h:link>
 	                                    </li>
 	                                    <li>
-	                                    		<a href="averageAgeReport.htm">
+	                                    	<h:link outcome="/reports/averageAgeReport">
 	                                    		<span>Average Age</span>
-	                                    	</a>
+	                                    	</h:link>
 	                                    </li>
 	                                    <li>
-	                                    		<a href="overdueRequestsReport.htm">
+	                                    	<h:link outcome="/reports/overdueRequestsReport">
 	                                    		<span>Overdue Requests</span>
-	                                    	</a>
+	                                    	</h:link>
 	                                    </li>
 	                             	</ul>
 	                             </li>
-	                                    </ul>
-	                                </li>
                                 <h:panelGroup rendered="#{userSession.admin}">
 	                                <li class="menu-sec-5 #{(active == 5) ? 'active' : '' }">
 	                                    <a href="#">

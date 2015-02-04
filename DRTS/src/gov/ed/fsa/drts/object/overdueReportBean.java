@@ -1,4 +1,4 @@
-package gov.ed.fsa.drts.bean;
+package gov.ed.fsa.drts.object;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

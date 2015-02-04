@@ -1,4 +1,4 @@
-package gov.ed.fsa.drts.bean;
+package gov.ed.fsa.drts.reports;
 
 import javax.annotation.PostConstruct;
 

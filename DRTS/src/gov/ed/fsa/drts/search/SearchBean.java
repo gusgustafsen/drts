@@ -1,5 +1,6 @@
-package gov.ed.fsa.drts.bean;
+package gov.ed.fsa.drts.search;
 
+import gov.ed.fsa.drts.bean.PageUtil;
 import gov.ed.fsa.drts.object.DataRequest;
 import gov.ed.fsa.drts.table.SearchTablePaginator;
 import gov.ed.fsa.drts.table.TablePaginator;

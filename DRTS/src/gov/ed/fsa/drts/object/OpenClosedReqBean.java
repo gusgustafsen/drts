@@ -1,14 +1,15 @@
-package gov.ed.fsa.drts.bean;
+package gov.ed.fsa.drts.object;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-public class AverageAgeBean {
+// used for Open-Closed Requests Report
+public class OpenClosedReqBean {
+	
 	private Date reportDate = null;
-	private int requestNumber = 0;
-	private int totalAge = 0;
-	private int averageAge = 0;
+	private int openedRequests = 0;
+	private int closedRequests = 0;
 	
 	public Date getReportDate() {
 		return reportDate;
@@ -16,23 +17,17 @@ public class AverageAgeBean {
 	public void setReportDate(Date reportDate) {
 		this.reportDate = reportDate;
 	}
-	public int getRequestNumber() {
-		return requestNumber;
+	public int getOpenedRequests() {
+		return openedRequests;
 	}
-	public void setRequestNumber(int requestNumber) {
-		this.requestNumber = requestNumber;
+	public void setOpenedRequests(int openedRequests) {
+		this.openedRequests = openedRequests;
 	}
-	public int getTotalAge() {
-		return totalAge;
+	public int getClosedRequests() {
+		return closedRequests;
 	}
-	public void setTotalAge(int totalAge) {
-		this.totalAge = totalAge;
-	}
-	public int getAverageAge() {
-		return averageAge;
-	}
-	public void setAverageAge(int averageAge) {
-		this.averageAge = averageAge;
+	public void setClosedRequests(int closedRequests) {
+		this.closedRequests = closedRequests;
 	}
 	
 	// used for table output
@@ -66,6 +61,5 @@ public class AverageAgeBean {
 		SimpleDateFormat sdf = new SimpleDateFormat(strFormat);
 		return sdf.format(this.reportDate);
 	}
-	
-	
+
 }
