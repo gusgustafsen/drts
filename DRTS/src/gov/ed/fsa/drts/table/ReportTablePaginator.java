@@ -1,5 +1,6 @@
 package gov.ed.fsa.drts.table;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -68,26 +69,37 @@ public class ReportTablePaginator extends TablePaginator {
 			{
 				case 1:
 				
+					Calendar c = Calendar.getInstance();
+					
 					String date_from_1 = null, date_to_1 = null;
 					String date_from_2 = null, date_to_2 = null;
 					String date_from_3 = null, date_to_3 = null;
 					
 					if(this.requested_due_date_from != null && this.requested_due_date_to != null)
 					{
+						c.setTime(this.requested_due_date_to);
+						c.add(Calendar.DATE, 1);
+						
 						date_from_1 = DateFormatUtils.format(this.requested_due_date_from, "MM-dd-yyyy");
-						date_to_1 = DateFormatUtils.format(this.requested_due_date_to, "MM-dd-yyyy");
+						date_to_1 = DateFormatUtils.format(c.getTime(), "MM-dd-yyyy");
 					}
 					
 					if(this.resolved_date_from != null && this.resolved_date_to != null)
 					{
+						c.setTime(this.resolved_date_to);
+						c.add(Calendar.DATE, 1);
+						
 						date_from_2 = DateFormatUtils.format(this.resolved_date_from, "MM-dd-yyyy");
-						date_to_2 = DateFormatUtils.format(this.resolved_date_to, "MM-dd-yyyy");
+						date_to_2 = DateFormatUtils.format(c.getTime(), "MM-dd-yyyy");
 					}
 					
 					if(this.updated_date_from != null && this.updated_date_to != null)
 					{
+						c.setTime(this.updated_date_to);
+						c.add(Calendar.DATE, 1);
+						
 						date_from_3 = DateFormatUtils.format(this.updated_date_from, "MM-dd-yyyy");
-						date_to_3 = DateFormatUtils.format(this.updated_date_to, "MM-dd-yyyy");
+						date_to_3 = DateFormatUtils.format(c.getTime(), "MM-dd-yyyy");
 					}
 					
 					this.all_data_requests = DataLayer.getInstance().report1(this.request_display_id, this.keyword, this.search_parameters, date_from_1, date_to_1, date_from_2, date_to_2, date_from_3, date_to_3, 

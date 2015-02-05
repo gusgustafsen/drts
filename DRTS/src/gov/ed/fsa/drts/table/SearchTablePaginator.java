@@ -1,5 +1,6 @@
 package gov.ed.fsa.drts.table;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -75,13 +76,22 @@ public class SearchTablePaginator extends TablePaginator {
 					break;
 					
 				case 2:
+					Calendar c = null;
 					String date_from = null;
 					String date_to = null;
 					
 					if(this.created_date_from != null && this.created_date_to != null)
 					{
+						c = Calendar.getInstance();
+						
+						c.setTime(this.created_date_to);
+						c.add(Calendar.DATE, 1);
+						
 						date_from = DateFormatUtils.format(this.created_date_from, "MM-dd-yyyy");
-						date_to = DateFormatUtils.format(this.created_date_to, "MM-dd-yyyy");
+						date_to = DateFormatUtils.format(c.getTime(), "MM-dd-yyyy");
+						
+						System.out.println("date_from: " + date_from);
+						System.out.println("date_to: " + date_to);
 					}
 					
 					this.all_data_requests = DataLayer.getInstance().getDataRequestsByFields(this.search_parameters, date_from, date_to, this.first_row, (this.first_row + this.rows_per_page), this.sort_field, this.sort_ascending);
