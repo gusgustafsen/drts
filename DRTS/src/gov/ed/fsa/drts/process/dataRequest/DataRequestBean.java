@@ -542,13 +542,7 @@ public class DataRequestBean extends PageUtil implements Serializable {
 		this.request_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_SYSTEM.getStringValue(), this.getSystem());
 		
 		// email content replacement
-		this.email_replace_tokens.put(ApplicationProperties.DATA_REQUEST_FIELD_ID.getStringValue(), this.current_data_request.getId());
-		this.email_replace_tokens.put(ApplicationProperties.DATA_REQUEST_FIELD_TYPE.getStringValue(), this.getType());
-		this.email_replace_tokens.put(ApplicationProperties.DATA_REQUEST_FIELD_DESCRIPTION.getStringValue(), this.getDescription());
-		this.email_replace_tokens.put(ApplicationProperties.DATA_REQUEST_FIELD_URGENT.getStringValue(), Boolean.toString(this.isUrgent()));
-		this.email_replace_tokens.put(ApplicationProperties.DATA_REQUEST_FIELD_CREATED_DATE_TIME.getStringValue(), this.getCreatedDateTime().toString());
-		this.email_replace_tokens.put(ApplicationProperties.DATA_REQUEST_FIELD_CREATED_BY.getStringValue(), this.getCreatedBy());
-		this.email_replace_tokens.put(ApplicationProperties.DATA_REQUEST_FIELD_REQUESTOR_EMAIL.getStringValue(), this.getRequestorEmail());
+		this.email_replace_tokens.put("REQUEST_DISPLAY_ID", this.current_data_request.getDisplayId());
 		
 		// email to notify the administrators and the DRTs about a new request
 		this.request_variables.put(ApplicationProperties.EMAIL_LABEL_NOTIFY_ADMIN_DRT_TO.getStringValue(), getAdminDRTEmails());

@@ -57,13 +57,9 @@ public class Utils {
 
 	public static String replaceAll(String item, Map<String, String> tokens)
 	{
-		System.out.println("replace item: " + item);
-		
 		if(item != null)
 		{
 			String pattern_string = "@(" + StringUtils.join(tokens.keySet(), "|") + ")@";
-			
-			System.out.println("pattern_string" + pattern_string);
 			
 			Pattern pattern = Pattern.compile(pattern_string);
 			Matcher matcher = pattern.matcher(item);
@@ -72,8 +68,6 @@ public class Utils {
 			
 			while(matcher.find())
 			{
-				System.out.println("match found" + matcher.group(1));
-				
 				if(tokens.get(matcher.group(1)) != null)
 				{
 					matcher.appendReplacement(sb, tokens.get(matcher.group(1)));
