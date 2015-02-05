@@ -84,9 +84,9 @@
 						      			<h:column>
 						      				<f:facet name="header">
 						      					<h:commandLink actionListener="#{requestTable.table1.sort}">
-						      						<f:attribute name="sort_field" value="request_created_by" />
+						      						<f:attribute name="sort_field" value="created_by" />
 						      						<span>Requestor</span>
-						      						<h:panelGroup rendered="#{requestTable.table1.isSortedBy('request_created_by')}">
+						      						<h:panelGroup rendered="#{requestTable.table1.isSortedBy('created_by')}">
 							      						<h:panelGroup rendered="#{requestTable.table1.sortAscending eq true}">
 							      							<span class="arrow-up"></span>
 							      						</h:panelGroup>
@@ -120,9 +120,9 @@
 						      			<h:column>
 						      				<f:facet name="header">
 						      					<h:commandLink actionListener="#{requestTable.table1.sort}">
-						      						<f:attribute name="sort_field" value="request_created_date_time" />
+						      						<f:attribute name="sort_field" value="drt_request_date" />
 						      						<span>Created On</span>
-						      						<h:panelGroup rendered="#{requestTable.table1.isSortedBy('request_created_date_time')}">
+						      						<h:panelGroup rendered="#{requestTable.table1.isSortedBy('drt_request_date')}">
 							      						<h:panelGroup rendered="#{requestTable.table1.sortAscending eq true}">
 							      							<span class="arrow-up"></span>
 							      						</h:panelGroup>
@@ -140,9 +140,9 @@
 						      			<h:column>
 						      				<f:facet name="header">
 						      					<h:commandLink actionListener="#{requestTable.table1.sort}">
-						      						<f:attribute name="sort_field" value="request_due_date" />
+						      						<f:attribute name="sort_field" value="requested_due_date" />
 						      						<span>Due Date</span>
-						      						<h:panelGroup rendered="#{requestTable.table1.isSortedBy('request_due_date')}">
+						      						<h:panelGroup rendered="#{requestTable.table1.isSortedBy('requested_due_date')}">
 							      						<h:panelGroup rendered="#{requestTable.table1.sortAscending eq true}">
 							      							<span class="arrow-up"></span>
 							      						</h:panelGroup>
