@@ -28,7 +28,7 @@
     	<div id="content-wrapper">
             <div class="grid">
                 <div id="breadcrumb" class="col-1-1 mobile-col-1-1">
-                    <h:link value="Home" outcome="#{userSession.user.homePage}" /> » Requests Assigned to SMEs Report
+                    <h:link value="Home" outcome="#{userSession.homePage}" /> » Requests Assigned to SMEs Report
                 </div>
                 <section class="col-1-1 mobile-col-1-1">
                     <header id="content-header" class="col-1-1 mobile-col-1-1">
@@ -39,51 +39,42 @@
                     <div id="main-content" class="col-1-1 mobile-col-1-1">
                         <section class="col-1-1 mobile-col-1-1">
                         
-                        	<h:form id="reportForm" styleClass="col-1-1 mobile-col-1-1">
+                        	<h:form styleClass="col-1-1 mobile-col-1-1">
                         	
                         				<p>This report displays he number of open requests assigned to each SME.</p>
-                        				<h:panelGroup layout="block" styleClass="errorMessage" rendered="#{not empty assignedSmeReport.errorMessage}">
-                        					<p class="errorMessage">#{assignedSmeReport.errorMessage}</p>
-                        				</h:panelGroup>
                         				
-                        				<p>&#160;</p>
+                        				<div class="form-wrapper col-1-1 mobile-col-1-1">
                         				
-                        				<pf:chart type="pie" model="#{assignedSmeReport.pieModel}" style="width:800px;height:500px" />
+                        					<pf:chart type="pie" model="#{report3.pieModel}" style="width:100%;height:500px" />
                         				
-                        				<p>&#160;</p>
+                        				</div>
                         				
-										<pf:dataTable id="tbl1" var="row" styleClass="drtsTable"
-											value="#{assignedSmeReport.rows}"
-											paginator="false">
-											<pf:columnGroup type="header">
-												<pf:row>  
-													<pf:column headerText="SME Name"/>  
-													<pf:column headerText="Requests assigned for resolution"/>
-													<pf:column headerText="Requests assigned for validation"/>
-													<pf:column headerText="Total Number of Requests"/>
-												</pf:row>  
-											</pf:columnGroup>
-												<pf:column styleClass="drtsReportColumn" >  
-											        <h:outputText value=" #{row.name}"/>  
-											    </pf:column>
-											    <pf:column styleClass="drtsReportColumn" >  
-											        <h:outputText value=" #{row.smeCount}"/>  
-											    </pf:column>
-											    <pf:column styleClass="drtsReportColumn" >  
-											        <h:outputText value=" #{row.validatorCount}"/>  
-											    </pf:column>
-											    <pf:column styleClass="drtsReportColumn" >  
-											        <h:outputText value=" #{row.totalCount}"/>  
-											    </pf:column>
+										<pf:dataTable id="report_3_table" var="row" styleClass="drtsTable" value="#{report3.rows}">
+											<pf:column>
+									      		<f:facet name="header">SME Username</f:facet>
+									      		<h:outputText value="#{row.name}" />
+									      	</pf:column>
+									      	
+									      	<pf:column>
+									      		<f:facet name="header">Requests assigned for resolution</f:facet>
+									      		<h:outputText value="#{row.smeCount}" />
+									      	</pf:column>
+									      	
+									      	<pf:column>
+									      		<f:facet name="header">Requests assigned for validation</f:facet>
+									      		<h:outputText value="#{row.validatorCount}" />
+									      	</pf:column>
+									      	
+									      	<pf:column>
+									      		<f:facet name="header">Total Number of Assigned Requests</f:facet>
+									      		<h:outputText value="#{row.totalCount}" />
+									      	</pf:column>
 										</pf:dataTable>
 										
-										<p>&#160;</p>
-										
-										<div id="buttons">
-							            	<h:commandButton id="rptExportPdf" styleClass="pull-right" value="Export Table to PDF" rendered="#{userSession.allowedToExportReports eq true}">
-							                	<pe:exporter type="pdf" tableTitle="Requests Assigned to SMEs Report" target=":reportForm:tbl1" fileName="assigned_sme_report.pdf" subTable="false" orientation="Landscape"/>               
+										<div class="form-control col-1-1 mobile-col-1-1">
+							            	<h:commandButton styleClass="button" value="Export Table to PDF" rendered="#{userSession.allowedToExportReports eq true}">
+							                	<pe:exporter type="pdf" tableTitle="Requests Assigned to SMEs Report" target="report_3_table" fileName="assigned_sme_report" subTable="false" orientation="Landscape"/>               
 							            	</h:commandButton>
-
 	                                	</div>
     	
     						</h:form>
@@ -93,6 +84,8 @@
                 </section>
             </div>
         </div>
+        
+        <ui:include src="#{root}includes/footer.xhtml" />
     	
     </h:body>
     

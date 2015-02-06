@@ -4,7 +4,7 @@ import gov.ed.fsa.drts.object.Attachment;
 import gov.ed.fsa.drts.object.AuditField;
 import gov.ed.fsa.drts.object.AverageAgeBean;
 import gov.ed.fsa.drts.object.Report2OpenClosedBean;
-import gov.ed.fsa.drts.object.assignedSmeBean;
+import gov.ed.fsa.drts.object.Report3AssignedSMEBean;
 import gov.ed.fsa.drts.object.overdueReportBean;
 import gov.ed.fsa.drts.object.DataRequest;
 import gov.ed.fsa.drts.util.ApplicationProperties;
@@ -176,7 +176,7 @@ public class DataLayer {
 	
 	private static final String QUERY_REPORT_2_OPEN_CLOSED = "SELECT * FROM OPEN_CLOSED_REQUESTS";
 		
-	private static final String QUERY_GET_SME_ASSIGNED_REPORT = "select * from SME_ASSIGNED_REPORT ORDER BY %s %s";
+	private static final String QUERY_REPORT_3_ASSIGNED_SME = "SELECT * FROM SME_ASSIGNED_REPORT";
 		
 	private static final String QUERY_GET_AVERAGE_AGE_REPORT = "select (sysdate-%d) as REPORT_DATE, NUM_OPEN_REQUESTS, TOTAL_AGE, ROUND(((coalesce(TOTAL_AGE,0))/(case NUM_OPEN_REQUESTS when 0 then 1 else NUM_OPEN_REQUESTS end)),0) as AVG_AGE from(select count(REQUEST_NUMBER) as NUM_OPEN_REQUESTS, SUM(trunc(sysdate-%d) - trunc(DRT_REQUEST_DATE)) as TOTAL_AGE from DRTS_HISTORY where DRT_REQUEST_DATE < (sysdate-%d) and ((CLOSED_DATE is null) or (CLOSED_DATE > (sysdate-%d))))";
 		
@@ -2265,7 +2265,68 @@ public class DataLayer {
 		return null;
 	}
 	
-	
+	public List<Report3AssignedSMEBean> getAssignedSmeReport()
+		throws Exception
+	{
+		List<Report3AssignedSMEBean> rows = new ArrayList<Report3AssignedSMEBean>();
+		Report3AssignedSMEBean row = null;
+		Connection oracle_connection = null;
+		ResultSet result_set = null;
+				        
+		try 
+		{   	
+			oracle_connection = OracleFactory.createConnection();		
+			PreparedStatement preparedStatement = oracle_connection.prepareStatement(QUERY_REPORT_3_ASSIGNED_SME);
+						
+			result_set = preparedStatement.executeQuery();
+				
+			while(result_set.next())
+			{
+				row = new Report3AssignedSMEBean();
+				row.setName(result_set.getString("SME"));
+				row.setSmeCount(result_set.getInt("SMECNT"));
+				row.setValidatorCount(result_set.getInt("VALSMECNT"));
+					
+				rows.add(row);
+			}
+		}
+		catch(SQLException sqle)
+		{
+			logger.error("A SQL exception occured in getAssignedSmeReport().", sqle);
+			throw sqle;
+		} 
+		catch(Exception e) 
+		{
+			logger.error("An exception occured in getAssignedSmeReport().", e);
+			throw e;
+		}
+		finally
+		{
+			try 
+			{
+				if(oracle_connection != null)
+				{
+					if(result_set != null) 
+					{
+						result_set.close();
+					}	
+					
+					oracle_connection.close();
+				}
+			}
+			catch(SQLException sqle) 
+			{
+				logger.error("A SQL exception occured while trying to close the connection in getAssignedSmeReport().", sqle);
+			}
+		}
+				
+		if(rows.size() > 0)
+		{
+			return rows;
+		}		
+			
+		return null;
+	}
 	
 	
 	
@@ -2286,70 +2347,70 @@ public class DataLayer {
 	// *** Added by Denis for Reports ***
 	
 		// Get Assigned SME beans
-		public List<assignedSmeBean> getAssignedSmeReport(String sortField, boolean sortAsc)
-				throws Exception
-			{
-				List<assignedSmeBean> beans = new ArrayList<assignedSmeBean>();
-				
-				Connection con = null;
-				ResultSet resultSet = null;
-				String sortDir = null;
-				String formattedQuery = null;
-					        
-				try 
-				{
-					sortDir = sortAsc ? "ASC" : "DESC";
-					formattedQuery = String.format(QUERY_GET_SME_ASSIGNED_REPORT, sortField, sortDir);
-					        	
-					con = OracleFactory.createConnection();		
-					PreparedStatement preparedStatement = con.prepareStatement(formattedQuery);
-							
-					resultSet = preparedStatement.executeQuery();			
-					while(resultSet.next())
-					{
-						assignedSmeBean bean = new assignedSmeBean();
-						bean.setName(resultSet.getString("SME"));
-						bean.setSmeCount(resultSet.getInt("SMECNT"));
-						bean.setValidatorCount(resultSet.getInt("VALSMECNT"));
-						bean.setTotalCount(resultSet.getInt("TOTAL"));
-						beans.add(bean);
-					}
-				}
-				catch(SQLException sqle)
-				{
-					logger.error("A SQL exception occured in getAssignedSmeReport().", sqle);
-					throw sqle;
-				} 
-				catch(Exception e) 
-				{
-					logger.error("An exception occured in getAssignedSmeReport().", e);
-					throw e;
-				}
-				finally
-				{
-					try 
-					{
-						if(con != null)
-						{
-							if(resultSet != null) 
-							{
-								resultSet.close();
-							}	
-							con.close();
-						}
-					}
-					catch(SQLException sqle) 
-					{
-						logger.error("A SQL exception occured while trying to close the connection in getAssignedSmeReport().", sqle);
-					}
-				}
-					
-				if(beans.size() > 0)
-				{
-					return beans;
-				}		
-				return null;
-			}
+//		public List<assignedSmeBean> getAssignedSmeReport(String sortField, boolean sortAsc)
+//				throws Exception
+//			{
+//				List<assignedSmeBean> beans = new ArrayList<assignedSmeBean>();
+//				
+//				Connection con = null;
+//				ResultSet resultSet = null;
+//				String sortDir = null;
+//				String formattedQuery = null;
+//					        
+//				try 
+//				{
+//					sortDir = sortAsc ? "ASC" : "DESC";
+//					formattedQuery = String.format(QUERY_GET_SME_ASSIGNED_REPORT, sortField, sortDir);
+//					        	
+//					con = OracleFactory.createConnection();		
+//					PreparedStatement preparedStatement = con.prepareStatement(formattedQuery);
+//							
+//					resultSet = preparedStatement.executeQuery();			
+//					while(resultSet.next())
+//					{
+//						assignedSmeBean bean = new assignedSmeBean();
+//						bean.setName(resultSet.getString("SME"));
+//						bean.setSmeCount(resultSet.getInt("SMECNT"));
+//						bean.setValidatorCount(resultSet.getInt("VALSMECNT"));
+//						bean.setTotalCount(resultSet.getInt("TOTAL"));
+//						beans.add(bean);
+//					}
+//				}
+//				catch(SQLException sqle)
+//				{
+//					logger.error("A SQL exception occured in getAssignedSmeReport().", sqle);
+//					throw sqle;
+//				} 
+//				catch(Exception e) 
+//				{
+//					logger.error("An exception occured in getAssignedSmeReport().", e);
+//					throw e;
+//				}
+//				finally
+//				{
+//					try 
+//					{
+//						if(con != null)
+//						{
+//							if(resultSet != null) 
+//							{
+//								resultSet.close();
+//							}	
+//							con.close();
+//						}
+//					}
+//					catch(SQLException sqle) 
+//					{
+//						logger.error("A SQL exception occured while trying to close the connection in getAssignedSmeReport().", sqle);
+//					}
+//				}
+//					
+//				if(beans.size() > 0)
+//				{
+//					return beans;
+//				}		
+//				return null;
+//			}
 
 		
 		

@@ -1,7 +1,7 @@
 package gov.ed.fsa.drts.reports;
 
 import gov.ed.fsa.drts.dataaccess.DataLayer;
-import gov.ed.fsa.drts.object.assignedSmeBean;
+import gov.ed.fsa.drts.object.Report3AssignedSMEBean;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -21,15 +21,15 @@ public class assignedSmeReport implements Serializable {
 	
 	private String errorMessage = "";
 	
-	private List<assignedSmeBean> rows = new ArrayList<assignedSmeBean>();
+	private List<Report3AssignedSMEBean> rows = new ArrayList<Report3AssignedSMEBean>();
 	private String sortField = "TOTAL";
 	private boolean sortAsc = false;
 
-	public List<assignedSmeBean> getRows() {
+	public List<Report3AssignedSMEBean> getRows() {
 		return rows;
 	}
 
-	public void setRows(List<assignedSmeBean> rows) {
+	public void setRows(List<Report3AssignedSMEBean> rows) {
 		this.rows = rows;
 	}
 	
@@ -38,14 +38,14 @@ public class assignedSmeReport implements Serializable {
 		
 		this.errorMessage = "";
 		
-		try {
-			this.rows = DataLayer.getInstance().getAssignedSmeReport(this.sortField, this.sortAsc);
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-			this.errorMessage = "Error connecting to database. Please try again. If problem persists, notify DRTS administrator.";
-		}
+//		try {
+//			this.rows = DataLayer.getInstance().getAssignedSmeReport(this.sortField, this.sortAsc);
+//		}
+//		catch(Exception e)
+//		{
+//			e.printStackTrace();
+//			this.errorMessage = "Error connecting to database. Please try again. If problem persists, notify DRTS administrator.";
+//		}
 		
 		if(this.rows==null)
 		{
@@ -68,7 +68,7 @@ public class assignedSmeReport implements Serializable {
         pieModel.setDiameter(350);
         pieModel.setDataFormat("percent");
         
-        for(assignedSmeBean b : this.rows)
+        for(Report3AssignedSMEBean b : this.rows)
         {
         	pieModel.set(b.getName(), b.getTotalCount());
         }
