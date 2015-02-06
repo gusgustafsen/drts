@@ -3,7 +3,7 @@ package gov.ed.fsa.drts.dataaccess;
 import gov.ed.fsa.drts.object.Attachment;
 import gov.ed.fsa.drts.object.AuditField;
 import gov.ed.fsa.drts.object.AverageAgeBean;
-import gov.ed.fsa.drts.object.OpenClosedReqBean;
+import gov.ed.fsa.drts.object.Report2OpenClosedBean;
 import gov.ed.fsa.drts.object.assignedSmeBean;
 import gov.ed.fsa.drts.object.overdueReportBean;
 import gov.ed.fsa.drts.object.DataRequest;
@@ -174,7 +174,7 @@ public class DataLayer {
 															+ ApplicationProperties.AUDIT_FIELD_MODIFIED_BY.getStringValue()
 															+ ") VALUES (?, ?, ?, ?, ?, SYSDATE, ?)";
 	
-	private static final String QUERY_GET_OPEN_CLOSED_REQS = "select * from OPEN_CLOSED_REQUESTS ORDER BY %s %s";
+	private static final String QUERY_REPORT_2_OPEN_CLOSED = "SELECT * FROM OPEN_CLOSED_REQUESTS";
 		
 	private static final String QUERY_GET_SME_ASSIGNED_REPORT = "select * from SME_ASSIGNED_REPORT ORDER BY %s %s";
 		
@@ -2202,72 +2202,88 @@ public class DataLayer {
 		return request;
 	}
 	
-	// *** Added by Denis for Reports ***
-	
-	// Get Open-Closed Requests by Day beans
-	public List<OpenClosedReqBean> getOpenClosedReqReport(String sortField, boolean sortAsc)
-			throws Exception
-		{
-			List<OpenClosedReqBean> beans = new ArrayList<OpenClosedReqBean>();
-			
-			Connection con = null;
-			ResultSet resultSet = null;
-			String sortDir = null;
-			String formattedQuery = null;
+	public List<Report2OpenClosedBean> getOpenClosedReqReport()
+		throws Exception
+	{
+		List<Report2OpenClosedBean> rows = new ArrayList<Report2OpenClosedBean>();
+		Report2OpenClosedBean row = null;
+		Connection oracle_connection = null;
+		ResultSet result_set = null;
 				        
+		try 
+		{
+			oracle_connection = OracleFactory.createConnection();
+			PreparedStatement preparedStatement = oracle_connection.prepareStatement(QUERY_REPORT_2_OPEN_CLOSED);
+			
+			result_set = preparedStatement.executeQuery();			
+				
+			while(result_set.next())
+			{
+				row = new Report2OpenClosedBean();
+				row.setReportDate(result_set.getDate("DATE_DAY"));
+				row.setOpenedRequests(result_set.getInt("OPENED_REQS"));
+				row.setClosedRequests(result_set.getInt("CLOSED_REQS"));
+				
+				rows.add(row);
+			}
+		}
+		catch(SQLException sqle)
+		{
+			logger.error("A SQL exception occured in getOpenClosedReqReport().", sqle);
+			throw sqle;
+		} 
+		catch(Exception e) 
+		{
+			logger.error("An exception occured in getOpenClosedReqReport().", e);
+			throw e;
+		}
+		finally
+		{
 			try 
 			{
-				sortDir = sortAsc ? "ASC" : "DESC";
-				formattedQuery = String.format(QUERY_GET_OPEN_CLOSED_REQS, sortField, sortDir);
-				        	
-				con = OracleFactory.createConnection();		
-				PreparedStatement preparedStatement = con.prepareStatement(formattedQuery);
-						
-				resultSet = preparedStatement.executeQuery();			
-				while(resultSet.next())
+				if(oracle_connection != null)
 				{
-					OpenClosedReqBean bean = new OpenClosedReqBean();
-					bean.setReportDate(resultSet.getDate("DATE_DAY"));
-					bean.setOpenedRequests(resultSet.getInt("OPENED_REQS"));
-					bean.setClosedRequests(resultSet.getInt("CLOSED_REQS"));
-					beans.add(bean);
-				}
-			}
-			catch(SQLException sqle)
-			{
-				logger.error("A SQL exception occured in getOpenClosedReqReport().", sqle);
-				throw sqle;
-			} 
-			catch(Exception e) 
-			{
-				logger.error("An exception occured in getOpenClosedReqReport().", e);
-				throw e;
-			}
-			finally
-			{
-				try 
-				{
-					if(con != null)
+					if(result_set != null) 
 					{
-						if(resultSet != null) 
-						{
-							resultSet.close();
-						}	
-						con.close();
-					}
-				}
-				catch(SQLException sqle) 
-				{
-					logger.error("A SQL exception occured while trying to close the connection in getOpenClosedReqReport().", sqle);
+						result_set.close();
+					}	
+					
+					oracle_connection.close();
 				}
 			}
-				
-			if(beans.size() > 0)
+			catch(SQLException sqle) 
 			{
-				return beans;
-			}		
-			return null;
+				logger.error("A SQL exception occured while trying to close the connection in getOpenClosedReqReport().", sqle);
+			}
 		}
+				
+		if(rows.size() > 0)
+		{
+			return rows;
+		}
+		
+		return null;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	// *** Added by Denis for Reports ***
 	
 		// Get Assigned SME beans
 		public List<assignedSmeBean> getAssignedSmeReport(String sortField, boolean sortAsc)

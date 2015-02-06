@@ -1,4 +1,44 @@
 /*
+ * PRIMEFACES RESET
+ */
+
+form .ui-datatable table
+{
+    border-collapse: collapse;
+    table-layout: auto;
+    width: auto;
+}
+
+form .ui-datatable thead th,
+form .ui-datatable tbody td,
+form .ui-datatable tfoot td
+{
+    overflow: auto;
+}
+
+form .ui-datatable thead th
+{
+	border: none;
+}
+
+form .ui-datatable thead th,
+form .ui-datatable tfoot td
+{
+    text-align: left;
+}
+
+form .ui-datatable tbody td
+{
+    border-color: #dedede;
+}
+
+.jqplot-target
+{
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+/*
  * GENERAL
  */
 
@@ -1277,15 +1317,4 @@ ui-datepicker a.ui-datepicker-prev-hover
 {
     margin-left: 1px;
     margin-top: 10px;
-}
-
-.drtsReportColumn
-{
-	text-align: center;
-}
-
-.errorMessage
-{
-	color: red;	
-	font-weight: bold;
 }
