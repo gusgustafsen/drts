@@ -2,7 +2,7 @@ package gov.ed.fsa.drts.dataaccess;
 
 import gov.ed.fsa.drts.object.Attachment;
 import gov.ed.fsa.drts.object.AuditField;
-import gov.ed.fsa.drts.object.AverageAgeBean;
+import gov.ed.fsa.drts.object.Report4AverageAgeBean;
 import gov.ed.fsa.drts.object.Report2OpenClosedBean;
 import gov.ed.fsa.drts.object.Report3AssignedSMEBean;
 import gov.ed.fsa.drts.object.overdueReportBean;
@@ -81,7 +81,8 @@ public class DataLayer {
 																				+ "WHERE " + ApplicationProperties.DATA_REQUEST_FIELD_ASSIGNED_SME.getStringValue() + " = ? OR " + ApplicationProperties.DATA_REQUEST_FIELD_ASSIGNED_VALIDATOR.getStringValue() + " = ? ORDER BY %s %s) T2) T3 "
 																				+ "WHERE ROW_NUM > ?  AND ROW_NUM <= ?";
 
-	private static final String QUERY_SELECT_DATA_REQUESTS_BY_ASSOCIATION_COUNT = "SELECT COUNT(*) FROM " + ApplicationProperties.DATA_REQUEST_TABLE.getStringValue() + " WHERE " + ApplicationProperties.DATA_REQUEST_FIELD_ASSIGNED_SME.getStringValue() + " = ? OR " + ApplicationProperties.DATA_REQUEST_FIELD_ASSIGNED_VALIDATOR.getStringValue() + " = ?";
+	private static final String QUERY_SELECT_DATA_REQUESTS_BY_ASSOCIATION_COUNT = "SELECT COUNT(*) FROM " + ApplicationProperties.DATA_REQUEST_TABLE.getStringValue() + " WHERE " + ApplicationProperties.DATA_REQUEST_FIELD_ASSIGNED_SME.getStringValue() 
+																						+ " = ? OR " + ApplicationProperties.DATA_REQUEST_FIELD_ASSIGNED_VALIDATOR.getStringValue() + " = ?";
 	
 	private static final String QUERY_SELECT_ALL_DATA_REQUESTS = "SELECT * FROM(SELECT T2.*, rownum AS ROW_NUM FROM(SELECT * FROM " + ApplicationProperties.DATA_REQUEST_VIEW.getStringValue() + " ORDER BY %s %s) T2) T3 WHERE ROW_NUM > ?  AND ROW_NUM <= ?";
 	
@@ -133,7 +134,8 @@ public class DataLayer {
 	
 	private static final String QUERY_SELECT_ATTACHMENT_BY_REQUEST_ID = "SELECT * FROM " + ApplicationProperties.DATA_ATTACHMENT_TABLE.getStringValue() + " WHERE " + ApplicationProperties.ATTACHMENT_FIELD_REQUEST_ID.getStringValue() + " = ?";
 	
-	private static final String QUERY_SELECT_NEXT_ITERATION = "SELECT COALESCE(MAX(" + ApplicationProperties.ITERATION_FIELD_ITERATION.getStringValue() + "), 2) FROM " + ApplicationProperties.DATA_ITERATION_TABLE.getStringValue() + " WHERE " + ApplicationProperties.ITERATION_FIELD_PARENT_ID.getStringValue() + " = ?";
+	private static final String QUERY_SELECT_NEXT_ITERATION = "SELECT COALESCE(MAX(" + ApplicationProperties.ITERATION_FIELD_ITERATION.getStringValue() + "), 2) FROM " + ApplicationProperties.DATA_ITERATION_TABLE.getStringValue()
+																+ " WHERE " + ApplicationProperties.ITERATION_FIELD_PARENT_ID.getStringValue() + " = ?";
 	
 	private static final String QUERY_INSERT_ITERATION_ASSOCIATION = "INSERT INTO " + ApplicationProperties.DATA_ITERATION_TABLE.getStringValue() + " ("
 																		+ ApplicationProperties.ITERATION_FIELD_PARENT_ID.getStringValue() + ", "
@@ -145,7 +147,8 @@ public class DataLayer {
 																				+ "WHERE SYS_OP_C2C(TO_CHAR(\"" + ApplicationProperties.DATA_REQUEST_FIELD_CREATED_DATE_TIME.getStringValue() + "\",'YYYY')||'-'||TO_CHAR(\"REQUEST_DISPLAY_ID\")||'-')||'D' like ? "
 																				+ "ORDER BY %s %s) T2) T3 WHERE ROW_NUM > ?  AND ROW_NUM <= ?";
 	
-	private static final String QUERY_SELECT_DATA_REQUESTS_BY_DISPLAY_ID_COUNT = "SELECT COUNT(*) FROM " + ApplicationProperties.DATA_REQUEST_TABLE.getStringValue() + " WHERE SYS_OP_C2C(TO_CHAR(\"" + ApplicationProperties.DATA_REQUEST_FIELD_CREATED_DATE_TIME.getStringValue() + "\",'YYYY')||'-'||TO_CHAR(\"REQUEST_DISPLAY_ID\")||'-')||'D' LIKE ?";
+	private static final String QUERY_SELECT_DATA_REQUESTS_BY_DISPLAY_ID_COUNT = "SELECT COUNT(*) FROM " + ApplicationProperties.DATA_REQUEST_TABLE.getStringValue() + " WHERE SYS_OP_C2C(TO_CHAR(\"" 
+																					+ ApplicationProperties.DATA_REQUEST_FIELD_CREATED_DATE_TIME.getStringValue() + "\",'YYYY')||'-'||TO_CHAR(\"REQUEST_DISPLAY_ID\")||'-')||'D' LIKE ?";
 	
 	private static final String QUERY_SELECT_DATA_REQUESTS_BY_FIELDS = "SELECT * FROM(SELECT T2.*, rownum AS ROW_NUM FROM(SELECT T.* FROM(SELECT * FROM " + ApplicationProperties.DATA_REQUEST_VIEW.getStringValue() + ") T "
 																		+ "WHERE %s ORDER BY %s %s) T2) T3 WHERE ROW_NUM > ?  AND ROW_NUM <= ?";
@@ -178,8 +181,10 @@ public class DataLayer {
 		
 	private static final String QUERY_REPORT_3_ASSIGNED_SME = "SELECT * FROM SME_ASSIGNED_REPORT";
 		
-	private static final String QUERY_GET_AVERAGE_AGE_REPORT = "select (sysdate-%d) as REPORT_DATE, NUM_OPEN_REQUESTS, TOTAL_AGE, ROUND(((coalesce(TOTAL_AGE,0))/(case NUM_OPEN_REQUESTS when 0 then 1 else NUM_OPEN_REQUESTS end)),0) as AVG_AGE from(select count(REQUEST_NUMBER) as NUM_OPEN_REQUESTS, SUM(trunc(sysdate-%d) - trunc(DRT_REQUEST_DATE)) as TOTAL_AGE from DRTS_HISTORY where DRT_REQUEST_DATE < (sysdate-%d) and ((CLOSED_DATE is null) or (CLOSED_DATE > (sysdate-%d))))";
-		
+	private static final String QUERY_REPORT_4_AVERAGE_AGE = "SELECT (SYSDATE - ?) AS report_date, num_open_requests, COALESCE(total_age, 0) AS total_age, ROUND(((COALESCE(total_age, 0)) / (CASE num_open_requests WHEN 0 THEN 1 ELSE num_open_requests END)), 0) AS avg_age "
+																+ "FROM(SELECT COUNT(request_number) AS num_open_requests, SUM(TRUNC(SYSDATE - ?) - TRUNC(drt_request_date)) AS total_age "
+																+ "FROM DRTS_HISTORY WHERE drt_request_date < (SYSDATE - ?) AND ((closed_date IS NULL) OR (closed_date > (SYSDATE - ?))))";
+	
 	private static final String QUERY_OVERDUE_REPORT = "select * from OVERDUE_REQUESTS ORDER BY %s %s";
 	
 	public static DataLayer getInstance()
@@ -2328,155 +2333,67 @@ public class DataLayer {
 		return null;
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	// *** Added by Denis for Reports ***
-	
-		// Get Assigned SME beans
-//		public List<assignedSmeBean> getAssignedSmeReport(String sortField, boolean sortAsc)
-//				throws Exception
-//			{
-//				List<assignedSmeBean> beans = new ArrayList<assignedSmeBean>();
-//				
-//				Connection con = null;
-//				ResultSet resultSet = null;
-//				String sortDir = null;
-//				String formattedQuery = null;
-//					        
-//				try 
-//				{
-//					sortDir = sortAsc ? "ASC" : "DESC";
-//					formattedQuery = String.format(QUERY_GET_SME_ASSIGNED_REPORT, sortField, sortDir);
-//					        	
-//					con = OracleFactory.createConnection();		
-//					PreparedStatement preparedStatement = con.prepareStatement(formattedQuery);
-//							
-//					resultSet = preparedStatement.executeQuery();			
-//					while(resultSet.next())
-//					{
-//						assignedSmeBean bean = new assignedSmeBean();
-//						bean.setName(resultSet.getString("SME"));
-//						bean.setSmeCount(resultSet.getInt("SMECNT"));
-//						bean.setValidatorCount(resultSet.getInt("VALSMECNT"));
-//						bean.setTotalCount(resultSet.getInt("TOTAL"));
-//						beans.add(bean);
-//					}
-//				}
-//				catch(SQLException sqle)
-//				{
-//					logger.error("A SQL exception occured in getAssignedSmeReport().", sqle);
-//					throw sqle;
-//				} 
-//				catch(Exception e) 
-//				{
-//					logger.error("An exception occured in getAssignedSmeReport().", e);
-//					throw e;
-//				}
-//				finally
-//				{
-//					try 
-//					{
-//						if(con != null)
-//						{
-//							if(resultSet != null) 
-//							{
-//								resultSet.close();
-//							}	
-//							con.close();
-//						}
-//					}
-//					catch(SQLException sqle) 
-//					{
-//						logger.error("A SQL exception occured while trying to close the connection in getAssignedSmeReport().", sqle);
-//					}
-//				}
-//					
-//				if(beans.size() > 0)
-//				{
-//					return beans;
-//				}		
-//				return null;
-//			}
-
-		
-		
-		// Get Average Age Report beans
-		public List<AverageAgeBean> getAverageAgeReport(int iDay)
-				throws Exception
+	public Report4AverageAgeBean getAverageAgeReport(int day_offset)
+		throws Exception
+	{
+		Connection oracle_connection = null;
+		ResultSet result_set = null;
+		Report4AverageAgeBean row = null;
+				        
+		try 
+		{
+			oracle_connection = OracleFactory.createConnection();
+			
+			PreparedStatement prepared_statement = oracle_connection.prepareStatement(QUERY_REPORT_4_AVERAGE_AGE);
+			
+			prepared_statement.setInt(1, day_offset);
+			prepared_statement.setInt(2, day_offset);
+			prepared_statement.setInt(3, day_offset);
+			prepared_statement.setInt(4, day_offset);
+			
+			result_set = prepared_statement.executeQuery();
+			
+			if(result_set.next())
 			{
-				List<AverageAgeBean> beans = new ArrayList<AverageAgeBean>();
-				
-				Connection con = null;
-				ResultSet resultSet = null;
-				String formattedQuery = null;
-					        
-				try 
+				row = new Report4AverageAgeBean();
+				row.setReportDate(result_set.getDate("REPORT_DATE"));
+				row.setRequestNumber(result_set.getInt("NUM_OPEN_REQUESTS"));
+				row.setTotalAge(result_set.getInt("TOTAL_AGE"));
+				row.setAverageAge(result_set.getInt("AVG_AGE"));
+			}
+		}
+		catch(SQLException sqle)
+		{
+			logger.error("A SQL exception occured in getAverageAgeReport().", sqle);
+			throw sqle;
+		} 
+		catch(Exception e) 
+		{
+			logger.error("An exception occured in getAverageAgeReport().", e);
+			throw e;
+		}
+		finally
+		{
+			try 
+			{
+				if(oracle_connection != null)
 				{
-					formattedQuery = String.format(QUERY_GET_AVERAGE_AGE_REPORT, iDay, iDay, iDay, iDay);
-					        	
-					con = OracleFactory.createConnection();		
-					PreparedStatement preparedStatement = con.prepareStatement(formattedQuery);
-							
-					resultSet = preparedStatement.executeQuery();			
-					if(resultSet.next())
+					if(result_set != null) 
 					{
-						AverageAgeBean bean = new AverageAgeBean();
-						bean.setReportDate(resultSet.getDate("REPORT_DATE"));
-						bean.setRequestNumber(resultSet.getInt("NUM_OPEN_REQUESTS"));
-						bean.setTotalAge(resultSet.getInt("TOTAL_AGE"));
-						bean.setAverageAge(resultSet.getInt("AVG_AGE"));
-						beans.add(bean);
-					}
+						result_set.close();
+					}	
+						
+					oracle_connection.close();
 				}
-				catch(SQLException sqle)
-				{
-					logger.error("A SQL exception occured in getAverageAgeReport().", sqle);
-					throw sqle;
-				} 
-				catch(Exception e) 
-				{
-					logger.error("An exception occured in getAverageAgeReport().", e);
-					throw e;
-				}
-				finally
-				{
-					try 
-					{
-						if(con != null)
-						{
-							if(resultSet != null) 
-							{
-								resultSet.close();
-							}	
-							con.close();
-						}
-					}
-					catch(SQLException sqle) 
-					{
-						logger.error("A SQL exception occured while trying to close the connection in getAverageAgeReport().", sqle);
-					}
-				}
-					
-				if(beans.size() > 0)
-				{
-					return beans;
-				}		
-				return null;
-			}		
+			}
+			catch(SQLException sqle) 
+			{
+				logger.error("A SQL exception occured while trying to close the connection in getAverageAgeReport().", sqle);
+			}
+		}
+		
+		return row;
+	}	
 
 		// Get Overdue Request beans
 				public List<overdueReportBean> getOverdueReport(String sortField, boolean sortAsc)

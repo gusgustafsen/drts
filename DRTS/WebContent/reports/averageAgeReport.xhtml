@@ -28,7 +28,7 @@
     	<div id="content-wrapper">
             <div class="grid">
                 <div id="breadcrumb" class="col-1-1 mobile-col-1-1">
-                    <h:link value="Home" outcome="#{userSession.user.homePage}" /> » Average Age Report
+                    <h:link value="Home" outcome="#{userSession.homePage}" /> » Average Age Report
                 </div>
                 <section class="col-1-1 mobile-col-1-1">
                     <header id="content-header" class="col-1-1 mobile-col-1-1">
@@ -41,51 +41,44 @@
                         
                         	<h:form id="reportForm" styleClass="col-1-1 mobile-col-1-1">
                         	
-                        				<p>This report displays the average age (in days) of open requests per each day, for the last 30 days.</p>
-                        				<h:panelGroup layout="block" styleClass="errorMessage" rendered="#{not empty averageAgeReport.errorMessage}">
-                        					<p class="errorMessage">#{averageAgeReport.errorMessage}</p>
-                        				</h:panelGroup>
-                        				
-                        				<p>&#160;</p>
-                        				
-                        				<pf:chart type="bar" title="Average Age of Requests By Day Chart" model="#{averageAgeReport.barModel}" id="averageAgeChart" style="height:300px" />
-                        				
-                        				<p>&#160;</p>
+                        		<p>This report displays the average age (in days) of open requests per each day, for the last 30 days.</p>
                         	
-										<pf:dataTable id="tbl1" var="row" styleClass="drtsTable"
-											value="#{averageAgeReport.rows}"
-											paginator="false">
-											<pf:columnGroup type="header">
-												<pf:row>  
-													<pf:column headerText="Time Period"/>  
-													<pf:column headerText="Number of Open Requests"/>
-													<pf:column headerText="Total Age of Requests"/>
-													<pf:column headerText="Average Age of Requests"/>
-												</pf:row>  
-											</pf:columnGroup>
-												<pf:column styleClass="drtsReportColumn" >    
-											        <h:outputText value=" #{row.formattedReportDate}"/>  
-											    </pf:column>
-											    <pf:column styleClass="drtsReportColumn" >  
-											        <h:outputText value=" #{row.requestNumber}"/>  
-											    </pf:column>
-											    <pf:column styleClass="drtsReportColumn" >  
-											        <h:outputText value=" #{row.totalAge}"/>  
-											    </pf:column>
-											    <pf:column styleClass="drtsReportColumn" >  
-											        <h:outputText value=" #{row.averageAge}"/>  
-											    </pf:column>
-										</pf:dataTable>
-										
-										<p>&#160;</p>
-										
-										<div id="buttons">
-							            	<h:commandButton id="rptExportPdf" styleClass="pull-right" value="Export Table to PDF" rendered="#{userSession.allowedToExportReports eq true}">
-							                	<pe:exporter type="pdf" tableTitle="Average Age of Requests By Day" target=":reportForm:tbl1" fileName="average_age_report.pdf" subTable="false" orientation="Landscape"/>               
-							            	</h:commandButton>
-
-	                                	</div>
-    	
+                        		<div class="form-wrapper col-1-1 mobile-col-1-1">
+                        		
+                        			<pf:chart type="bar" title="Average Age of Requests By Day Chart" model="#{report4.barModel}" />
+                        		
+                        		</div>
+                        		
+                        		<pf:dataTable id="report_4_table" var="row" styleClass="drtsTable" value="#{report4.rows}">
+                        			<pf:column>
+										<f:facet name="header">Date</f:facet>
+										<h:outputText value="#{row.reportDate}">
+											<f:convertDateTime type="date" timeZone="EST" pattern="MMMM dd, yyyy"/>
+										</h:outputText>
+									</pf:column>
+									
+									<pf:column>
+										<f:facet name="header">Number of Open Requests</f:facet>
+										<h:outputText value="#{row.requestNumber}" />
+									</pf:column>
+									
+									<pf:column>
+										<f:facet name="header">Total Age of Requests</f:facet>
+										<h:outputText value="#{row.totalAge}" />
+									</pf:column>
+									
+									<pf:column>
+										<f:facet name="header">Average Age of Requests</f:facet>
+										<h:outputText value="#{row.averageAge}" />
+									</pf:column>
+								</pf:dataTable>
+								
+								<div class="form-control col-1-1 mobile-col-1-1">
+									<h:commandButton styleClass="button" value="Export Table to PDF" rendered="#{userSession.allowedToExportReports eq true}">
+										<pe:exporter type="pdf" tableTitle="Average Age of Requests By Day" target="report_4_table" fileName="average_age_report" subTable="false" orientation="Landscape"/>
+									</h:commandButton>
+								</div>
+								
     						</h:form>
 					    	
                         </section>
@@ -93,6 +86,8 @@
                 </section>
             </div>
         </div>
+        
+        <ui:include src="#{root}includes/footer.xhtml" />
     	
     </h:body>
     
