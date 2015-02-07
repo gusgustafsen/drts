@@ -107,6 +107,11 @@ public class ReportTablePaginator extends TablePaginator {
 					this.total_rows = DataLayer.getInstance().report1count(this.request_display_id, this.keyword, this.search_parameters, date_from_1, date_to_1, date_from_2, date_to_2, date_from_3, date_to_3);
 					break;
 			
+				case 5:
+					this.all_data_requests = DataLayer.getInstance().getOverdueReport(this.first_row, (this.first_row + this.rows_per_page), this.sort_field, this.sort_ascending);
+					this.total_rows = DataLayer.getInstance().getOverdueReportCount();
+					break;
+					
 				default:
 					break;
 			}

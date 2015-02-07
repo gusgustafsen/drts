@@ -5,7 +5,6 @@ import gov.ed.fsa.drts.object.AuditField;
 import gov.ed.fsa.drts.object.Report4AverageAgeBean;
 import gov.ed.fsa.drts.object.Report2OpenClosedBean;
 import gov.ed.fsa.drts.object.Report3AssignedSMEBean;
-import gov.ed.fsa.drts.object.overdueReportBean;
 import gov.ed.fsa.drts.object.DataRequest;
 import gov.ed.fsa.drts.util.ApplicationProperties;
 import gov.ed.fsa.drts.util.Utils;
@@ -185,7 +184,12 @@ public class DataLayer {
 																+ "FROM(SELECT COUNT(request_number) AS num_open_requests, SUM(TRUNC(SYSDATE - ?) - TRUNC(drt_request_date)) AS total_age "
 																+ "FROM DRTS_HISTORY WHERE drt_request_date < (SYSDATE - ?) AND ((closed_date IS NULL) OR (closed_date > (SYSDATE - ?))))";
 	
-	private static final String QUERY_OVERDUE_REPORT = "select * from OVERDUE_REQUESTS ORDER BY %s %s";
+	private static final String QUERY_REPORT_5_OVERDUE = "SELECT * FROM(SELECT T2.*, rownum AS ROW_NUM FROM(SELECT T.* FROM(SELECT * FROM " + ApplicationProperties.DATA_REQUEST_VIEW.getStringValue() + ") T "
+															+ "WHERE " + ApplicationProperties.DATA_REQUEST_FIELD_STATUS.getStringValue() + " NOT IN (?, ?) AND " + ApplicationProperties.DATA_REQUEST_FIELD_DUE_DATE.getStringValue() + " < SYSDATE ORDER BY %s %s) T2) T3 "
+															+ "WHERE ROW_NUM > ?  AND ROW_NUM <= ?";
+	
+	private static final String QUERY_REPORT_5_OVERDUE_COUNT = "SELECT COUNT(*) FROM " + ApplicationProperties.DATA_REQUEST_VIEW.getStringValue() + " WHERE " + ApplicationProperties.DATA_REQUEST_FIELD_STATUS.getStringValue() + " NOT IN (?, ?) AND "
+																+ ApplicationProperties.DATA_REQUEST_FIELD_DUE_DATE.getStringValue() + " < SYSDATE";
 	
 	public static DataLayer getInstance()
 	{
@@ -2393,77 +2397,132 @@ public class DataLayer {
 		}
 		
 		return row;
-	}	
-
-		// Get Overdue Request beans
-				public List<overdueReportBean> getOverdueReport(String sortField, boolean sortAsc)
-						throws Exception
-					{
-						List<overdueReportBean> beans = new ArrayList<overdueReportBean>();
-						
-						Connection con = null;
-						ResultSet resultSet = null;
-						String sortDir = null;
-						String formattedQuery = null;
-							        
-						try 
-						{
-							sortDir = sortAsc ? "ASC" : "DESC";
-							formattedQuery = String.format(QUERY_OVERDUE_REPORT, sortField, sortDir);
-							        	
-							con = OracleFactory.createConnection();		
-							PreparedStatement preparedStatement = con.prepareStatement(formattedQuery);
-									
-							resultSet = preparedStatement.executeQuery();			
-							while(resultSet.next())
-							{
-								overdueReportBean bean = new overdueReportBean();
-								bean.setTrackingNumber(resultSet.getString("TRACKING_NUMBER"));
-								bean.setDescription(resultSet.getString("REQUEST_DESCR"));
-								bean.setRequestorName(resultSet.getString("REQUESTOR_NAME"));
-								bean.setStatus(resultSet.getString("REQUEST_STATUS"));
-								bean.setUrgencyFlag(resultSet.getString("URGENCY_FLAG"));
-								bean.setRequestedDueDate(resultSet.getDate("REQUESTED_DUE_DATE"));
-								bean.setSme(resultSet.getString("SME"));
-								bean.setRequestType(resultSet.getString("REQUEST_TYPE"));
-								bean.setSystemName(resultSet.getString("SYSTEM_NAME"));
-								beans.add(bean);
-							}
-						}
-						catch(SQLException sqle)
-						{
-							logger.error("A SQL exception occured in getOverdueReport().", sqle);
-							throw sqle;
-						} 
-						catch(Exception e) 
-						{
-							logger.error("An exception occured in getOverdueReport().", e);
-							throw e;
-						}
-						finally
-						{
-							try 
-							{
-								if(con != null)
-								{
-									if(resultSet != null) 
-									{
-										resultSet.close();
-									}	
-									con.close();
-								}
-							}
-							catch(SQLException sqle) 
-							{
-								logger.error("A SQL exception occured while trying to close the connection in getOverdueReport().", sqle);
-							}
-						}
-							
-						if(beans.size() > 0)
-						{
-							return beans;
-						}		
-						return null;
-					}		
+	}
+	
+	public List<DataRequest> getOverdueReport(int first_row, int rows_per_page, String sort_field, boolean sort_ascending)
+		throws Exception
+	{
+		List<DataRequest> data_requests = new ArrayList<DataRequest>();
+		Connection oracle_connection = null;
+		ResultSet result_set = null;
+		DataRequest request = null;
+		String sort_direction = null;
+		String formatted_query = null;
+		
+		try 
+		{
+			sort_direction = sort_ascending ? "ASC" : "DESC";
+			formatted_query = String.format(QUERY_REPORT_5_OVERDUE, sort_field, sort_direction);
 			
+			oracle_connection = OracleFactory.createConnection();		
+				
+			PreparedStatement prepared_statement = oracle_connection.prepareStatement(formatted_query);
+			
+			prepared_statement.setString(1, ApplicationProperties.DATA_REQUEST_STATUS_CLOSED.getStringValue());
+			prepared_statement.setString(2, ApplicationProperties.DATA_REQUEST_STATUS_REJECTED_BY_ADMIN.getStringValue());
+			prepared_statement.setInt(3, first_row);
+			prepared_statement.setInt(4, rows_per_page);
+			
+			result_set = prepared_statement.executeQuery();
+			
+			while(result_set.next())
+			{
+				request = mapRequest(result_set);
+					
+				data_requests.add(request);
+			}
+		}
+		catch(SQLException sqle)
+		{
+			logger.error("A SQL exception occured in getOverdueReport().", sqle);
+			throw sqle;
+		} 
+		catch(Exception e) 
+		{
+			logger.error("An exception occured in getOverdueReport().", e);
+			throw e;
+		}
+		finally
+		{
+			try 
+			{
+				if(oracle_connection != null)
+				{
+					if(result_set != null) 
+					{
+						result_set.close();
+					}	
+						
+					oracle_connection.close();
+				}
+			}
+			catch(SQLException sqle) 
+			{
+				logger.error("A SQL exception occured while trying to close the connection in getOverdueReport().", sqle);
+			}
+		}
+				
+		if(data_requests.size() > 0)
+		{
+			return data_requests;
+		}		
+			
+		return null;
+	}
+	
+	public int getOverdueReportCount()
+		throws Exception
+	{
+		int count = 0;
+		Connection oracle_connection = null;
+		ResultSet result_set = null;
+					
+		try 
+		{
+			oracle_connection = OracleFactory.createConnection();
+						
+			PreparedStatement prepared_statement = oracle_connection.prepareStatement(QUERY_REPORT_5_OVERDUE_COUNT);
+						
+			prepared_statement.setString(1, ApplicationProperties.DATA_REQUEST_STATUS_CLOSED.getStringValue());
+			prepared_statement.setString(2, ApplicationProperties.DATA_REQUEST_STATUS_REJECTED_BY_ADMIN.getStringValue());
+			
+			result_set = prepared_statement.executeQuery();
+						
+			if(result_set.next())
+			{
+				count = result_set.getInt(1);
+			}
+		}
+		catch(SQLException sqle)
+		{
+			logger.error("A SQL exception occured in getOverdueReportCount().", sqle);
+			throw sqle;
+		}
+		catch(Exception e) 
+		{
+			logger.error("An exception occured in getOverdueReportCount().", e);
+			throw e;
+		}
+		finally
+		{
+			try 
+			{
+				if(oracle_connection != null)
+				{
+					if(result_set != null) 
+					{
+						result_set.close();
+					}
+									
+					oracle_connection.close();
+				}
+			}
+			catch(SQLException sqle) 
+			{
+				logger.error("A SQL exception occured while trying to close the connection in getOverdueReportCount().", sqle);
+			}
+		}
+					
+		return count;
+	}
 }
