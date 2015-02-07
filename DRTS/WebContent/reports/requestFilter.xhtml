@@ -4,8 +4,6 @@
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-	xmlns:pf="http://primefaces.org/ui"
-	xmlns:pe="http://primefaces.org/ui/extensions"
 	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core" lang="en-us"
 	xmlns="http://www.w3.org/1999/xhtml" class="no-js">
 
@@ -121,8 +119,8 @@
                                 
                                 <h:panelGroup rendered="#{report1.reportWasRun}">
                                 	<h:panelGroup rendered="#{not empty report1.resultsTable.dataRequests}">
-	                                	<pf:dataTable styleClass="drtsTable" value="#{report1.resultsTable.dataRequests}" var="dataRequest">
-	                                		<pf:column>
+	                                	<h:dataTable styleClass="drtsTable" value="#{report1.resultsTable.dataRequests}" var="dataRequest">
+	                                		<h:column>
 							      				<f:facet name="header">
 							      					<h:commandLink actionListener="#{report1.resultsTable.sort}">
 							      						<f:attribute name="sort_field" value="request_display_id" />
@@ -138,12 +136,12 @@
 							    			   		</h:commandLink>
 							      				</f:facet>
 							      				<h:outputText value="#{dataRequest.displayId}" />
-							      			</pf:column>
-							      			<pf:column>
+							      			</h:column>
+							      			<h:column>
 							      				<f:facet name="header">Description</f:facet>
 							      				<h:outputText value="#{dataRequest.description}" />
-							      			</pf:column>
-							      			<pf:column>
+							      			</h:column>
+							      			<h:column>
 							      				<f:facet name="header">
 							      					<h:commandLink actionListener="#{report1.resultsTable.sort}">
 							      						<f:attribute name="sort_field" value="created_by" />
@@ -159,8 +157,8 @@
 							    			   		</h:commandLink>
 							      				</f:facet>
 							      				<h:outputText value="#{dataRequest.drtsRequestor}" />
-							      			</pf:column>
-							      			<pf:column>
+							      			</h:column>
+							      			<h:column>
 							      				<f:facet name="header">
 							      					<h:commandLink actionListener="#{report1.resultsTable.sort}">
 							      						<f:attribute name="sort_field" value="request_status" />
@@ -176,8 +174,8 @@
 							    			   		</h:commandLink>
 							      				</f:facet>
 							      				<h:outputText value="#{dataRequest.status}" />
-							      			</pf:column>
-							      			<pf:column>
+							      			</h:column>
+							      			<h:column>
 							      				<f:facet name="header">
 							      					<h:commandLink actionListener="#{report1.resultsTable.sort}">
 							      						<f:attribute name="sort_field" value="drt_request_date" />
@@ -195,8 +193,8 @@
 							      				<h:outputText value="#{dataRequest.createdDateTime}">
 							      					<f:converter converterId="defaultDateTimeConverter" />
 							      				</h:outputText>
-							      			</pf:column>
-							      			<pf:column>
+							      			</h:column>
+							      			<h:column>
 							      				<f:facet name="header">
 							      					<h:commandLink actionListener="#{report1.resultsTable.sort}">
 							      						<f:attribute name="sort_field" value="requested_due_date" />
@@ -214,8 +212,8 @@
 							      				<h:outputText value="#{dataRequest.dueDate}">
 							      					<f:converter converterId="defaultDateConverter" />
 							      				</h:outputText>
-							      			</pf:column>
-	                                	</pf:dataTable>
+							      			</h:column>
+	                                	</h:dataTable>
 	                                	<h:panelGroup rendered="#{report1.resultsTable.totalPages > 1}">
 								      		<div class="table-control">
 			                                    <h:outputText value="(Page #{report1.resultsTable.currentPage}/#{report1.resultsTable.totalPages}) " />
