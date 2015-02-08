@@ -1071,24 +1071,26 @@ public class DataRequestBean extends PageUtil implements Serializable {
 
 	private String getAllComments()
 	{
-		String all_comments = this.current_data_request.getComments();
+		String current_comments = this.current_data_request.getComments();
+		String new_comments = "";
 		
-		if(all_comments == null)
+		if(current_comments == null)
 		{
 			if(Utils.isStringEmpty(this.new_comments) == false)
 			{
-				all_comments = "<span class=\"form-text\">" + this.new_comments + "</span>";
+				new_comments = "<p>" + this.new_comments + "</p>";
 			}
 		}
 		else
 		{
 			if(Utils.isStringEmpty(this.new_comments) == false)
 			{
-				all_comments += "<span class=\"form-text\">" + this.new_comments + "</span>";
+				new_comments = "<p>" + this.new_comments + "</p>";
+				new_comments += current_comments;
 			}
 		}
 		
-		return all_comments;
+		return new_comments;
 	}
 	
 	public String getComments()

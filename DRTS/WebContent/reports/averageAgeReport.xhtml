@@ -28,7 +28,7 @@
     	<div id="content-wrapper">
             <div class="grid">
                 <div id="breadcrumb" class="col-1-1 mobile-col-1-1">
-                    <h:link value="Home" outcome="#{userSession.homePage}" /> » Average Age Report
+                    <h:link value="Home" outcome="#{userSession.homePage}" /> » <h:link value="Reports" outcome="/reports/reports" /> » Average Age Report
                 </div>
                 <section class="col-1-1 mobile-col-1-1">
                     <header id="content-header" class="col-1-1 mobile-col-1-1">
@@ -41,7 +41,7 @@
                         
                         	<h:form id="reportForm" styleClass="col-1-1 mobile-col-1-1">
                         	
-                        		<p>This report displays the average age (in days) of open requests per each day, for the last 30 days.</p>
+                        		<p>This report displays the average age (in days) of open requests per each day, for the past 30 days period.</p>
                         	
                         		<div class="form-wrapper col-1-1 mobile-col-1-1">
                         		

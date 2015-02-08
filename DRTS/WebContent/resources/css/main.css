@@ -6,7 +6,7 @@ form .ui-datatable table
 {
     border-collapse: collapse;
     table-layout: auto;
-    width: auto;
+    width: 100%;
 }
 
 form .ui-datatable thead th,
@@ -618,6 +618,7 @@ tr:hover td
 .drtsTable
 {
 	margin: 15px 10px 0;
+	width: 98%;
 }
 
 .drtsTable thead tr th
@@ -770,8 +771,14 @@ fieldset table td
 
 .form-wrapper p
 {
+	clear: both;
 	margin: 0 10px 10px 0;
     padding-top: 0;
+}
+
+.form-wrapper p.warning
+{
+	color: #FF0000;
 }
 
 .form-control

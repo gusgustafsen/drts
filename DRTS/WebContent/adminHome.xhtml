@@ -39,18 +39,11 @@
                         	<h:form styleClass="col-1-1 mobile-col-1-1">
       		
       							<p>
-      								Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla volutpat dui at metus ultrices, at 
-      								sollicitudin felis varius. Cras sed orci nisl. Donec semper ornare dignissim. Fusce et neque finibus, 
-      								porttitor elit vel, feugiat lectus. Aliquam nunc odio, placerat vitae dapibus finibus, facilisis venenatis 
-      								eros. Vestibulum id purus sit amet risus dapibus elementum. In nulla elit, convallis et quam a, viverra 
-      								dapibus justo.
+      								Welcome to the DRTS application. 
       							</p>
       							
       							<p>
-      								Ut nec lobortis odio. Aliquam iaculis erat non nunc sollicitudin, sit amet pharetra lorem blandit. In mollis 
-      								vulputate malesuada. Proin vestibulum libero at nisi mollis, nec lacinia velit commodo. Fusce et tellus a 
-      								elit placerat interdum ac iaculis neque. Duis sed lectus eget tellus vestibulum dignissim id non quam. Vivamus 
-      								commodo justo in libero volutpat elementum. 
+      								Below you will find a list of data requests that require your action. 
       							</p>
       		
 					      		<h2>Available Tasks</h2>
@@ -142,7 +135,7 @@
 						      				<f:facet name="header">
 						      					<h:commandLink actionListener="#{requestTable.table1.sort}">
 						      						<f:attribute name="sort_field" value="requested_due_date" />
-						      						<span>Due Date</span>
+						      						<span>Requested Due Date</span>
 						      						<h:panelGroup rendered="#{requestTable.table1.isSortedBy('requested_due_date')}">
 							      						<h:panelGroup rendered="#{requestTable.table1.sortAscending eq true}">
 							      							<span class="arrow-up"></span>

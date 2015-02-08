@@ -35,7 +35,7 @@ $(document).ready(function(){
 		onSuccess:function(files, data, xhr)
 		{
 			var html_addition = '<span class="form-text">' + data.uploaded_file_name + ' <a href="/drts/file?file_id=' + data.uploaded_file_id + '" target="_blank">View</a></span>';
-			
+			$("#no-file").remove();
 			$('#attachments').html($('#attachments').html() + html_addition);
 		}
 	});

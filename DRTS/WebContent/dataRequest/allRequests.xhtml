@@ -40,18 +40,7 @@
                         	<h:form styleClass="col-1-1 mobile-col-1-1">
                         	
                         		<p>
-      								Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla volutpat dui at metus ultrices, at 
-      								sollicitudin felis varius. Cras sed orci nisl. Donec semper ornare dignissim. Fusce et neque finibus, 
-      								porttitor elit vel, feugiat lectus. Aliquam nunc odio, placerat vitae dapibus finibus, facilisis venenatis 
-      								eros. Vestibulum id purus sit amet risus dapibus elementum. In nulla elit, convallis et quam a, viverra 
-      								dapibus justo.
-      							</p>
-      							
-      							<p>
-      								Ut nec lobortis odio. Aliquam iaculis erat non nunc sollicitudin, sit amet pharetra lorem blandit. In mollis 
-      								vulputate malesuada. Proin vestibulum libero at nisi mollis, nec lacinia velit commodo. Fusce et tellus a 
-      								elit placerat interdum ac iaculis neque. Duis sed lectus eget tellus vestibulum dignissim id non quam. Vivamus 
-      								commodo justo in libero volutpat elementum. 
+      								The table below contains a list of all data requests that have been created in the DRTS application and can be viewed by you.
       							</p>
                         	
                         		<h:panelGroup rendered="#{not empty requestTable.table4.dataRequests}">
@@ -141,7 +130,7 @@
 						      				<f:facet name="header">
 						      					<h:commandLink actionListener="#{requestTable.table4.sort}">
 						      						<f:attribute name="sort_field" value="requested_due_date" />
-						      						<span>Due Date</span>
+						      						<span>Requested Due Date</span>
 						      						<h:panelGroup rendered="#{requestTable.table4.isSortedBy('requested_due_date')}">
 							      						<h:panelGroup rendered="#{requestTable.table4.sortAscending eq true}">
 							      							<span class="arrow-up"></span>

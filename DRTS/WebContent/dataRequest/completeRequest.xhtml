@@ -40,18 +40,15 @@
                         	<h:form id="request-form" styleClass="col-1-1 mobile-col-1-1">
                         	
                         		<p>
-      								Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla volutpat dui at metus ultrices, at 
-      								sollicitudin felis varius. Cras sed orci nisl. Donec semper ornare dignissim. Fusce et neque finibus, 
-      								porttitor elit vel, feugiat lectus. Aliquam nunc odio, placerat vitae dapibus finibus, facilisis venenatis 
-      								eros. Vestibulum id purus sit amet risus dapibus elementum. In nulla elit, convallis et quam a, viverra 
-      								dapibus justo.
+      								Below is a data request that has been assigned to you by an administrator. You can resolve the request, reject it, or update 
+      								the request's information.
       							</p>
                         	
                         		<div class="form-wrapper col-1-1 mobile-col-1-1">
                                     
                                     <div id="drtsTabs">
                                          <ul>
-                                            <li><a href="#general">General</a></li>
+                                            <li><a href="#general">Request Details</a></li>
                                             <li><a href="#requestor">Requestor</a></li>
                                             <li><a href="#receiver">Receiver</a></li>
                                             <h:panelGroup rendered="#{userSession.admin}">
@@ -88,7 +85,7 @@
 									   			<f:selectItems value="#{dataRequest.systems}" />
 									   		</h:selectOneMenu>
                                             
-                                            <h:outputLabel value="Due Date"/>
+                                            <h:outputLabel value="Requested Due Date"/>
                                             <h:inputText styleClass="datepicker" value="#{dataRequest.dueDate}">
                                             	<f:converter converterId="defaultDateConverter" />
                                             </h:inputText>
@@ -115,6 +112,8 @@
                                     		<h:inputTextarea value="#{dataRequest.specialConsiderationsIssues}" />
                                         </div>
                                         <div id="requestor">
+                                        	<p>Information, below, is about the person who is requesting the data.</p>
+                                        	
                                             <h:outputLabel value="Requestor"/>
                                             <h:outputText styleClass="form-text" value="#{dataRequest.requestorName}" />
                                             
@@ -128,6 +127,8 @@
                                             <h:outputText styleClass="form-text" value="#{dataRequest.requestorEmail}" />
                                         </div>
                                         <div id="receiver">
+                                        	<p>Information, below, is about the person who will receive the requested data.</p>
+                                        
                                             <h:outputLabel value="Receiver"/>
                                             <h:outputText styleClass="form-text" value="#{dataRequest.receiverName}" />
                                             
@@ -136,7 +137,7 @@
                                         </div>
                                         <h:panelGroup rendered="#{userSession.admin}">
 	                                        <div id="assignment">
-	                                            <h:outputLabel value="Assigned To"/>
+	                                            <h:outputLabel value="SME To Resolve The Request"/>
 	                                            <h:selectOneMenu value="#{dataRequest.assignedSme}">
 										   			<f:selectItems value="#{dataRequest.smes}" />
 										   		</h:selectOneMenu>
@@ -144,7 +145,7 @@
                                         </h:panelGroup>
                                         <h:panelGroup rendered="#{userSession.admin}">
                                         	<div id="validation">
-		                                        <h:outputLabel value="Assigned To"/>
+		                                        <h:outputLabel value="SME To Validate The Request"/>
 	                                            <h:selectOneMenu value="#{dataRequest.assignedValidator}">
 										   			<f:selectItems value="#{dataRequest.smes}" />
 										   		</h:selectOneMenu>
@@ -152,6 +153,9 @@
                                         </h:panelGroup>
                                         <div id="attachments">
                                         	<label>Attached Files</label>
+                                        	<h:panelGroup rendered="#{empty dataRequest.attachments}">
+                                        		<p id="no-file">There are no attachments.</p>
+                                        	</h:panelGroup>
                                         	<ui:repeat var="file" value="#{dataRequest.attachments}" varStatus="status">
                                         		<span class="form-text">
                                         			#{file.name}
@@ -164,6 +168,9 @@
                                             <h:inputTextarea value="#{dataRequest.newComments}" />
                                             
                                             <h:outputLabel value="Comments"/>
+                                            <h:panelGroup rendered="#{empty dataRequest.comments}">
+                                        		<p>There are no comments.</p>
+                                        	</h:panelGroup>
                                             <h:outputText value="#{dataRequest.comments}" escape="false" />
                                         </div>
                                     </div>
