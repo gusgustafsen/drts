@@ -3,6 +3,7 @@ package gov.ed.fsa.drts.reports;
 import gov.ed.fsa.drts.bean.PageUtil;
 import gov.ed.fsa.drts.table.ReportTablePaginator;
 import gov.ed.fsa.drts.table.TablePaginator;
+import gov.ed.fsa.drts.util.ApplicationProperties;
 
 import java.io.Serializable;
 
@@ -21,7 +22,7 @@ public class Report5Overdue extends PageUtil implements Serializable {
 	@PostConstruct
 	public void init()
 	{
-		this.table_paginator = new ReportTablePaginator(5, this.userSession);
+		this.table_paginator = new ReportTablePaginator(5, this.userSession, ApplicationProperties.DATA_REQUEST_FIELD_DUE_DATE.getStringValue(), true);
 	}
 	
 	public TablePaginator getResultsTable()

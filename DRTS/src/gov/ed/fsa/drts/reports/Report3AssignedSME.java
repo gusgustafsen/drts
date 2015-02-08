@@ -31,7 +31,10 @@ public class Report3AssignedSME extends PageUtil implements Serializable {
 		{
 			this.report_rows = DataLayer.getInstance().getAssignedSmeReport();
 			
-			createPieModel();
+			if(this.report_rows != null)
+			{
+				createPieModel();
+			}
 		}
 		catch(Exception e)
 		{

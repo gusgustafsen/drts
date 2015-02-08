@@ -154,6 +154,40 @@
 							      			<h:column>
 							      				<f:facet name="header">
 							      					<h:commandLink actionListener="#{searchBean.resultsTable.sort}">
+							      						<f:attribute name="sort_field" value="request_type" />
+							      						<span>Type</span>
+							      						<h:panelGroup rendered="#{searchBean.resultsTable.isSortedBy('request_type')}">
+								      						<h:panelGroup rendered="#{searchBean.resultsTable.sortAscending eq true}">
+								      							<span class="arrow-up"></span>
+								      						</h:panelGroup>
+								      						<h:panelGroup rendered="#{searchBean.resultsTable.sortAscending eq false}">
+								      							<span class="arrow-down"></span>
+								      						</h:panelGroup>
+							      						</h:panelGroup>
+							    			   		</h:commandLink>
+							      				</f:facet>
+							      				<h:outputText value="#{dataRequest.type}" />
+							      			</h:column>
+							      			<h:column>
+							      				<f:facet name="header">
+							      					<h:commandLink actionListener="#{searchBean.resultsTable.sort}">
+							      						<f:attribute name="sort_field" value="assignee" />
+							      						<span>Assignee</span>
+							      						<h:panelGroup rendered="#{searchBean.resultsTable.isSortedBy('assignee')}">
+								      						<h:panelGroup rendered="#{searchBean.resultsTable.sortAscending eq true}">
+								      							<span class="arrow-up"></span>
+								      						</h:panelGroup>
+								      						<h:panelGroup rendered="#{searchBean.resultsTable.sortAscending eq false}">
+								      							<span class="arrow-down"></span>
+								      						</h:panelGroup>
+							      						</h:panelGroup>
+							    			   		</h:commandLink>
+							      				</f:facet>
+							      				<h:outputText value="#{dataRequest.assignee}" />
+							      			</h:column>
+							      			<h:column>
+							      				<f:facet name="header">
+							      					<h:commandLink actionListener="#{searchBean.resultsTable.sort}">
 							      						<f:attribute name="sort_field" value="drt_request_date" />
 							      						<span>Created On</span>
 							      						<h:panelGroup rendered="#{searchBean.resultsTable.isSortedBy('drt_request_date')}">

@@ -173,6 +173,57 @@
 							      			</h:column>
 							      			<h:column>
 							      				<f:facet name="header">
+							      					<h:commandLink actionListener="#{searchBean.resultsTable.sort}">
+							      						<f:attribute name="sort_field" value="request_type" />
+							      						<span>Type</span>
+							      						<h:panelGroup rendered="#{searchBean.resultsTable.isSortedBy('request_type')}">
+								      						<h:panelGroup rendered="#{searchBean.resultsTable.sortAscending eq true}">
+								      							<span class="arrow-up"></span>
+								      						</h:panelGroup>
+								      						<h:panelGroup rendered="#{searchBean.resultsTable.sortAscending eq false}">
+								      							<span class="arrow-down"></span>
+								      						</h:panelGroup>
+							      						</h:panelGroup>
+							    			   		</h:commandLink>
+							      				</f:facet>
+							      				<h:outputText value="#{dataRequest.type}" />
+							      			</h:column>
+							      			<h:column>
+							      				<f:facet name="header">
+							      					<h:commandLink actionListener="#{searchBean.resultsTable.sort}">
+							      						<f:attribute name="sort_field" value="system_name" />
+							      						<span>System</span>
+							      						<h:panelGroup rendered="#{searchBean.resultsTable.isSortedBy('system_name')}">
+								      						<h:panelGroup rendered="#{searchBean.resultsTable.sortAscending eq true}">
+								      							<span class="arrow-up"></span>
+								      						</h:panelGroup>
+								      						<h:panelGroup rendered="#{searchBean.resultsTable.sortAscending eq false}">
+								      							<span class="arrow-down"></span>
+								      						</h:panelGroup>
+							      						</h:panelGroup>
+							    			   		</h:commandLink>
+							      				</f:facet>
+							      				<h:outputText value="#{dataRequest.system}" />
+							      			</h:column>
+							      			<h:column>
+							      				<f:facet name="header">
+							      					<h:commandLink actionListener="#{searchBean.resultsTable.sort}">
+							      						<f:attribute name="sort_field" value="assignee" />
+							      						<span>Assignee</span>
+							      						<h:panelGroup rendered="#{searchBean.resultsTable.isSortedBy('assignee')}">
+								      						<h:panelGroup rendered="#{searchBean.resultsTable.sortAscending eq true}">
+								      							<span class="arrow-up"></span>
+								      						</h:panelGroup>
+								      						<h:panelGroup rendered="#{searchBean.resultsTable.sortAscending eq false}">
+								      							<span class="arrow-down"></span>
+								      						</h:panelGroup>
+							      						</h:panelGroup>
+							    			   		</h:commandLink>
+							      				</f:facet>
+							      				<h:outputText value="#{dataRequest.assignee}" />
+							      			</h:column>
+							      			<h:column>
+							      				<f:facet name="header">
 							      					<h:commandLink actionListener="#{report1.resultsTable.sort}">
 							      						<f:attribute name="sort_field" value="drt_request_date" />
 							      						<span>Created On</span>
@@ -207,6 +258,44 @@
 							      				</f:facet>
 							      				<h:outputText value="#{dataRequest.dueDate}">
 							      					<f:converter converterId="defaultDateConverter" />
+							      				</h:outputText>
+							      			</h:column>
+							      			<h:column>
+							      				<f:facet name="header">
+							      					<h:commandLink actionListener="#{report1.resultsTable.sort}">
+							      						<f:attribute name="sort_field" value="resolved_date" />
+							      						<span>Resolved On</span>
+							      						<h:panelGroup rendered="#{report1.resultsTable.isSortedBy('resolved_date')}">
+								      						<h:panelGroup rendered="#{report1.resultsTable.sortAscending eq true}">
+								      							<span class="arrow-up"></span>
+								      						</h:panelGroup>
+								      						<h:panelGroup rendered="#{report1.resultsTable.sortAscending eq false}">
+								      							<span class="arrow-down"></span>
+								      						</h:panelGroup>
+							      						</h:panelGroup>
+							    			   		</h:commandLink>
+							      				</f:facet>
+							      				<h:outputText value="#{dataRequest.dateResolved}">
+							      					<f:converter converterId="defaultDateConverter" />
+							      				</h:outputText>
+							      			</h:column>
+							      			<h:column>
+							      				<f:facet name="header">
+							      					<h:commandLink actionListener="#{report1.resultsTable.sort}">
+							      						<f:attribute name="sort_field" value="modified_date" />
+							      						<span>Last Updated On</span>
+							      						<h:panelGroup rendered="#{report1.resultsTable.isSortedBy('modified_date')}">
+								      						<h:panelGroup rendered="#{report1.resultsTable.sortAscending eq true}">
+								      							<span class="arrow-up"></span>
+								      						</h:panelGroup>
+								      						<h:panelGroup rendered="#{report1.resultsTable.sortAscending eq false}">
+								      							<span class="arrow-down"></span>
+								      						</h:panelGroup>
+							      						</h:panelGroup>
+							    			   		</h:commandLink>
+							      				</f:facet>
+							      				<h:outputText value="#{dataRequest.lastUpdatedDate}">
+							      					<f:converter converterId="defaultDateTimeConverter" />
 							      				</h:outputText>
 							      			</h:column>
 	                                	</h:dataTable>

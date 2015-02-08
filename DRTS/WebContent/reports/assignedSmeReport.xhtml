@@ -42,40 +42,46 @@
                         	<h:form styleClass="col-1-1 mobile-col-1-1">
                         	
                         		<p>This report displays the number of open requests assigned to each SME.</p>
-                        				
-                        		<div class="form-wrapper col-1-1 mobile-col-1-1">
-                        	
-                        			<pf:chart type="pie" model="#{report3.pieModel}" style="width:100%;height:500px" />
-                        			
-                        		</div>
-                        				
-								<pf:dataTable id="report_3_table" var="row" styleClass="drtsTable" value="#{report3.rows}">
-									<pf:column>
-										<f:facet name="header">SME Username</f:facet>
-										<h:outputText value="#{row.name}" />
-									</pf:column>
+                        		
+                        		<h:panelGroup rendered="#{empty report3.rows}">
+                        			<p>The are currently 0 requests that are assigned to SMEs.</p>
+                        		</h:panelGroup>
+                        		
+                        		<h:panelGroup rendered="#{not empty report3.rows}">
+	                        		<div class="form-wrapper col-1-1 mobile-col-1-1">
+	                        	
+	                        			<pf:chart type="pie" model="#{report3.pieModel}" style="width:100%;height:500px" />
+	                        			
+	                        		</div>
+	                        				
+									<pf:dataTable id="report_3_table" var="row" styleClass="drtsTable" value="#{report3.rows}">
+										<pf:column>
+											<f:facet name="header">SME Username</f:facet>
+											<h:outputText value="#{row.name}" />
+										</pf:column>
+										
+										<pf:column>
+											<f:facet name="header">Requests assigned for resolution</f:facet>
+											<h:outputText value="#{row.smeCount}" />
+										</pf:column>
+										
+										 <pf:column>
+										 	<f:facet name="header">Requests assigned for validation</f:facet>
+										 	<h:outputText value="#{row.validatorCount}" />
+										 </pf:column>
+										 
+										 <pf:column>
+										 	<f:facet name="header">Total Number of Assigned Requests</f:facet>
+										 	<h:outputText value="#{row.totalCount}" />
+										 </pf:column>
+									</pf:dataTable>
 									
-									<pf:column>
-										<f:facet name="header">Requests assigned for resolution</f:facet>
-										<h:outputText value="#{row.smeCount}" />
-									</pf:column>
-									
-									 <pf:column>
-									 	<f:facet name="header">Requests assigned for validation</f:facet>
-									 	<h:outputText value="#{row.validatorCount}" />
-									 </pf:column>
-									 
-									 <pf:column>
-									 	<f:facet name="header">Total Number of Assigned Requests</f:facet>
-									 	<h:outputText value="#{row.totalCount}" />
-									 </pf:column>
-								</pf:dataTable>
-								
-								<div class="form-control col-1-1 mobile-col-1-1">
-									<h:commandButton styleClass="button" value="Export Table to PDF" rendered="#{userSession.allowedToExportReports eq true}">
-										<pe:exporter type="pdf" tableTitle="Requests Assigned to SMEs Report" target="report_3_table" fileName="assigned_sme_report" subTable="false" orientation="Landscape"/>
-									</h:commandButton>
-								</div>
+									<div class="form-control col-1-1 mobile-col-1-1">
+										<h:commandButton styleClass="button" value="Export Table to PDF" rendered="#{userSession.allowedToExportReports eq true}">
+											<pe:exporter type="pdf" tableTitle="Requests Assigned to SMEs Report" target="report_3_table" fileName="assigned_sme_report" subTable="false" orientation="Landscape"/>
+										</h:commandButton>
+									</div>
+								</h:panelGroup>
     	
     						</h:form>
 					    	

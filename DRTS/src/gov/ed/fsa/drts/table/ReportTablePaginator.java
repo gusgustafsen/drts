@@ -40,6 +40,16 @@ public class ReportTablePaginator extends TablePaginator {
 		this.report_type = report_type;
 	}
 	
+	public ReportTablePaginator(int report_type, UserSession user_session, String sort_field, boolean sort_ascending)
+	{
+		super(user_session);
+		
+		this.report_type = report_type;
+		
+		this.sort_field = sort_field;
+		this.sort_ascending = sort_ascending;
+	}
+	
 	// TODO redo/optimize
 	public ReportTablePaginator(int report_type, UserSession user_session, String request_display_id, String keyword, LinkedHashMap<String, String> search_parameters, 
 								Date requested_due_date_from, Date requested_due_date_to, Date resolved_date_from,
