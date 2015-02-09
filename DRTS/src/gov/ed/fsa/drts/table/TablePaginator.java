@@ -32,10 +32,10 @@ public abstract class TablePaginator {
     {
     	this.user_session = user_session;
     	
-    	this.rows_per_page = 3;
+    	this.rows_per_page = 10;
     	this.page_range = 10;
     	this.sort_field = "request_display_id";
-    	this.sort_ascending = true;
+    	this.sort_ascending = false;
     }
     
     protected abstract void loadDataRequests();
