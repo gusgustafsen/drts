@@ -29,27 +29,36 @@ public class DataRequest {
 	private String receiver_email = null;
 	private String comments = null;
 	private String system = null;
-	
 	private String assigned_sme = null;
 	private Date date_assigned_to_sme = null;
-	
 	private Date date_resolved = null;
-	
 	private String current_task_id = null;
 	private String current_task_name = null;
 	private String current_task_form_key = null;
-	
 	private String candidate_group = null;
 	private String assignee = null;
-	
 	private String assigned_validator = null;
 	private Date date_assigned_to_validator = null;
 	private Date date_validated = null;
-	
 	private Date date_closed = null;
-	
 	private Date last_updated_date = null;
 	private boolean pii_flag = false;
+	private String delay_reason = null;
+	private Date original_request_date = null;
+	private Date agreed_due_date = null;
+	private Date anticipated_due_date = null;
+	private Date date_run = null;
+	private String report_type = null;
+	private String query_report_name = null;
+	private String clarifications_assumptions = null;
+	private String detailed_steps = null;
+	private String validation_description = null;
+	private String validation_result = null;
+	private String golden_query_library = null;
+	private String business_requirements = null;
+	private int tier;
+	private String sme_group = null;
+	private String validation_sme_group = null;
 	
 	private int display_id = 1;
 	
@@ -325,7 +334,7 @@ public class DataRequest {
 	    
 	    int year = cal.get(Calendar.YEAR);
 	    
-	    result += year + "-" + this.display_id + "-D";
+	    result += (year % 100) + "-" + this.display_id + "-D";
 	    
 	    return result;
 	}
@@ -443,5 +452,165 @@ public class DataRequest {
 	public void setSystem(String system)
 	{
 		this.system = system;
+	}
+
+	public String getDelayReason()
+	{
+		return delay_reason;
+	}
+
+	public void setDelayReason(String delay_reason)
+	{
+		this.delay_reason = delay_reason;
+	}
+
+	public Date getOriginalRequestDate()
+	{
+		return original_request_date;
+	}
+
+	public void setOriginalRequestDate(Date original_request_date)
+	{
+		this.original_request_date = original_request_date;
+	}
+
+	public Date getAgreedDueDate()
+	{
+		return agreed_due_date;
+	}
+
+	public void setAgreedDueDate(Date agreed_due_date)
+	{
+		this.agreed_due_date = agreed_due_date;
+	}
+
+	public Date getAnticipatedDueDate()
+	{
+		return anticipated_due_date;
+	}
+
+	public void setAnticipatedDueDate(Date anticipated_due_date)
+	{
+		this.anticipated_due_date = anticipated_due_date;
+	}
+
+	public Date getDateRun()
+	{
+		return date_run;
+	}
+
+	public void setDateRun(Date date_run)
+	{
+		this.date_run = date_run;
+	}
+
+	public String getReportType()
+	{
+		return report_type;
+	}
+
+	public void setReportType(String report_type)
+	{
+		this.report_type = report_type;
+	}
+
+	public String getQueryReportName()
+	{
+		return query_report_name;
+	}
+
+	public void setQueryReportName(String query_report_name)
+	{
+		this.query_report_name = query_report_name;
+	}
+
+	public String getClarificationsAssumptions()
+	{
+		return clarifications_assumptions;
+	}
+
+	public void setClarificationsAssumptions(String clarifications_assumptions)
+	{
+		this.clarifications_assumptions = clarifications_assumptions;
+	}
+
+	public String getDetailedSteps()
+	{
+		return detailed_steps;
+	}
+
+	public void setDetailedSteps(String detailed_steps)
+	{
+		this.detailed_steps = detailed_steps;
+	}
+
+	public String getValidationDescription()
+	{
+		return validation_description;
+	}
+
+	public void setValidationDescription(String validation_description)
+	{
+		this.validation_description = validation_description;
+	}
+
+	public String getValidationResult()
+	{
+		return validation_result;
+	}
+
+	public void setValidationResult(String validation_result)
+	{
+		this.validation_result = validation_result;
+	}
+
+	public String getGoldenQueryLibrary()
+	{
+		return golden_query_library;
+	}
+
+	public void setGoldenQueryLibrary(String golden_query_library)
+	{
+		this.golden_query_library = golden_query_library;
+	}
+
+	public String getBusinessRequirements()
+	{
+		return business_requirements;
+	}
+
+	public void setBusinessRequirements(String business_requirements)
+	{
+		this.business_requirements = business_requirements;
+	}
+
+	public int getTier()
+	{
+		return tier;
+	}
+
+	public void setTier(int tier)
+	{
+		this.tier = tier;
+	}
+
+	public String getSmeGroup()
+	{
+		return sme_group;
+	}
+
+	public void setSmeGroup(String sme_group)
+	{
+		this.sme_group = sme_group;
+	}
+
+	public String getValidationSmeGroup()
+	{
+		return validation_sme_group;
+	}
+
+	public void setValidationSmeGroup(String validation_sme_group)
+	{
+		this.validation_sme_group = validation_sme_group;
 	}
 }

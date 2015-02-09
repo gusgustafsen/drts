@@ -53,9 +53,14 @@ public class DataLayer {
 																+ ApplicationProperties.DATA_REQUEST_FIELD_RECEIVER_EMAIL.getStringValue() + ", "
 																+ ApplicationProperties.DATA_REQUEST_FIELD_SYSTEM.getStringValue() + ", "
 																+ "request_display_id, "
-																+ ApplicationProperties.DATA_REQUEST_FIELD_PII_FLAG.getStringValue()
+																+ ApplicationProperties.DATA_REQUEST_FIELD_PII_FLAG.getStringValue() + ", "
+																+ ApplicationProperties.DATA_REQUEST_FIELD_ORIGINAL_REQUEST_DATE.getStringValue() + ", "
+																+ ApplicationProperties.DATA_REQUEST_FIELD_CLARIFICATIONS_ASSUMPTIONS.getStringValue() + ", "
+																+ ApplicationProperties.DATA_REQUEST_FIELD_GOLDEN_QUERY_LIBRARY.getStringValue() + ", "
+																+ ApplicationProperties.DATA_REQUEST_FIELD_BUSINESS_REQUIREMENTS.getStringValue() + ", "
+																+ ApplicationProperties.DATA_REQUEST_FIELD_TIER.getStringValue()
 																+ ") "
-																+ "VALUES (?, SYSDATE, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+																+ "VALUES (?, SYSDATE, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 	
 	private static final String QUERY_SELECT_DATA_REQUESTS_BY_GROUP_OR_ASSIGNEE = "SELECT * FROM(SELECT T2.*, rownum AS ROW_NUM FROM(SELECT T.* FROM(SELECT * FROM " + ApplicationProperties.DATA_REQUEST_VIEW.getStringValue() + ") T "
 																					+ "WHERE " + ApplicationProperties.DATA_REQUEST_FIELD_CANDIDATE_GROUP.getStringValue() + " IN (%s) OR " + ApplicationProperties.DATA_REQUEST_FIELD_ASSIGNEE.getStringValue()
@@ -115,7 +120,21 @@ public class DataLayer {
 															+ ApplicationProperties.DATA_REQUEST_FIELD_COMMENTS.getStringValue() + " = ?, "
 															+ ApplicationProperties.DATA_REQUEST_FIELD_LAST_UPDATED_DATE.getStringValue() + " = SYSDATE, "
 															+ ApplicationProperties.DATA_REQUEST_FIELD_SYSTEM.getStringValue() + " = ?, "
-															+ ApplicationProperties.DATA_REQUEST_FIELD_PII_FLAG.getStringValue() + " = ? "
+															+ ApplicationProperties.DATA_REQUEST_FIELD_PII_FLAG.getStringValue() + " = ?, "
+															+ ApplicationProperties.DATA_REQUEST_FIELD_ORIGINAL_REQUEST_DATE.getStringValue() + " = ?, "
+															+ ApplicationProperties.DATA_REQUEST_FIELD_CLARIFICATIONS_ASSUMPTIONS.getStringValue() + " = ?, "
+															+ ApplicationProperties.DATA_REQUEST_FIELD_GOLDEN_QUERY_LIBRARY.getStringValue() + " = ?, "
+															+ ApplicationProperties.DATA_REQUEST_FIELD_BUSINESS_REQUIREMENTS.getStringValue() + " = ?, "
+															+ ApplicationProperties.DATA_REQUEST_FIELD_TIER.getStringValue() + " = ?, "
+															+ ApplicationProperties.DATA_REQUEST_FIELD_VALIDATION_DESCRIPTION.getStringValue() + " = ?, "
+															+ ApplicationProperties.DATA_REQUEST_FIELD_VALIDATION_RESULT.getStringValue() + " = ?, "
+															+ ApplicationProperties.DATA_REQUEST_FIELD_DELAY_REASON.getStringValue() + " = ?, "
+															+ ApplicationProperties.DATA_REQUEST_FIELD_AGREED_DUE_DATE.getStringValue() + " = ?, "
+															+ ApplicationProperties.DATA_REQUEST_FIELD_ANTICIPATED_DUE_DATE.getStringValue() + " = ?, "
+															+ ApplicationProperties.DATA_REQUEST_FIELD_DATE_RUN.getStringValue() + " = ?, "
+															+ ApplicationProperties.DATA_REQUEST_FIELD_REPORT_TYPE.getStringValue() + " = ?, "
+															+ ApplicationProperties.DATA_REQUEST_FIELD_QUERY_REPORT_NAME.getStringValue() + " = ?, "
+															+ ApplicationProperties.DATA_REQUEST_FIELD_DETAILED_STEPS.getStringValue() + " = ? "
 															+ "WHERE request_number = ?";
 	
 	private static final String QUERY_SELECT_NEXT_DATA_REQUEST_ID = "SELECT COALESCE(MAX(request_display_id), 0) + 1 FROM " + ApplicationProperties.DATA_REQUEST_TABLE.getStringValue();
@@ -245,6 +264,18 @@ public class DataLayer {
 			prepared_statement.setString(22, (String) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_SYSTEM.getStringValue()));
 			prepared_statement.setInt(23, next_id);
 			prepared_statement.setInt(24, ((Boolean) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_PII_FLAG.getStringValue())) ? 1 : 0);
+			if(request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_ORIGINAL_REQUEST_DATE.getStringValue()) != null)
+			{
+				prepared_statement.setDate(25, new java.sql.Date(((Date) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_ORIGINAL_REQUEST_DATE.getStringValue())).getTime()));
+			}
+			else
+			{
+				prepared_statement.setDate(25, null);
+			}
+			prepared_statement.setString(26, (String) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_CLARIFICATIONS_ASSUMPTIONS.getStringValue()));
+			prepared_statement.setString(27, (String) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_GOLDEN_QUERY_LIBRARY.getStringValue()));
+			prepared_statement.setString(28, (String) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_BUSINESS_REQUIREMENTS.getStringValue()));
+			prepared_statement.setInt(29, (Integer) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_TIER.getStringValue()));
 			
 			sql_result = prepared_statement.executeUpdate();
 			
@@ -979,7 +1010,49 @@ public class DataLayer {
 			prepared_statement.setString(25, (String) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_COMMENTS.getStringValue()));
 			prepared_statement.setString(26, (String) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_SYSTEM.getStringValue()));
 			prepared_statement.setInt(27, ((Boolean) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_PII_FLAG.getStringValue())) ? 1 : 0);
-			prepared_statement.setString(28, request_id);
+			if(request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_ORIGINAL_REQUEST_DATE.getStringValue()) != null)
+			{
+				prepared_statement.setDate(28, new java.sql.Date(((Date) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_ORIGINAL_REQUEST_DATE.getStringValue())).getTime()));
+			}
+			else
+			{
+				prepared_statement.setDate(28, null);
+			}
+			prepared_statement.setString(29, (String) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_CLARIFICATIONS_ASSUMPTIONS.getStringValue()));
+			prepared_statement.setString(30, (String) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_GOLDEN_QUERY_LIBRARY.getStringValue()));
+			prepared_statement.setString(31, (String) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_BUSINESS_REQUIREMENTS.getStringValue()));
+			prepared_statement.setInt(32, (Integer) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_TIER.getStringValue()));
+			prepared_statement.setString(33, (String) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_VALIDATION_DESCRIPTION.getStringValue()));
+			prepared_statement.setString(34, (String) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_VALIDATION_RESULT.getStringValue()));
+			prepared_statement.setString(35, (String) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_DELAY_REASON.getStringValue()));
+			if(request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_AGREED_DUE_DATE.getStringValue()) != null)
+			{
+				prepared_statement.setDate(36, new java.sql.Date(((Date) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_AGREED_DUE_DATE.getStringValue())).getTime()));
+			}
+			else
+			{
+				prepared_statement.setDate(36, null);
+			}
+			if(request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_ANTICIPATED_DUE_DATE.getStringValue()) != null)
+			{
+				prepared_statement.setDate(37, new java.sql.Date(((Date) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_ANTICIPATED_DUE_DATE.getStringValue())).getTime()));
+			}
+			else
+			{
+				prepared_statement.setDate(37, null);
+			}
+			if(request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_DATE_RUN.getStringValue()) != null)
+			{
+				prepared_statement.setDate(38, new java.sql.Date(((Date) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_DATE_RUN.getStringValue())).getTime()));
+			}
+			else
+			{
+				prepared_statement.setDate(38, null);
+			}
+			prepared_statement.setString(39, (String) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_REPORT_TYPE.getStringValue()));
+			prepared_statement.setString(40, (String) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_QUERY_REPORT_NAME.getStringValue()));
+			prepared_statement.setString(41, (String) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_DETAILED_STEPS.getStringValue()));
+			prepared_statement.setString(42, request_id);
 			
 			sql_result = prepared_statement.executeUpdate();
 			
@@ -2207,6 +2280,22 @@ public class DataLayer {
 		request.setLastUpdatedDate(result_set.getDate(ApplicationProperties.DATA_REQUEST_FIELD_LAST_UPDATED_DATE.getStringValue()));
 		request.setPiiFlag(result_set.getInt(ApplicationProperties.DATA_REQUEST_FIELD_PII_FLAG.getStringValue()) != 0);
 		request.setSystem(result_set.getString(ApplicationProperties.DATA_REQUEST_FIELD_SYSTEM.getStringValue()));
+		request.setDelayReason(result_set.getString(ApplicationProperties.DATA_REQUEST_FIELD_DELAY_REASON.getStringValue()));
+		request.setOriginalRequestDate(result_set.getDate(ApplicationProperties.DATA_REQUEST_FIELD_ORIGINAL_REQUEST_DATE.getStringValue()));
+		request.setAgreedDueDate(result_set.getDate(ApplicationProperties.DATA_REQUEST_FIELD_AGREED_DUE_DATE.getStringValue()));
+		request.setAnticipatedDueDate(result_set.getDate(ApplicationProperties.DATA_REQUEST_FIELD_ANTICIPATED_DUE_DATE.getStringValue()));
+		request.setDateRun(result_set.getDate(ApplicationProperties.DATA_REQUEST_FIELD_DATE_RUN.getStringValue()));
+		request.setReportType(result_set.getString(ApplicationProperties.DATA_REQUEST_FIELD_REPORT_TYPE.getStringValue()));
+		request.setQueryReportName(result_set.getString(ApplicationProperties.DATA_REQUEST_FIELD_QUERY_REPORT_NAME.getStringValue()));
+		request.setClarificationsAssumptions(result_set.getString(ApplicationProperties.DATA_REQUEST_FIELD_CLARIFICATIONS_ASSUMPTIONS.getStringValue()));
+		request.setDetailedSteps(result_set.getString(ApplicationProperties.DATA_REQUEST_FIELD_DETAILED_STEPS.getStringValue()));
+		request.setValidationDescription(result_set.getString(ApplicationProperties.DATA_REQUEST_FIELD_VALIDATION_DESCRIPTION.getStringValue()));
+		request.setValidationResult(result_set.getString(ApplicationProperties.DATA_REQUEST_FIELD_VALIDATION_RESULT.getStringValue()));
+		request.setGoldenQueryLibrary(result_set.getString(ApplicationProperties.DATA_REQUEST_FIELD_GOLDEN_QUERY_LIBRARY.getStringValue()));
+		request.setBusinessRequirements(result_set.getString(ApplicationProperties.DATA_REQUEST_FIELD_BUSINESS_REQUIREMENTS.getStringValue()));
+		request.setTier(result_set.getInt(ApplicationProperties.DATA_REQUEST_FIELD_TIER.getStringValue()));
+		request.setSmeGroup(result_set.getString(ApplicationProperties.DATA_REQUEST_FIELD_SME_GROUP.getStringValue()));
+		request.setValidationSmeGroup(result_set.getString(ApplicationProperties.DATA_REQUEST_FIELD_VALIDATION_SME_GROUP.getStringValue()));
 		
 		return request;
 	}

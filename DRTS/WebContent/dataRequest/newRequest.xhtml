@@ -60,10 +60,15 @@
 											<h:outputLabel value="Status"/>
                                             <h:outputText styleClass="form-text" value="#{dataRequest.status}" />
                                             
-                                            <label>Original Request Date</label>
+                                            <label>Creation Date</label>
                                             <h:outputText styleClass="form-text" value="#{dataRequest.createdDateTime}">
 								      			<f:converter converterId="defaultDateTimeConverter" />
 								      		</h:outputText>
+								      		
+								      		<label>Original Request Date</label>
+								      		<h:inputText styleClass="datepicker" value="#{dataRequest.originalRequestDate}">
+                                            	<f:converter converterId="defaultDateConverter" />
+                                            </h:inputText>
 								      		
 								      		<h:outputLabel value="Type"/>
 		                                    <h:selectOneMenu value="#{dataRequest.type}">
@@ -79,6 +84,11 @@
                                             <h:inputText styleClass="datepicker" value="#{dataRequest.dueDate}">
                                             	<f:converter converterId="defaultDateConverter" />
                                             </h:inputText>
+                                            
+                                            <h:outputLabel value="Tier"/>
+		                                    <h:selectOneMenu value="#{dataRequest.tier}">
+									   			<f:selectItems value="#{dataRequest.tiers}" />
+									   		</h:selectOneMenu>
                                             
                                             <h:outputLabel value="Urgency Flag"/>
                                             <h:selectBooleanCheckbox value="#{dataRequest.urgent}" />
@@ -100,6 +110,15 @@
 
                                             <h:outputLabel value="Special Considerations/Issues"/>
                                     		<h:inputTextarea value="#{dataRequest.specialConsiderationsIssues}" />
+
+                                            <h:outputLabel value="Clarifications/Assumptions"/>
+                                    		<h:inputTextarea value="#{dataRequest.clarificationsAssumptions}" />
+
+                                            <h:outputLabel value="Golden Query Library"/>
+                                    		<h:inputTextarea value="#{dataRequest.goldenQueryLibrary}" />
+
+                                            <h:outputLabel value="Business Requirements"/>
+                                    		<h:inputTextarea value="#{dataRequest.businessRequirements}" />
                                         </div>
                                         <div id="requestor">
                                         	<p>Please enter all information, below, about the person who is requesting the data.</p>

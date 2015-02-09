@@ -66,10 +66,15 @@
 											<h:outputLabel value="Status"/>
                                             <h:outputText styleClass="form-text" value="#{dataRequest.status}" />
                                             
-                                            <label>Original Request Date</label>
+                                            <label>Creation Date</label>
                                             <h:outputText styleClass="form-text" value="#{dataRequest.createdDateTime}">
 								      			<f:converter converterId="defaultDateTimeConverter" />
 								      		</h:outputText>
+								      		
+								      		<label>Original Request Date</label>
+								      		<h:inputText styleClass="datepicker" value="#{dataRequest.originalRequestDate}">
+                                            	<f:converter converterId="defaultDateConverter" />
+                                            </h:inputText>
 								      		
 								      		<h:outputLabel value="Type"/>
 		                                    <h:selectOneMenu value="#{dataRequest.type}">
@@ -86,11 +91,44 @@
                                             	<f:converter converterId="defaultDateConverter" />
                                             </h:inputText>
                                             
+                                            <h:outputLabel value="Tier"/>
+		                                    <h:selectOneMenu value="#{dataRequest.tier}">
+									   			<f:selectItems value="#{dataRequest.tiers}" />
+									   		</h:selectOneMenu>
+									   		
+									   		<h:outputLabel value="Delay Reason"/>
+		                                    <h:selectOneMenu value="#{dataRequest.delayReason}">
+									   			<f:selectItems value="#{dataRequest.delayReasons}" />
+									   		</h:selectOneMenu>
+									   		
+									   		<label>Agreed Due Date</label>
+								      		<h:inputText styleClass="datepicker" value="#{dataRequest.agreedDueDate}">
+                                            	<f:converter converterId="defaultDateConverter" />
+                                            </h:inputText>
+									   		
+									   		<label>Anticipated Due Date</label>
+								      		<h:inputText styleClass="datepicker" value="#{dataRequest.anticipatedDueDate}">
+                                            	<f:converter converterId="defaultDateConverter" />
+                                            </h:inputText>
+									   		
+									   		<label>Date Run</label>
+								      		<h:inputText styleClass="datepicker" value="#{dataRequest.dateRun}">
+                                            	<f:converter converterId="defaultDateConverter" />
+                                            </h:inputText>
+								      		
+								      		<h:outputLabel value="Report Type"/>
+		                                    <h:selectOneMenu value="#{dataRequest.reportType}">
+									   			<f:selectItems value="#{dataRequest.reportTypes}" />
+									   		</h:selectOneMenu>
+                                            
                                             <h:outputLabel value="Urgency Flag"/>
                                             <h:selectBooleanCheckbox value="#{dataRequest.urgent}" />
                                             
                                             <h:outputLabel value="PII Flag"/>
                                             <h:selectBooleanCheckbox value="#{dataRequest.pii}" />
+                                            
+                                            <h:outputLabel value="Query/Report Name"/>
+                                            <h:inputText value="#{dataRequest.queryReportName}" />
                                             
                                             <h:outputLabel value="Related Requests"/>
                                     		<h:inputTextarea value="#{dataRequest.relatedRequests}" />
@@ -106,6 +144,18 @@
 
                                             <h:outputLabel value="Special Considerations/Issues"/>
                                     		<h:inputTextarea value="#{dataRequest.specialConsiderationsIssues}" />
+
+                                            <h:outputLabel value="Clarifications/Assumptions"/>
+                                    		<h:inputTextarea value="#{dataRequest.clarificationsAssumptions}" />
+
+                                            <h:outputLabel value="Golden Query Library"/>
+                                    		<h:inputTextarea value="#{dataRequest.goldenQueryLibrary}" />
+
+                                            <h:outputLabel value="Business Requirements"/>
+                                    		<h:inputTextarea value="#{dataRequest.businessRequirements}" />
+
+                                            <h:outputLabel value="Detailed Steps"/>
+                                    		<h:inputTextarea value="#{dataRequest.detailedSteps}" />
                                         </div>
                                         <div id="requestor">
                                         	<p>Information, below, is about the person who is requesting the data.</p>
@@ -138,6 +188,12 @@
                                         <div id="validation">
                                         	<h:outputLabel value="SME To Validate The Request"/>
                                             <h:outputText styleClass="form-text" value="#{dataRequest.assignedValidator}" />
+                                            
+                                            <h:outputLabel value="Validation"/>
+	                                    	<h:inputTextarea value="#{dataRequest.validationDescription}" />
+										   		
+										   	<h:outputLabel value="Validation Result"/>
+	                                    	<h:inputTextarea value="#{dataRequest.validationResult}" />
                                         </div>
                                         <div id="attachments">
                                         	<label>Attached Files</label>

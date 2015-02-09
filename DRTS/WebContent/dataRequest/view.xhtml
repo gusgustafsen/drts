@@ -70,10 +70,18 @@
 											<h:outputLabel value="Status"/>
                                             <h:outputText styleClass="form-text" value="#{dataRequest.status}" />
                                             
-                                            <label>Original Request Date</label>
+                                            <label>Creation Date</label>
                                             <h:outputText styleClass="form-text" value="#{dataRequest.createdDateTime}">
 								      			<f:converter converterId="defaultDateTimeConverter" />
 								      		</h:outputText>
+								      		
+								      		<label>Original Request Date</label>
+								      		<h:outputText styleClass="form-text" value="#{dataRequest.originalRequestDate}" rendered="#{dataRequest.statusDrafted eq false}">
+								      			<f:converter converterId="defaultDateConverter" />
+								      		</h:outputText>
+								      		<h:inputText styleClass="datepicker" value="#{dataRequest.originalRequestDate}" rendered="#{dataRequest.statusDrafted eq true}">
+                                            	<f:converter converterId="defaultDateConverter" />
+                                            </h:inputText>
 								      		
 								      		<h:outputLabel value="Type"/>
 								      		<h:outputText styleClass="form-text" value="#{dataRequest.type}" rendered="#{dataRequest.statusDrafted eq false}" />
@@ -95,6 +103,48 @@
                                             	<f:converter converterId="defaultDateConverter" />
                                             </h:inputText>
                                             
+                                            <h:outputLabel value="Tier"/>
+								      		<h:outputText styleClass="form-text" value="#{dataRequest.tier}" rendered="#{dataRequest.statusDrafted eq false}" />
+		                                    <h:selectOneMenu value="#{dataRequest.tier}" rendered="#{dataRequest.statusDrafted eq true}">
+									   			<f:selectItems value="#{dataRequest.tiers}" />
+									   		</h:selectOneMenu>
+									   		
+									   		<h:outputLabel value="Delay Reason"/>
+								      		<h:outputText styleClass="form-text" value="#{dataRequest.delayReason}" rendered="#{dataRequest.statusDrafted eq false}" />
+		                                    <h:selectOneMenu value="#{dataRequest.delayReason}" rendered="#{dataRequest.statusDrafted eq true}">
+									   			<f:selectItems value="#{dataRequest.delayReasons}" />
+									   		</h:selectOneMenu>
+									   		
+									   		<label>Agreed Due Date</label>
+                                            <h:outputText styleClass="form-text" value="#{dataRequest.agreedDueDate}" rendered="#{dataRequest.statusDrafted eq false}">
+								      			<f:converter converterId="defaultDateConverter" />
+								      		</h:outputText>
+								      		<h:inputText styleClass="datepicker" value="#{dataRequest.agreedDueDate}" rendered="#{dataRequest.statusDrafted eq true}">
+                                            	<f:converter converterId="defaultDateConverter" />
+                                            </h:inputText>
+									   		
+									   		<label>Anticipated Due Date</label>
+                                            <h:outputText styleClass="form-text" value="#{dataRequest.anticipatedDueDate}" rendered="#{dataRequest.statusDrafted eq false}">
+								      			<f:converter converterId="defaultDateConverter" />
+								      		</h:outputText>
+								      		<h:inputText styleClass="datepicker" value="#{dataRequest.anticipatedDueDate}" rendered="#{dataRequest.statusDrafted eq true}">
+                                            	<f:converter converterId="defaultDateConverter" />
+                                            </h:inputText>
+									   		
+									   		<label>Date Run</label>
+                                            <h:outputText styleClass="form-text" value="#{dataRequest.dateRun}" rendered="#{dataRequest.statusDrafted eq false}">
+								      			<f:converter converterId="defaultDateConverter" />
+								      		</h:outputText>
+								      		<h:inputText styleClass="datepicker" value="#{dataRequest.dateRun}" rendered="#{dataRequest.statusDrafted eq true}">
+                                            	<f:converter converterId="defaultDateConverter" />
+                                            </h:inputText>
+								      		
+								      		<h:outputLabel value="Report Type"/>
+								      		<h:outputText styleClass="form-text" value="#{dataRequest.reportType}" rendered="#{dataRequest.statusDrafted eq false}" />
+		                                    <h:selectOneMenu value="#{dataRequest.reportType}" rendered="#{dataRequest.statusDrafted eq true}">
+									   			<f:selectItems value="#{dataRequest.reportTypes}" />
+									   		</h:selectOneMenu>
+                                            
                                             <h:outputLabel value="Urgency Flag"/>
                                             <h:outputText styleClass="form-text" value="#{dataRequest.urgent}" rendered="#{dataRequest.statusDrafted eq false}" />
                                             <h:selectBooleanCheckbox value="#{dataRequest.urgent}" rendered="#{dataRequest.statusDrafted eq true}" />
@@ -102,6 +152,10 @@
                                             <h:outputLabel value="PII Flag"/>
                                             <h:outputText styleClass="form-text" value="#{dataRequest.pii}" rendered="#{dataRequest.statusDrafted eq false}" />
                                             <h:selectBooleanCheckbox value="#{dataRequest.pii}" rendered="#{dataRequest.statusDrafted eq true}" />
+                                            
+                                            <h:outputLabel value="Query/Report Name"/>
+                                            <h:outputText styleClass="form-text" value="#{dataRequest.queryReportName}" rendered="#{dataRequest.statusDrafted eq false}" />
+                                            <h:inputText value="#{dataRequest.queryReportName}" rendered="#{dataRequest.statusDrafted eq true}" />
                                             
                                             <h:outputLabel value="Related Requests"/>
                                             <h:outputText styleClass="form-text" value="#{dataRequest.relatedRequests}" rendered="#{dataRequest.statusDrafted eq false}" />
@@ -122,6 +176,22 @@
                                             <h:outputLabel value="Special Considerations/Issues"/>
                                             <h:outputText styleClass="form-text" value="#{dataRequest.specialConsiderationsIssues}" rendered="#{dataRequest.statusDrafted eq false}" />
                                             <h:inputTextarea value="#{dataRequest.specialConsiderationsIssues}" rendered="#{dataRequest.statusDrafted eq true}" />
+
+                                            <h:outputLabel value="Clarifications/Assumptions"/>
+                                            <h:outputText styleClass="form-text" value="#{dataRequest.clarificationsAssumptions}" rendered="#{dataRequest.statusDrafted eq false}" />
+                                            <h:inputTextarea value="#{dataRequest.clarificationsAssumptions}" rendered="#{dataRequest.statusDrafted eq true}" />
+
+                                            <h:outputLabel value="Golden Query Library"/>
+                                            <h:outputText styleClass="form-text" value="#{dataRequest.goldenQueryLibrary}" rendered="#{dataRequest.statusDrafted eq false}" />
+                                            <h:inputTextarea value="#{dataRequest.goldenQueryLibrary}" rendered="#{dataRequest.statusDrafted eq true}" />
+
+                                            <h:outputLabel value="Business Requirements"/>
+                                            <h:outputText styleClass="form-text" value="#{dataRequest.businessRequirements}" rendered="#{dataRequest.statusDrafted eq false}" />
+                                            <h:inputTextarea value="#{dataRequest.businessRequirements}" rendered="#{dataRequest.statusDrafted eq true}" />
+
+                                            <h:outputLabel value="Detailed Steps"/>
+                                            <h:outputText styleClass="form-text" value="#{dataRequest.detailedSteps}" rendered="#{dataRequest.statusDrafted eq false}" />
+                                            <h:inputTextarea value="#{dataRequest.detailedSteps}" rendered="#{dataRequest.statusDrafted eq true}" />
                                         </div>
                                         <div id="requestor">
                                         	<p>Information, below, is about the person who is requesting the data.</p>
@@ -163,6 +233,14 @@
 	                                        <div id="validation">
 	                                        	<h:outputLabel value="SME To Validate The Request"/>
 	                                            <h:outputText styleClass="form-text" value="#{dataRequest.assignedValidator}" />
+	                                            
+	                                            <h:outputLabel value="Validation"/>
+	                                            <h:outputText styleClass="form-text" value="#{dataRequest.validationDescription}" rendered="#{dataRequest.statusDrafted eq false}" />
+                                            	<h:inputTextarea value="#{dataRequest.validationDescription}" rendered="#{dataRequest.statusDrafted eq true}" />
+											   		
+											   	<h:outputLabel value="Validation Result"/>
+	                                            <h:outputText styleClass="form-text" value="#{dataRequest.validationResult}" rendered="#{dataRequest.statusDrafted eq false}" />
+                                            	<h:inputTextarea value="#{dataRequest.validationResult}" rendered="#{dataRequest.statusDrafted eq true}" />
 	                                        </div>
                                         </h:panelGroup>
                                         <div id="attachments">
@@ -213,6 +291,7 @@
 	                        		<div class="form-control col-1-1 mobile-col-1-1">
 	                                	<h:commandButton value="Save" styleClass="button" action="#{dataRequest.updateRequest(99)}" />
 	                                	<h:commandButton value="Submit" styleClass="button" action="#{dataRequest.updateRequest(3)}" />
+	                                	<h:commandButton value="Discard" styleClass="button" action="#{dataRequest.updateRequest(19)}" />
 	                                </div>
                                 </h:panelGroup>
                                 

@@ -217,7 +217,16 @@ public class DataRequestBean extends PageUtil implements Serializable {
 			// user submitted a drafted request
 			case 3:
 				status = ApplicationProperties.DATA_REQUEST_STATUS_PENDING.getStringValue();
+				this.request_variables.put(ApplicationProperties.DATA_REQUEST_WORKFLOW_REQUEST_DRAFTED_SUBMITTED.getStringValue(), 1);
 				candidate_group = ApplicationProperties.GROUP_ADMIN.getStringValue();
+				assignee = null;
+				complete_task = true;
+				break;
+				
+			case 19:
+				status = ApplicationProperties.DATA_REQUEST_STATUS_DISCARDED.getStringValue();
+				this.request_variables.put(ApplicationProperties.DATA_REQUEST_WORKFLOW_REQUEST_DRAFTED_SUBMITTED.getStringValue(), 2);
+				candidate_group = null;
 				assignee = null;
 				complete_task = true;
 				break;
@@ -540,6 +549,20 @@ public class DataRequestBean extends PageUtil implements Serializable {
 		this.request_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_COMMENTS.getStringValue(), this.getAllComments());
 		this.request_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_PII_FLAG.getStringValue(), this.isPii());
 		this.request_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_SYSTEM.getStringValue(), this.getSystem());
+		this.request_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_ORIGINAL_REQUEST_DATE.getStringValue(), this.getOriginalRequestDate());
+		this.request_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_CLARIFICATIONS_ASSUMPTIONS.getStringValue(), this.getClarificationsAssumptions());
+		this.request_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_GOLDEN_QUERY_LIBRARY.getStringValue(), this.getGoldenQueryLibrary());
+		this.request_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_BUSINESS_REQUIREMENTS.getStringValue(), this.getBusinessRequirements());
+		this.request_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_TIER.getStringValue(), this.getTier());
+		this.request_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_VALIDATION_DESCRIPTION.getStringValue(), this.getValidationDescription());
+		this.request_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_VALIDATION_RESULT.getStringValue(), this.getValidationResult());
+		this.request_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_DELAY_REASON.getStringValue(), this.getDelayReason());
+		this.request_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_AGREED_DUE_DATE.getStringValue(), this.getAgreedDueDate());
+		this.request_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_ANTICIPATED_DUE_DATE.getStringValue(), this.getAnticipatedDueDate());
+		this.request_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_DATE_RUN.getStringValue(), this.getDateRun());
+		this.request_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_REPORT_TYPE.getStringValue(), this.getReportType());
+		this.request_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_QUERY_REPORT_NAME.getStringValue(), this.getQueryReportName());
+		this.request_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_DETAILED_STEPS.getStringValue(), this.getDetailedSteps());
 		
 		// email content replacement
 		this.email_replace_tokens.put("REQUEST_DISPLAY_ID", this.current_data_request.getDisplayId());
@@ -640,12 +663,68 @@ public class DataRequestBean extends PageUtil implements Serializable {
 		
 		systems.put("", "");
 		
-		for(String type : ApplicationProperties.DATA_REQUEST_SYSTEMS.getListValue())
+		for(String system : ApplicationProperties.DATA_REQUEST_SYSTEMS.getListValue())
 		{
-			systems.put(type, type);
+			systems.put(system, system);
 		}
 			
 		return systems;
+	}
+	
+	public Map<String, String> getDelayReasons()
+	{
+		Map<String, String> delay_reasons = new LinkedHashMap<String, String>();
+		
+		delay_reasons.put("", "");
+		
+		for(String delay_reason : ApplicationProperties.DATA_REQUEST_DELAY_REASONS.getListValue())
+		{
+			delay_reasons.put(delay_reason, delay_reason);
+		}
+			
+		return delay_reasons;
+	}
+	
+	public Map<String, String> getReportTypes()
+	{
+		Map<String, String> report_types = new LinkedHashMap<String, String>();
+		
+		report_types.put("", "");
+		
+		for(String report_type : ApplicationProperties.DATA_REQUEST_REPORT_TYPES.getListValue())
+		{
+			report_types.put(report_type, report_type);
+		}
+			
+		return report_types;
+	}
+	
+	public Map<String, String> getSmeGroups()
+	{
+		Map<String, String> sme_groups = new LinkedHashMap<String, String>();
+		
+		sme_groups.put("", "");
+		
+		for(String sme_group : ApplicationProperties.DATA_REQUEST_SME_GROUPS.getListValue())
+		{
+			sme_groups.put(sme_group, sme_group);
+		}
+			
+		return sme_groups;
+	}
+	
+	public Map<String, Integer> getTiers()
+	{
+		Map<String, Integer> tiers = new LinkedHashMap<String, Integer>();
+		
+		tiers.put("", 0);
+		
+		for(String tier : ApplicationProperties.DATA_REQUEST_TIERS.getListValue())
+		{
+			tiers.put(tier, Integer.parseInt(tier));
+		}
+			
+		return tiers;
 	}
 	
 	/**
@@ -1126,5 +1205,165 @@ public class DataRequestBean extends PageUtil implements Serializable {
 	public void setSystem(String system)
 	{
 		this.current_data_request.setSystem(system);;
+	}
+
+	public String getDelayReason()
+	{
+		return this.current_data_request.getDelayReason();
+	}
+
+	public void setDelayReason(String delay_reason)
+	{
+		this.current_data_request.setDelayReason(delay_reason);
+	}
+
+	public Date getOriginalRequestDate()
+	{
+		return this.current_data_request.getOriginalRequestDate();
+	}
+
+	public void setOriginalRequestDate(Date original_request_date)
+	{
+		this.current_data_request.setOriginalRequestDate(original_request_date);
+	}
+
+	public Date getAgreedDueDate()
+	{
+		return this.current_data_request.getAgreedDueDate();
+	}
+
+	public void setAgreedDueDate(Date agreed_due_date)
+	{
+		this.current_data_request.setAgreedDueDate(agreed_due_date);
+	}
+
+	public Date getAnticipatedDueDate()
+	{
+		return this.current_data_request.getAnticipatedDueDate();
+	}
+
+	public void setAnticipatedDueDate(Date anticipated_due_date)
+	{
+		this.current_data_request.setAnticipatedDueDate(anticipated_due_date);
+	}
+
+	public Date getDateRun()
+	{
+		return this.current_data_request.getDateRun();
+	}
+
+	public void setDateRun(Date date_run)
+	{
+		this.current_data_request.setDateRun(date_run);
+	}
+
+	public String getReportType()
+	{
+		return this.current_data_request.getReportType();
+	}
+
+	public void setReportType(String report_type)
+	{
+		this.current_data_request.setReportType(report_type);
+	}
+
+	public String getQueryReportName()
+	{
+		return this.current_data_request.getQueryReportName();
+	}
+
+	public void setQueryReportName(String query_report_name)
+	{
+		this.current_data_request.setQueryReportName(query_report_name);
+	}
+
+	public String getClarificationsAssumptions()
+	{
+		return this.current_data_request.getClarificationsAssumptions();
+	}
+
+	public void setClarificationsAssumptions(String clarifications_assumptions)
+	{
+		this.current_data_request.setClarificationsAssumptions(clarifications_assumptions);
+	}
+
+	public String getDetailedSteps()
+	{
+		return this.current_data_request.getDetailedSteps();
+	}
+
+	public void setDetailedSteps(String detailed_steps)
+	{
+		this.current_data_request.setDetailedSteps(detailed_steps);
+	}
+
+	public String getValidationDescription()
+	{
+		return this.current_data_request.getValidationDescription();
+	}
+
+	public void setValidationDescription(String validation_description)
+	{
+		this.current_data_request.setValidationDescription(validation_description);
+	}
+
+	public String getValidationResult()
+	{
+		return this.current_data_request.getValidationResult();
+	}
+
+	public void setValidationResult(String validation_result)
+	{
+		this.current_data_request.setValidationResult(validation_result);
+	}
+
+	public String getGoldenQueryLibrary()
+	{
+		return this.current_data_request.getGoldenQueryLibrary();
+	}
+
+	public void setGoldenQueryLibrary(String golden_query_library)
+	{
+		this.current_data_request.setGoldenQueryLibrary(golden_query_library);
+	}
+
+	public String getBusinessRequirements()
+	{
+		return this.current_data_request.getBusinessRequirements();
+	}
+
+	public void setBusinessRequirements(String business_requirements)
+	{
+		this.current_data_request.setBusinessRequirements(business_requirements);
+	}
+
+	public int getTier()
+	{
+		return this.current_data_request.getTier();
+	}
+
+	public void setTier(int tier)
+	{
+		this.current_data_request.setTier(tier);
+	}
+
+	public String getSmeGroup()
+	{
+		return this.current_data_request.getSmeGroup();
+	}
+
+	public void setSmeGroup(String sme_group)
+	{
+		this.current_data_request.setSmeGroup(sme_group);
+	}
+
+	public String getValidationSmeGroup()
+	{
+		return this.current_data_request.getValidationSmeGroup();
+	}
+
+	public void setValidationSmeGroup(String validation_sme_group)
+	{
+		this.current_data_request.setValidationSmeGroup(validation_sme_group);
 	}
 }
