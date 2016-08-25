@@ -52,15 +52,11 @@
 	                                      	<h:panelGroup rendered="#{userSession.admin and (dataRequest.statusDrafted eq false)}">
 	                                            <li><a href="#validation">Validation</a></li>
                                             </h:panelGroup>
-                                            <h:panelGroup rendered="#{userSession.requestor eq false}">
-                                            	<li><a href="#attachments">Attachments</a></li>
-                                            </h:panelGroup>
+                                            <li><a href="#attachments">Attachments</a></li>
 	                                      	<h:panelGroup rendered="#{userSession.admin and dataRequest.canSendEmail}">
 	                                            <li><a href="#email">Email</a></li>
                                             </h:panelGroup>
-                                            <h:panelGroup rendered="#{userSession.requestor eq false}">
-                                           		<li><a href="#comments">Comments</a></li>
-                                           	</h:panelGroup>
+                                           	<li><a href="#comments">Comments</a></li>
                                         </ul>
                                         <div id="general">
                                         	<h:panelGroup rendered="#{dataRequest.requestIsNewIteration eq false}">
@@ -247,20 +243,18 @@
                                             	<h:inputTextarea value="#{dataRequest.validationResult}" rendered="#{dataRequest.statusDrafted eq true}" />
 	                                        </div>
                                         </h:panelGroup>
-                                        <h:panelGroup rendered="#{userSession.requestor eq false}">
-	                                        <div id="attachments">
-	                                        	<label>Attached Files</label>
-	                                        	<h:panelGroup rendered="#{empty dataRequest.attachments}">
-	                                        		<p id="no-file">There are no attachments.</p>
-	                                        	</h:panelGroup>
-	                                        	<ui:repeat var="file" value="#{dataRequest.attachments}" varStatus="status">
-	                                        		<span class="form-text">
-	                                        			#{file.name}
-	                                        			<a href="/drts/file?file_id=#{file.id}">View</a>
-	                                        		</span>
-	                                        	</ui:repeat>
-	                                        </div>
-                                        </h:panelGroup>
+                                        <div id="attachments">
+                                        	<label>Attached Files</label>
+                                        	<h:panelGroup rendered="#{empty dataRequest.attachments}">
+                                        		<p id="no-file">There are no attachments.</p>
+                                        	</h:panelGroup>
+                                        	<ui:repeat var="file" value="#{dataRequest.attachments}" varStatus="status">
+                                        		<span class="form-text">
+                                        			#{file.name}
+                                        			<a href="/drts/file?file_id=#{file.id}">View</a>
+                                        		</span>
+                                        	</ui:repeat>
+                                        </div>
                                         <h:panelGroup rendered="#{userSession.admin and dataRequest.canSendEmail}">
                                         	<div id="email">
                                         		<h:panelGroup rendered="#{dataRequest.pii}">
@@ -277,20 +271,18 @@
 				      							<h:inputTextarea value="#{emailBean.messageContent}" />
 				      						</div>
                                         </h:panelGroup>
-                                        <h:panelGroup rendered="#{userSession.requestor eq false}">
-	                                        <div id="comments">
-	                                        	<h:panelGroup rendered="#{dataRequest.statusDrafted eq true}">
-												   	<h:outputLabel value="Add Comments"/>
-												   	<h:inputTextarea value="#{dataRequest.newComments}" />
-											   	</h:panelGroup>
-											   	
-											   	<h:outputLabel value="Comments"/>
-											   	<h:panelGroup rendered="#{empty dataRequest.comments}">
-	                                        		<p>There are no comments.</p>
-	                                        	</h:panelGroup>
-											   	<h:outputText value="#{dataRequest.comments}" escape="false" />
-											</div>
-										</h:panelGroup>
+                                        <div id="comments">
+                                        	<h:panelGroup rendered="#{dataRequest.statusDrafted eq true}">
+											   	<h:outputLabel value="Add Comments"/>
+											   	<h:inputTextarea value="#{dataRequest.newComments}" />
+										   	</h:panelGroup>
+										   	
+										   	<h:outputLabel value="Comments"/>
+										   	<h:panelGroup rendered="#{empty dataRequest.comments}">
+                                        		<p>There are no comments.</p>
+                                        	</h:panelGroup>
+										   	<h:outputText value="#{dataRequest.comments}" escape="false" />
+										</div>
                                     </div>
                         	
                         		</div>

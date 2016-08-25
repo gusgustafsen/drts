@@ -51,9 +51,7 @@
                                             <li><a href="#general">Request Details</a></li>
                                             <li><a href="#requestor">Requestor</a></li>
                                             <li><a href="#receiver">Receiver</a></li>
-                                            <h:panelGroup rendered="#{userSession.requestor eq false}">
-                                            	<li><a href="#attachments">Attachments</a></li>
-                                            </h:panelGroup>
+                                            <li><a href="#attachments">Attachments</a></li>
                                         </ul>
                                         <div id="general">
 											<h:outputLabel value="Iteration"/>
@@ -146,14 +144,12 @@
                                         	<h:outputLabel value="Receiver Email"/>
                                             <h:inputText value="#{dataRequest.receiverEmail}" />
                                         </div>
-                                        <h:panelGroup rendered="#{userSession.requestor eq false}">
-	                                        <div id="attachments">
-	                                        	<label>Attached Files</label>
-	                                        	<h:panelGroup rendered="#{empty dataRequest.attachments}">
-	                                        		<p id="no-file">There are no attachments.</p>
-	                                        	</h:panelGroup>
-	                                        </div>
-                                        </h:panelGroup>
+                                        <div id="attachments">
+                                        	<label>Attached Files</label>
+                                        	<h:panelGroup rendered="#{empty dataRequest.attachments}">
+                                        		<p id="no-file">There are no attachments.</p>
+                                        	</h:panelGroup>
+                                        </div>
                                     </div>
                                 
                                 </div>
