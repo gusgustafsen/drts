@@ -4,6 +4,7 @@ bin/
 junit/
 build/
 dist/
+classes/
 ## generic files to ignore
 *~
 *.lock
@@ -22,3 +23,4 @@ TEST-*.xml
 *.BASE.*
 *.migration.prefs
 .eclipse-pmd
+.gitignore

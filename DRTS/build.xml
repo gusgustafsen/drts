@@ -1,63 +1,153 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project basedir="." default="cleanbuild" name="DRTS">
+	<property environment="env" />
+	<property name="ECLIPSE_HOME" value="../../../../../opt/eclipse/" />
+	<property name="debuglevel" value="source,lines,vars" />
+	<property name="target" value="1.6" />
+	<property name="source" value="1.6" />
+	<path id="Web App Libraries.libraryclasspath">
+		<pathelement location="WebContent/WEB-INF/lib/activation-1.1.jar" />
+		<pathelement location="WebContent/WEB-INF/lib/activiti-bpmn-converter-5.16.1.jar" />
+		<pathelement location="WebContent/WEB-INF/lib/activiti-bpmn-model-5.16.1.jar" />
+		<pathelement location="WebContent/WEB-INF/lib/activiti-engine-5.16.1.jar" />
+		<pathelement location="WebContent/WEB-INF/lib/activiti-image-generator-5.16.1.jar" />
+		<pathelement location="WebContent/WEB-INF/lib/activiti-process-validation-5.16.1.jar" />
+		<pathelement location="WebContent/WEB-INF/lib/commons-beanutils-1.8.3.jar" />
+		<pathelement location="WebContent/WEB-INF/lib/commons-collections-3.2.jar" />
+		<pathelement location="WebContent/WEB-INF/lib/commons-digester-1.8.jar" />
+		<pathelement location="WebContent/WEB-INF/lib/commons-email-1.2.jar" />
+		<pathelement location="WebContent/WEB-INF/lib/commons-fileupload-1.3.1.jar" />
+		<pathelement location="WebContent/WEB-INF/lib/commons-io-2.4.jar" />
+		<pathelement location="WebContent/WEB-INF/lib/commons-lang3-3.3.2.jar" />
+		<pathelement location="WebContent/WEB-INF/lib/gson-2.2.4.jar" />
+		<pathelement location="WebContent/WEB-INF/lib/itext-2.1.7.jar" />
+		<pathelement location="WebContent/WEB-INF/lib/itextpdf-5.5.2.jar" />
+		<pathelement location="WebContent/WEB-INF/lib/jackson-annotations-2.2.3.jar" />
+		<pathelement location="WebContent/WEB-INF/lib/jackson-core-2.2.3.jar" />
+		<pathelement location="WebContent/WEB-INF/lib/jackson-databind-2.2.3.jar" />
+		<pathelement location="WebContent/WEB-INF/lib/joda-time-2.1.jar" />
+		<pathelement location="WebContent/WEB-INF/lib/log4j-1.2.17.jar" />
+		<pathelement location="WebContent/WEB-INF/lib/mail-1.4.1.jar" />
+		<pathelement location="WebContent/WEB-INF/lib/mybatis-3.2.5.jar" />
+		<pathelement location="WebContent/WEB-INF/lib/myfaces-bundle-2.2.9.jar" />
+		<pathelement location="WebContent/WEB-INF/lib/ojdbc6.jar" />
+		<pathelement location="WebContent/WEB-INF/lib/primefaces-5.1.jar" />
+		<pathelement location="WebContent/WEB-INF/lib/primefaces-extensions-3.0.0-20140829.162811-10.jar" />
+		<pathelement location="WebContent/WEB-INF/lib/shiro-all-1.2.3.jar" />
+		<pathelement location="WebContent/WEB-INF/lib/slf4j-api-1.7.6.jar" />
+		<pathelement location="WebContent/WEB-INF/lib/slf4j-log4j12-1.7.6.jar" />
+		<pathelement location="WebContent/WEB-INF/lib/spring-beans-4.0.6.RELEASE.jar" />
+		<pathelement location="WebContent/WEB-INF/lib/spring-core-4.0.6.RELEASE.jar" />
+	</path>
+	<path id="EAR Libraries.libraryclasspath" />
+	<path id="WebSphere Application Server Liberty [WebSphere Application Server Liberty Profile].libraryclasspath">
+		<pathelement location="lib/wlp/ibm/com.ibm.websphere.appserver.api.basics_1.1.0.jar" />
+		<pathelement location="lib/wlp/ibm/com.ibm.websphere.appserver.api.connectionpool_1.0.1.jar" />
+		<pathelement location="lib/wlp/ibm/com.ibm.websphere.appserver.api.distributedMap_2.0.0.jar" />
+		<pathelement location="lib/wlp/ibm/com.ibm.websphere.appserver.api.endpoint_1.0.0.jar" />
+		<pathelement location="lib/wlp/ibm/com.ibm.websphere.appserver.api.hpel_2.0.0.jar" />
+		<pathelement location="lib/wlp/ibm/com.ibm.websphere.appserver.api.jaxrs_1.0.3.jar" />
+		<pathelement location="lib/wlp/ibm/com.ibm.websphere.appserver.api.json_1.0.1.jar" />
+		<pathelement location="lib/wlp/ibm/com.ibm.websphere.appserver.api.kernel.service_1.0.0.jar" />
+		<pathelement location="lib/wlp/ibm/com.ibm.websphere.appserver.api.messaging_1.0.0.jar" />
+		<pathelement location="lib/wlp/ibm/com.ibm.websphere.appserver.api.monitor_1.1.0.jar" />
+		<pathelement location="lib/wlp/ibm/com.ibm.websphere.appserver.api.oauth_1.1.jar" />
+		<pathelement location="lib/wlp/ibm/com.ibm.websphere.appserver.api.restConnector_1.1.0.jar" />
+		<pathelement location="lib/wlp/ibm/com.ibm.websphere.appserver.api.security_1.0.1.jar" />
+		<pathelement location="lib/wlp/ibm/com.ibm.websphere.appserver.api.servlet_1.0.1.jar" />
+		<pathelement location="lib/wlp/ibm/com.ibm.websphere.appserver.api.sessionstats_1.0.1.jar" />
+		<pathelement location="lib/wlp/ibm/com.ibm.websphere.appserver.api.transaction_1.1.0.jar" />
+		<pathelement location="lib/wlp/ibm/com.ibm.websphere.appserver.api.webCache_1.1.0.jar" />
+		<pathelement location="lib/wlp/ibm/com.ibm.websphere.appserver.api.webcontainer.security.app_1.1.0.jar" />
+		<pathelement location="lib/wlp/third-party/com.ibm.websphere.appserver.thirdparty.blueprint_1.0.0.jar" />
+		<pathelement location="lib/wlp/third-party/com.ibm.websphere.appserver.thirdparty.jaxrs_1.0.3.jar" />
+		<pathelement location="lib/wlp/third-party/com.ibm.websphere.appserver.thirdparty.jpa_1.0.3.jar" />
+		<pathelement location="lib/wlp/third-party/com.ibm.websphere.appserver.thirdparty.wsSecurity_1.0.1.jar" />
+		<pathelement location="lib/wlp/third-party/com.ibm.websphere.appserver.thirdparty.wssxmlSecurity_1.0.0.jar" />
+		<pathelement location="lib/wlp/spec/com.ibm.ws.javaee.annotation.1.1_1.0.1.jar" />
+		<pathelement location="lib/wlp/spec/com.ibm.ws.javaee.cdi.1.0_1.0.0.jar" />
+		<pathelement location="lib/wlp/spec/com.ibm.ws.javaee.concurrent.1.0_1.0.0.jar" />
+		<pathelement location="lib/wlp/spec/com.ibm.ws.javaee.connector.1.6_1.0.1.jar" />
+		<pathelement location="lib/wlp/spec/com.ibm.ws.javaee.ejb.3.1_1.0.0.jar" />
+		<pathelement location="lib/wlp/spec/com.ibm.ws.javaee.el.2.2_1.0.2.jar" />
+		<pathelement location="lib/wlp/spec/com.ibm.ws.javaee.interceptor.1.1_1.0.0.jar" />
+		<pathelement location="lib/wlp/spec/com.ibm.ws.javaee.jaxb.2.2_1.0.0.jar" />
+		<pathelement location="lib/wlp/spec/com.ibm.ws.javaee.jaxrs.1.1_1.0.1.jar" />
+		<pathelement location="lib/wlp/spec/com.ibm.ws.javaee.jaxws.2.2_1.0.0.jar" />
+		<pathelement location="lib/wlp/spec/com.ibm.ws.javaee.jms.1.1_1.0.0.jar" />
+		<pathelement location="lib/wlp/spec/com.ibm.ws.javaee.jsf.2.0_1.0.2.jar" />
+		<pathelement location="lib/wlp/spec/com.ibm.ws.javaee.jsf.tld.2.0_1.1.0.jar" />
+		<pathelement location="lib/wlp/spec/com.ibm.ws.javaee.jsonp.1.0_1.0.7.jar" />
+		<pathelement location="lib/wlp/spec/com.ibm.ws.javaee.jsp.2.2_1.0.0.jar" />
+		<pathelement location="lib/wlp/spec/com.ibm.ws.javaee.jsp.tld.2.2_1.1.0.jar" />
+		<pathelement location="lib/wlp/spec/com.ibm.ws.javaee.jstl.1.2_1.0.1.jar" />
+		<pathelement location="lib/wlp/spec/com.ibm.ws.javaee.persistence.2.0_1.0.1.jar" />
+		<pathelement location="lib/wlp/spec/com.ibm.ws.javaee.servlet.3.0_1.0.1.jar" />
+		<pathelement location="lib/wlp/spec/com.ibm.ws.javaee.transaction.1.1_1.0.1.jar" />
+		<pathelement location="lib/wlp/spec/com.ibm.ws.javaee.validation.1.0_1.0.1.jar" />
+		<pathelement location="lib/wlp/third-party/com.ibm.ws.jaxrs.api_1.0.0.jar" />
+		<pathelement location="lib/wlp/third-party/com.ibm.ws.jpa.api_1.0.0.jar" />
+		<pathelement location="lib/wlp/spec/com.ibm.ws.org.osgi.cmpn.4.2.0_1.0.1.jar" />
+		<pathelement location="lib/wlp/spec/com.ibm.ws.org.osgi.core.4.2.0_1.0.1.jar" />
+	</path>
+	<path id="DRTS.classpath">
+		<pathelement location="WebContent/WEB-INF/classes" />
+		<path refid="Web App Libraries.libraryclasspath" />
+		<path refid="EAR Libraries.libraryclasspath" />
+		<path refid="WebSphere Application Server Liberty [WebSphere Application Server Liberty Profile].libraryclasspath" />
+	</path>
 
-<project name="drts" default="dist">
+	<target name="init">
+		<mkdir dir="WebContent/WEB-INF/classes" />
+		<mkdir dir="dist" />
+		<copy includeemptydirs="false" todir="WebContent/WEB-INF/classes">
+			<fileset dir="src">
+				<exclude name="**/*.java" />
+			</fileset>
+		</copy>
+		<copy includeemptydirs="false" todir="WebContent/WEB-INF/classes">
+			<fileset dir=".apt_generated">
+				<exclude name="**/*.java" />
+			</fileset>
+		</copy>
+	</target>
+	<target name="clean">
+		<delete dir="WebContent/WEB-INF/classes" />
+		<delete dir="dist" />
+	</target>
 
-  	<property name="build.dir"       		location="build/"                        		/>
-  	<property name="classes.dir"     		location="${build.dir}/WEB-INF/classes/" 		/>
-  	<property name="dist.dir"        		location="dist/"                         		/>
-	<property name="lib.dir"         		location="lib/"									/>
-  	<property name="drts-lib.dir"      		location="/opt/IBM/WebSphere/drtslib/"			/>
-  	<property name="src.dir"         		location="src/"                          		/>
-  	<property name="web.dir"         		location="WebContent/"                          />
+	<target depends="clean" name="cleanall" />
 
-  	<target name="clean">
-  		
-    	<delete dir="${build.dir}" />
-    	<delete dir="${dist.dir}"  />
-  		
-  	</target>
-  		
-  	<target name="build" depends="clean">
-    
-  		<mkdir dir="${build.dir}"/>
-    	<mkdir dir="${classes.dir}"/>
+	<target name="cleanbuild" depends="clean, compile, war" description="Clean builds DRTS"/>
 
-    	<javac destdir="${classes.dir}" failonerror="yes" includeantruntime="false">
-    		
-      		<classpath>
-      			
-        		<fileset dir="${lib.dir}" includes="**/*.jar"/>
-        		<fileset dir="${drts-lib.dir}" includes="**/*.jar"/>
-      			
-      		</classpath>
-    		
-      		<src path="${src.dir}" />
-    		
-    	</javac>
-  		
-  	</target>
 
-  	<target name="dist" depends="build">
-  		
-    	<mkdir dir="${dist.dir}" />
-  		
-    	<jar destfile="${dist.dir}/drts.war">
-    		
-      		<fileset dir="${build.dir}">
-        		<exclude name="drts.build/**" />
-      		</fileset>
-    		
-      		<fileset dir="${web.dir}">
-      		</fileset>
-    		
-    	</jar>
-  		
-    	<jar destfile="${dist.dir}/drts.ear">
-      		<fileset dir="${dist.dir}" includes="drts.war" />
-    	</jar>
-  		
-    	<delete file="${dist.dir}/drts.war" />
-  	
-  	</target>
+	<target name="compile" depends="init" description="Compiles DRTS">
+		<javac debug="true" debuglevel="${debuglevel}" destdir="WebContent/WEB-INF/classes" includeantruntime="false" source="${source}" target="${target}">
+			<compilerarg value="-Xlint:-deprecation" />
+			<src path="src" />
+			<classpath refid="DRTS.classpath" />
+		</javac>
+	</target>
+
+	<target name="war" depends="compile" description="Builds WAR file for DRTS">
+
+		<tstamp>
+			<format property="timestamp" pattern="MM/dd/yyyy hh:mm:ss" />
+		</tstamp>
+
+		<taskdef name="gitmanifest" classname="com.pps.gitinfo.GitManifest" classpath="lib/pps-utils.jar;lib/ant.jar;lib/jgit.jar" />
+		<tempfile property="manifest.file" deleteonexit="true" />
+		<gitmanifest gitDir="." file="${manifest.file}">
+			<attribute name="Main-Class" value="com.pps.gitinfo.WebAppInfo" />
+			<section name="Shared">
+				<attribute name="Contents" value="PAS Admin" />
+				<attribute name="Built-By" value="${user.name}" />
+				<attribute name="Build-Date" value="${timestamp}" />
+			</section>
+		</gitmanifest>
+		<war basedir="WebContent" destfile="dist/drts.war" webxml="WebContent/WEB-INF/web.xml" manifest="${manifest.file}">
+			<fileset dir="WebContent" includes="**/*" />
+		</war>
+	</target>
 
 </project>
