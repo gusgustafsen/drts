@@ -17,12 +17,17 @@
     	
     	<property name="enableDatabaseEventLogging" value="true" />
     	
+    	<!-- 
     	<property name="mailServerHost" value="smtp.gmail.com" />
     	<property name="mailServerPort" value="587" />
     	<property name="mailServerDefaultFrom" value="drts@ed.gov" />
     	<property name="mailServerUsername" value="tasanov.work@gmail.com" />
     	<property name="mailServerPassword" value="400ShadyGrove" />
     	<property name="mailServerUseTLS" value="true" />
+    	-->
+    	<property name="mailServerHost" value="localhost" />
+    	<property name="mailServerPort" value="25" />
+    	<property name="mailServerDefaultFrom" value="barnetm+drts@gmail.com" />
     	
   	</bean>
 
