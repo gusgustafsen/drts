@@ -90,10 +90,15 @@
 		<pathelement location="lib/wlp/spec/com.ibm.ws.org.osgi.cmpn.4.2.0_1.0.1.jar" />
 		<pathelement location="lib/wlp/spec/com.ibm.ws.org.osgi.core.4.2.0_1.0.1.jar" />
 	</path>
+	<path id="extra.libraryclasspath">
+		<pathelement location="lib/javax.servlet-api-3.1.0.jar" />
+	</path>
+	
 	<path id="DRTS.classpath">
 		<pathelement location="WebContent/WEB-INF/classes" />
 		<path refid="Web App Libraries.libraryclasspath" />
 		<path refid="EAR Libraries.libraryclasspath" />
+		<path refid="extra.libraryclasspath" />
 		<path refid="WebSphere Application Server Liberty [WebSphere Application Server Liberty Profile].libraryclasspath" />
 	</path>
 

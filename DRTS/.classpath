@@ -8,7 +8,8 @@
 			<attribute name="optional" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="con" path="org.eclipse.jst.server.core.container/com.ibm.ws.st.core.runtimeClasspathProvider/WebSphere Application Server Liberty Profile">
+	<classpathentry kind="lib" path="lib/javax.faces-2.2.9.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jst.server.core.container/com.ibm.etools.wdt.server.core.runtimeClasspathProvider/Web Preview Server Runtime">
 		<attributes>
 			<attribute name="owner.project.facets" value="jst.web"/>
 		</attributes>

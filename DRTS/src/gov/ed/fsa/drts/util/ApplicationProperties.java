@@ -44,6 +44,8 @@ public enum ApplicationProperties {
 
 	GROUP_REQUESTOR(true, false),
 
+	GROUP_DEFAULT(true, false),
+
 	GROUP_TYPE_SECURITY(true, false),
 
 	GROUP_TYPE_GENERAL(true, false),
@@ -472,8 +474,8 @@ public enum ApplicationProperties {
 				final String value = (String) entry.getValue();
 
 				if (key.startsWith(SYSTEM_PROPERTIES_PREFIX) && !key.equals(SYSTEM_PROPERTIES_PREFIX)) {
-					final String key_to_use = key.substring(SYSTEM_PROPERTIES_PREFIX.length()).toLowerCase()
-							.replace('.', '_');
+					final String key_to_use =
+							key.substring(SYSTEM_PROPERTIES_PREFIX.length()).toLowerCase().replace('.', '_');
 					properties.setProperty(key_to_use, value);
 				}
 			}
