@@ -1,0 +1,92 @@
+<ui:composition xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns="http://www.w3.org/1999/xhtml">
+
+    <h:panelGroup rendered="#{SessionManager.globalMessage}">
+ 		<ui:fragment rendered="#{facesContext.maximumSeverity.ordinal eq 3}">
+			<!-- FATAL -->
+			<div class="alert alert-danger">
+				<ul>
+				    <ui:repeat value="#{facesContext.messageList}" var="facesMessage">
+				        <li>
+				            <h:outputText value="#{facesMessage.summary}" escape="false" />
+				        </li>
+				    </ui:repeat>
+				</ul>
+			</div>
+		</ui:fragment>
+		<ui:fragment rendered="#{facesContext.maximumSeverity.ordinal eq 2}">
+			<!-- ERROR -->
+			<div class="alert alert-danger">			
+				<ul>
+				    <ui:repeat value="#{facesContext.messageList}" var="facesMessage">
+				        <li>
+				            <h:outputText value="#{facesMessage.summary}" escape="false" />
+				        </li>
+				    </ui:repeat>
+				</ul>
+    		</div>
+		</ui:fragment>
+		<ui:fragment rendered="#{facesContext.maximumSeverity.ordinal eq 1}">
+			<!-- WARN -->
+			<div class="alert alert-warning">
+				<ul>
+				    <ui:repeat value="#{facesContext.messageList}" var="facesMessage">
+				        <li>
+				            <h:outputText value="#{facesMessage.summary}" escape="false" />
+				        </li>
+				    </ui:repeat>
+				</ul>
+    		</div>
+    	</ui:fragment>
+		<ui:fragment rendered="#{facesContext.maximumSeverity.ordinal eq 0}">
+    		<!-- INFO -->
+    		<div class="alert alert-success">
+				<ul>
+				    <ui:repeat value="#{facesContext.messageList}" var="facesMessage">
+				        <li>
+				            <h:outputText value="#{facesMessage.summary}" escape="false" />
+				        </li>
+				    </ui:repeat>
+				</ul>
+			</div>
+		</ui:fragment>
+	</h:panelGroup>
+	
+
+	<h:panelGroup rendered="#{PageMsg.displayMsg}">
+			<ui:fragment rendered="#{PageMsg.errMsg}">
+			<!-- ERROR -->
+			<div class="alert alert-danger">			
+				<ul>
+					<li>	
+						<h:outputText value="#{PageMsg.message}" escape="false"/>
+					</li>
+				</ul>
+    		</div>
+		</ui:fragment>
+		<ui:fragment rendered="#{PageMsg.warnMsg}">
+			<!-- WARN -->
+			<div class="alert alert-warning">
+				<ul>
+					<li>	
+						<h:outputText value="#{PageMsg.message}" escape="false"/>
+					</li>
+				</ul>
+    		</div>
+    	</ui:fragment>
+		<ui:fragment rendered="#{PageMsg.successMsg}">
+    		<!-- INFO -->
+    		<div class="alert alert-success">
+				<ul>
+					<li>	
+						<h:outputText value="#{PageMsg.message}" escape="false"/>
+					</li>
+				</ul>
+			</div>
+		</ui:fragment>
+	</h:panelGroup>
+</ui:composition>

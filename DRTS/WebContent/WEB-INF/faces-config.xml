@@ -5,6 +5,21 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd"
     version="2.2">
+    	<factory>
+  		<exception-handler-factory>
+    		gov.ed.fsa.drts.util.CustomExceptionHandlerFactory
+  		</exception-handler-factory>
+	</factory>
+    
+	<application>
+		<locale-config>
+			<default-locale>en</default-locale>
+		</locale-config>
+		<resource-bundle>
+			<base-name>messages</base-name>
+			<var>msg</var>
+		</resource-bundle>
+	</application>
 
 	<lifecycle>
 		<phase-listener>gov.ed.fsa.drts.util.RequestValidator</phase-listener>

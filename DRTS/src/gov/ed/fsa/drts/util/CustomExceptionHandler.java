@@ -1,6 +1,5 @@
 package gov.ed.fsa.drts.util;
 
-import java.io.IOException;
 import java.util.Iterator;
 
 import javax.faces.FacesException;
@@ -17,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 
+import gov.ed.fsa.drts.bean.Messages;
 import gov.ed.fsa.drts.bean.PageMsg;
 import gov.ed.fsa.drts.bean.PageMsgSeverity;
 
@@ -38,6 +38,9 @@ public class CustomExceptionHandler extends ExceptionHandlerWrapper {
 	public void handle() throws FacesException {
 		final Iterator<ExceptionQueuedEvent> i = getUnhandledExceptionQueuedEvents().iterator();
 
+		final PageMsg pageMsg = FacesContext.getCurrentInstance().getApplication()
+				.evaluateExpressionGet(FacesContext.getCurrentInstance(), "#{PageMsg}", PageMsg.class);
+
 		while (i.hasNext()) {
 			ExceptionQueuedEvent event = i.next();
 			ExceptionQueuedEventContext context = (ExceptionQueuedEventContext) event.getSource();
@@ -49,18 +52,12 @@ public class CustomExceptionHandler extends ExceptionHandlerWrapper {
 
 			if (t instanceof javax.faces.application.ViewExpiredException) {
 				String contextPath = externalContext.getContextName();
-				try {
-					StringBuilder timeoutUrl = new StringBuilder();
-					timeoutUrl.append('/').append(externalContext.getContextName()).append(NpasPages.TIMEOUT);
-					fc.getExternalContext().redirect(timeoutUrl.toString());
-				} catch (IOException e) {
-					logger.error("Unexpected exception redirecting to timeout page on ViewExpiredException", e);
-				}
+				pageMsg.createMsg(Messages.TIMEOUT, PageMsgSeverity.ERROR);
 				return;
 			}
 
-			final ConfigurableNavigationHandler nav =
-					(ConfigurableNavigationHandler) fc.getApplication().getNavigationHandler();
+			final ConfigurableNavigationHandler nav = (ConfigurableNavigationHandler) fc.getApplication()
+					.getNavigationHandler();
 			// here you do what ever you want with exception
 			try {
 				// log error ?
@@ -74,11 +71,6 @@ public class CustomExceptionHandler extends ExceptionHandlerWrapper {
 				} catch (IllegalStateException ex) {
 					logger.error("Attempt to perform navigation after internal error", ex);
 				}
-				// addMessage(Messages.TRY_AGAIN.getStringValue(),
-				// FacesMessage.SEVERITY_ERROR);
-
-				final PageMsg pageMsg = FacesContext.getCurrentInstance().getApplication()
-						.evaluateExpressionGet(FacesContext.getCurrentInstance(), "#{PageMsg}", PageMsg.class);
 
 				pageMsg.createMsg(Messages.TRY_AGAIN, PageMsgSeverity.ERROR);
 
