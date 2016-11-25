@@ -1,333 +1,185 @@
 <!DOCTYPE html>
 
-<html xmlns:h="http://xmlns.jcp.org/jsf/html"
-	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
-	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core" lang="en-us"
-	xmlns="http://www.w3.org/1999/xhtml" class="no-js">
+<html xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://xmlns.jcp.org/jsf/passthrough" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core" lang="en-us" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:pf="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions" class="no-js">
 
-	<c:set var="root" value="#{request.requestURL.substring(0, request.requestURL.length() - request.requestURI.length())}#{request.contextPath}/" scope="request" />
+<c:set var="root"
+	value="#{request.requestURL.substring(0, request.requestURL.length() - request.requestURI.length())}#{request.contextPath}/"
+	scope="request" />
 
-    <h:head>
-    	
-    	<ui:include src="#{root}includes/scripts.xhtml" />
+<h:head>
 
-	   	<title>Data Request Tracking System | Federal Student Aid</title>
-    
-    </h:head>
-    
-    <h:body class="section-four">
-    
-    	<ui:include src="#{root}includes/header.xhtml">
-    		<ui:param name="active" value="4" />
-    	</ui:include>
-    	
-    	<div id="content-wrapper">
-            <div class="grid">
-                <div id="breadcrumb" class="col-1-1 mobile-col-1-1">
-                    <h:link value="Home" outcome="#{userSession.homePage}" /> » <h:link value="Reports" outcome="/reports/reports" /> » Request Filter Report
-                </div>
-                <section class="col-1-1 mobile-col-1-1">
-                    <header id="content-header" class="col-1-1 mobile-col-1-1">
-                        <span class="content-header-box">
-                            <h1>Request Filter</h1>
-                        </span>
-                    </header>
-                    <div id="main-content" class="col-1-1 mobile-col-1-1">
-                        <section class="col-1-1 mobile-col-1-1">
-                        
-                        	<h:form styleClass="col-1-1 mobile-col-1-1">
-                        	
-                        		<p>
-      								This report displays the list of requests filtered by the criteria below.
-      							</p>
-      							
-      							<div class="form-wrapper col-1-1 mobile-col-1-1">
-      							
-      								<div id="drtsTabs">
-      									<ul>
-                                            <li><a href="#filter">Filter</a></li>
-                                        </ul>
-                                        <div id="filter">
-                                        	<h:outputLabel value="ID"/>
-	      									<h:inputText value="#{report1.displayId}" />
-	      									
-                                        	<h:outputLabel value="Requestor"/>
-	      									<h:inputText value="#{report1.requestor}" />
-	      									
-	      									<h:outputLabel value="Assignee"/>
-	      									<h:inputText value="#{report1.assignee}" />
-                                        
-                                        	<h:outputLabel value="Status"/>
-		                                    <h:selectOneMenu value="#{report1.status}">
-									   			<f:selectItems value="#{report1.statuses}" />
-									   		</h:selectOneMenu>
-									   		
-                                        	<h:outputLabel value="Type"/>
-		                                    <h:selectOneMenu value="#{report1.type}">
-									   			<f:selectItems value="#{report1.types}" />
-									   		</h:selectOneMenu>
-									   		
-									   		<h:outputLabel value="System"/>
-		                                    <h:selectOneMenu value="#{report1.system}">
-									   			<f:selectItems value="#{report1.systems}" />
-									   		</h:selectOneMenu>
-									   		
-									   		<h:outputLabel value="Urgency Flag"/>
-                                            <h:selectBooleanCheckbox value="#{report1.urgent}" />
-									   		
-									   		<h:outputLabel value="Requested Due Date Between"/>
-                                            <h:inputText styleClass="requested-date-from" value="#{report1.requestedDueDateFrom}">
-                                            	<f:converter converterId="defaultDateConverter" />
-                                            </h:inputText>
-                                            <h:inputText styleClass="requested-date-to" value="#{report1.requestedDueDateTo}">
-                                            	<f:converter converterId="defaultDateConverter" />
-                                            </h:inputText>
-									   		
-									   		<h:outputLabel value="Resolved Date Between"/>
-                                            <h:inputText styleClass="resolved-date-from" value="#{report1.resolvedDateFrom}">
-                                            	<f:converter converterId="defaultDateConverter" />
-                                            </h:inputText>
-                                            <h:inputText styleClass="resolved-date-to" value="#{report1.resolvedDateTo}">
-                                            	<f:converter converterId="defaultDateConverter" />
-                                            </h:inputText>
-									   		
-									   		<h:outputLabel value="Last Updated Date Between"/>
-                                            <h:inputText styleClass="updated-date-from" value="#{report1.updatedDateFrom}">
-                                            	<f:converter converterId="defaultDateConverter" />
-                                            </h:inputText>
-                                            <h:inputText styleClass="updated-date-to" value="#{report1.updatedDateTo}">
-                                            	<f:converter converterId="defaultDateConverter" />
-                                            </h:inputText>
-                                            
-                                        	<h:outputLabel value="Keyword"/>
-	      									<h:inputText value="#{report1.keyword}" />
-	      								</div>
-                                   	</div>
-      							
-      							</div>
-      							
-      							<div class="form-control col-1-1 mobile-col-1-1">
-                                	<h:commandButton value="Run" styleClass="button" action="#{report1.runReport}" />
-                                	<h:commandButton value="Clear" styleClass="button" action="#{report1.clear}" />
-                                </div>
-                                
-                                <h:panelGroup rendered="#{report1.reportWasRun}">
-                                	<h:panelGroup rendered="#{not empty report1.resultsTable.dataRequests}">
-	                                	<h:dataTable styleClass="drtsTable" value="#{report1.resultsTable.dataRequests}" var="dataRequest">
-	                                		<h:column>
-							      				<f:facet name="header">
-							      					<h:commandLink actionListener="#{report1.resultsTable.sort}">
-							      						<f:attribute name="sort_field" value="request_display_id" />
-							      						<span>ID</span>
-							      						<h:panelGroup rendered="#{report1.resultsTable.isSortedBy('request_display_id')}">
-								      						<h:panelGroup rendered="#{report1.resultsTable.sortAscending eq true}">
-								      							<span class="arrow-up"></span>
-								      						</h:panelGroup>
-								      						<h:panelGroup rendered="#{report1.resultsTable.sortAscending eq false}">
-								      							<span class="arrow-down"></span>
-								      						</h:panelGroup>
-							      						</h:panelGroup>
-							    			   		</h:commandLink>
-							      				</f:facet>
-							      				<h:outputText value="#{dataRequest.displayId}" />
-							      			</h:column>
-							      			<h:column>
-							      				<f:facet name="header">Description</f:facet>
-							      				<h:outputText value="#{dataRequest.description}" />
-							      			</h:column>
-							      			<h:column>
-							      				<f:facet name="header">
-							      					<h:commandLink actionListener="#{report1.resultsTable.sort}">
-							      						<f:attribute name="sort_field" value="created_by" />
-							      						<span>Requestor</span>
-							      						<h:panelGroup rendered="#{report1.resultsTable.isSortedBy('created_by')}">
-								      						<h:panelGroup rendered="#{report1.resultsTable.sortAscending eq true}">
-								      							<span class="arrow-up"></span>
-								      						</h:panelGroup>
-								      						<h:panelGroup rendered="#{report1.resultsTable.sortAscending eq false}">
-								      							<span class="arrow-down"></span>
-								      						</h:panelGroup>
-							      						</h:panelGroup>
-							    			   		</h:commandLink>
-							      				</f:facet>
-							      				<h:outputText value="#{dataRequest.drtsRequestor}" />
-							      			</h:column>
-							      			<h:column>
-							      				<f:facet name="header">
-							      					<h:commandLink actionListener="#{report1.resultsTable.sort}">
-							      						<f:attribute name="sort_field" value="request_status" />
-							      						<span>Status</span>
-							      						<h:panelGroup rendered="#{report1.resultsTable.isSortedBy('request_status')}">
-								      						<h:panelGroup rendered="#{report1.resultsTable.sortAscending eq true}">
-								      							<span class="arrow-up"></span>
-								      						</h:panelGroup>
-								      						<h:panelGroup rendered="#{report1.resultsTable.sortAscending eq false}">
-								      							<span class="arrow-down"></span>
-								      						</h:panelGroup>
-							      						</h:panelGroup>
-							    			   		</h:commandLink>
-							      				</f:facet>
-							      				<h:outputText value="#{dataRequest.status}" />
-							      			</h:column>
-							      			<h:column>
-							      				<f:facet name="header">
-							      					<h:commandLink actionListener="#{searchBean.resultsTable.sort}">
-							      						<f:attribute name="sort_field" value="request_type" />
-							      						<span>Type</span>
-							      						<h:panelGroup rendered="#{searchBean.resultsTable.isSortedBy('request_type')}">
-								      						<h:panelGroup rendered="#{searchBean.resultsTable.sortAscending eq true}">
-								      							<span class="arrow-up"></span>
-								      						</h:panelGroup>
-								      						<h:panelGroup rendered="#{searchBean.resultsTable.sortAscending eq false}">
-								      							<span class="arrow-down"></span>
-								      						</h:panelGroup>
-							      						</h:panelGroup>
-							    			   		</h:commandLink>
-							      				</f:facet>
-							      				<h:outputText value="#{dataRequest.type}" />
-							      			</h:column>
-							      			<h:column>
-							      				<f:facet name="header">
-							      					<h:commandLink actionListener="#{searchBean.resultsTable.sort}">
-							      						<f:attribute name="sort_field" value="system_name" />
-							      						<span>System</span>
-							      						<h:panelGroup rendered="#{searchBean.resultsTable.isSortedBy('system_name')}">
-								      						<h:panelGroup rendered="#{searchBean.resultsTable.sortAscending eq true}">
-								      							<span class="arrow-up"></span>
-								      						</h:panelGroup>
-								      						<h:panelGroup rendered="#{searchBean.resultsTable.sortAscending eq false}">
-								      							<span class="arrow-down"></span>
-								      						</h:panelGroup>
-							      						</h:panelGroup>
-							    			   		</h:commandLink>
-							      				</f:facet>
-							      				<h:outputText value="#{dataRequest.system}" />
-							      			</h:column>
-							      			<h:column>
-							      				<f:facet name="header">
-							      					<h:commandLink actionListener="#{searchBean.resultsTable.sort}">
-							      						<f:attribute name="sort_field" value="assignee" />
-							      						<span>Assignee</span>
-							      						<h:panelGroup rendered="#{searchBean.resultsTable.isSortedBy('assignee')}">
-								      						<h:panelGroup rendered="#{searchBean.resultsTable.sortAscending eq true}">
-								      							<span class="arrow-up"></span>
-								      						</h:panelGroup>
-								      						<h:panelGroup rendered="#{searchBean.resultsTable.sortAscending eq false}">
-								      							<span class="arrow-down"></span>
-								      						</h:panelGroup>
-							      						</h:panelGroup>
-							    			   		</h:commandLink>
-							      				</f:facet>
-							      				<h:outputText value="#{dataRequest.assignee}" />
-							      			</h:column>
-							      			<h:column>
-							      				<f:facet name="header">
-							      					<h:commandLink actionListener="#{report1.resultsTable.sort}">
-							      						<f:attribute name="sort_field" value="drt_request_date" />
-							      						<span>Created On</span>
-							      						<h:panelGroup rendered="#{report1.resultsTable.isSortedBy('drt_request_date')}">
-								      						<h:panelGroup rendered="#{report1.resultsTable.sortAscending eq true}">
-								      							<span class="arrow-up"></span>
-								      						</h:panelGroup>
-								      						<h:panelGroup rendered="#{report1.resultsTable.sortAscending eq false}">
-								      							<span class="arrow-down"></span>
-								      						</h:panelGroup>
-							      						</h:panelGroup>
-							    			   		</h:commandLink>
-							      				</f:facet>
-							      				<h:outputText value="#{dataRequest.createdDateTime}">
-							      					<f:converter converterId="defaultDateTimeConverter" />
-							      				</h:outputText>
-							      			</h:column>
-							      			<h:column>
-							      				<f:facet name="header">
-							      					<h:commandLink actionListener="#{report1.resultsTable.sort}">
-							      						<f:attribute name="sort_field" value="requested_due_date" />
-							      						<span>Due Date</span>
-							      						<h:panelGroup rendered="#{report1.resultsTable.isSortedBy('requested_due_date')}">
-								      						<h:panelGroup rendered="#{report1.resultsTable.sortAscending eq true}">
-								      							<span class="arrow-up"></span>
-								      						</h:panelGroup>
-								      						<h:panelGroup rendered="#{report1.resultsTable.sortAscending eq false}">
-								      							<span class="arrow-down"></span>
-								      						</h:panelGroup>
-							      						</h:panelGroup>
-							    			   		</h:commandLink>
-							      				</f:facet>
-							      				<h:outputText value="#{dataRequest.dueDate}">
-							      					<f:converter converterId="defaultDateConverter" />
-							      				</h:outputText>
-							      			</h:column>
-							      			<h:column>
-							      				<f:facet name="header">
-							      					<h:commandLink actionListener="#{report1.resultsTable.sort}">
-							      						<f:attribute name="sort_field" value="resolved_date" />
-							      						<span>Resolved On</span>
-							      						<h:panelGroup rendered="#{report1.resultsTable.isSortedBy('resolved_date')}">
-								      						<h:panelGroup rendered="#{report1.resultsTable.sortAscending eq true}">
-								      							<span class="arrow-up"></span>
-								      						</h:panelGroup>
-								      						<h:panelGroup rendered="#{report1.resultsTable.sortAscending eq false}">
-								      							<span class="arrow-down"></span>
-								      						</h:panelGroup>
-							      						</h:panelGroup>
-							    			   		</h:commandLink>
-							      				</f:facet>
-							      				<h:outputText value="#{dataRequest.dateResolved}">
-							      					<f:converter converterId="defaultDateConverter" />
-							      				</h:outputText>
-							      			</h:column>
-							      			<h:column>
-							      				<f:facet name="header">
-							      					<h:commandLink actionListener="#{report1.resultsTable.sort}">
-							      						<f:attribute name="sort_field" value="modified_date" />
-							      						<span>Last Updated On</span>
-							      						<h:panelGroup rendered="#{report1.resultsTable.isSortedBy('modified_date')}">
-								      						<h:panelGroup rendered="#{report1.resultsTable.sortAscending eq true}">
-								      							<span class="arrow-up"></span>
-								      						</h:panelGroup>
-								      						<h:panelGroup rendered="#{report1.resultsTable.sortAscending eq false}">
-								      							<span class="arrow-down"></span>
-								      						</h:panelGroup>
-							      						</h:panelGroup>
-							    			   		</h:commandLink>
-							      				</f:facet>
-							      				<h:outputText value="#{dataRequest.lastUpdatedDate}">
-							      					<f:converter converterId="defaultDateTimeConverter" />
-							      				</h:outputText>
-							      			</h:column>
-	                                	</h:dataTable>
-	                                	<h:panelGroup rendered="#{report1.resultsTable.totalPages > 1}">
-								      		<div class="table-control">
-			                                    <h:outputText value="(Page #{report1.resultsTable.currentPage}/#{report1.resultsTable.totalPages}) " />
-			                                    <h:commandLink value="« first" action="#{report1.resultsTable.pageFirst}" rendered="#{report1.resultsTable.firstRow ne 0}" />
-			                                    <h:commandLink value="‹ prev" action="#{report1.resultsTable.pagePrevious}" rendered="#{report1.resultsTable.firstRow ne 0}" />
-			                                    <ui:repeat var="page" value="#{report1.resultsTable.pages}">
-													<h:commandLink value="#{page}" actionListener="#{report1.resultsTable.page}" rendered="#{page ne report1.resultsTable.currentPage}" />
-													<h:outputText value="#{page}" escape="false" rendered="#{page eq report1.resultsTable.currentPage}" />
-												</ui:repeat>
-			                                    <h:commandLink value="next ›" action="#{report1.resultsTable.pageNext}" rendered="#{(report1.resultsTable.firstRow + report1.resultsTable.rowsPerPage) lt report1.resultsTable.totalRows}" />
-								      			<h:commandLink value="last »" action="#{report1.resultsTable.pageLast}" rendered="#{(report1.resultsTable.firstRow + report1.resultsTable.rowsPerPage) lt report1.resultsTable.totalRows}" />
-			                                </div>
-		                                </h:panelGroup>
-                                	</h:panelGroup>
-                                	<h:panelGroup rendered="#{empty report1.resultsTable.dataRequests}">
-	                                	<p>The search criteria did not match any data requests.</p>
-	                                </h:panelGroup>
-                                </h:panelGroup>
-    	
-    						</h:form>
-					    	
-                        </section>
-                    </div>
-                </section>
-            </div>
-        </div>
-        
-        <ui:include src="#{root}includes/footer.xhtml" />
-    	
-    </h:body>
-    
+	<ui:include src="#{root}includes/scripts.xhtml" />
+
+	<title>Data Request Tracking System | Federal Student Aid</title>
+
+</h:head>
+
+<h:body class="section-four">
+
+	<ui:include src="#{root}includes/header.xhtml">
+		<ui:param name="active" value="4" />
+	</ui:include>
+
+	<div id="content-wrapper">
+		<div class="grid">
+			<div id="breadcrumb" class="col-1-1 mobile-col-1-1">
+				<h:link value="Home" outcome="#{userSession.homePage}" />
+				»
+				<h:link value="Reports" outcome="/reports/reports" />
+				» Request Filter Report
+			</div>
+			<section class="col-1-1 mobile-col-1-1">
+				<header id="content-header" class="col-1-1 mobile-col-1-1">
+					<span class="content-header-box">
+						<h1>Request Filter</h1>
+					</span>
+				</header>
+				<div id="main-content" class="col-1-1 mobile-col-1-1">
+					<section class="col-1-1 mobile-col-1-1">
+
+						<h:form styleClass="col-1-1 mobile-col-1-1">
+
+							<p>This report displays the list of requests filtered by the criteria below.</p>
+
+							<div class="form-wrapper col-1-1 mobile-col-1-1">
+
+								<div id="drtsTabs">
+									<ul>
+										<li><a href="#filter">Filter</a></li>
+									</ul>
+									<div id="filter">
+										<h:outputLabel value="ID" />
+										<h:inputText value="#{report1.displayId}" />
+
+										<h:outputLabel value="Requestor" />
+										<h:inputText value="#{report1.requestor}" />
+
+										<h:outputLabel value="Assignee" />
+										<h:inputText value="#{report1.assignee}" />
+
+										<h:outputLabel value="Status" />
+										<h:selectOneMenu value="#{report1.status}">
+											<f:selectItems value="#{report1.statuses}" />
+										</h:selectOneMenu>
+
+										<h:outputLabel value="Type" />
+										<h:selectOneMenu value="#{report1.type}">
+											<f:selectItems value="#{report1.types}" />
+										</h:selectOneMenu>
+
+										<h:outputLabel value="System" />
+										<h:selectOneMenu value="#{report1.system}">
+											<f:selectItems value="#{report1.systems}" />
+										</h:selectOneMenu>
+
+										<h:outputLabel value="Urgency Flag" />
+										<h:selectBooleanCheckbox value="#{report1.urgent}" />
+
+										<h:outputLabel value="Requested Due Date Between" />
+										<h:inputText styleClass="requested-date-from" value="#{report1.requestedDueDateFrom}">
+											<f:converter converterId="defaultDateConverter" />
+										</h:inputText>
+										<h:inputText styleClass="requested-date-to" value="#{report1.requestedDueDateTo}">
+											<f:converter converterId="defaultDateConverter" />
+										</h:inputText>
+
+										<h:outputLabel value="Resolved Date Between" />
+										<h:inputText styleClass="resolved-date-from" value="#{report1.resolvedDateFrom}">
+											<f:converter converterId="defaultDateConverter" />
+										</h:inputText>
+										<h:inputText styleClass="resolved-date-to" value="#{report1.resolvedDateTo}">
+											<f:converter converterId="defaultDateConverter" />
+										</h:inputText>
+
+										<h:outputLabel value="Last Updated Date Between" />
+										<h:inputText styleClass="updated-date-from" value="#{report1.updatedDateFrom}">
+											<f:converter converterId="defaultDateConverter" />
+										</h:inputText>
+										<h:inputText styleClass="updated-date-to" value="#{report1.updatedDateTo}">
+											<f:converter converterId="defaultDateConverter" />
+										</h:inputText>
+
+										<h:outputLabel value="Keyword" />
+										<h:inputText value="#{report1.keyword}" />
+									</div>
+								</div>
+
+							</div>
+
+							<div class="form-control col-1-1 mobile-col-1-1">
+								<h:commandButton value="Run" styleClass="button" action="#{report1.runReport}" />
+								<h:commandButton value="Clear" styleClass="button" action="#{report1.clear}" />
+							</div>
+
+							<h:panelGroup rendered="#{report1.reportWasRun}">
+								<h:panelGroup rendered="#{not empty report1.resultsTable.dataRequests}">
+
+									<pf:dataTable id="tbl1" var="dataRequest" value="#{report1.resultsTable.dataRequests}" paginator="true"
+										sortMode="single" rows="10" class="drtsTable" sortBy="#{dataRequest.dueDate}">
+										<pf:column headerText="ID" sortBy="#{dataRequest.displayId}">
+											<h:outputText value="#{dataRequest.displayId}" />
+										</pf:column>
+										<pf:column headerText="Description">
+											<h:outputText value="#{dataRequest.description}" />
+										</pf:column>
+										<pf:column headerText="Requestor" sortBy="#{dataRequest.drtsRequestor}">
+											<h:outputText value="#{dataRequest.drtsRequestor}" />
+										</pf:column>
+										<pf:column headerText="Status" sortBy="#{dataRequest.status}">
+											<h:outputText value="#{dataRequest.status}" />
+										</pf:column>
+										<pf:column headerText="Type" sortBy="#{dataRequest.status}">
+											<h:outputText value="#{dataRequest.type}" />
+										</pf:column>
+										<pf:column headerText="System" sortBy="#{dataRequest.status}">
+											<h:outputText value="#{dataRequest.system}" />
+										</pf:column>
+										<pf:column headerText="Assignee" sortBy="#{dataRequest.status}">
+											<h:outputText value="#{dataRequest.assignee}" />
+										</pf:column>
+										<pf:column headerText="Created On" sortBy="#{dataRequest.createdDateTime}">
+											<h:outputText value="#{dataRequest.createdDateTime}">
+												<f:converter converterId="defaultDateTimeConverter" />
+											</h:outputText>
+										</pf:column>
+										<pf:column headerText="Resolved On" sortBy="#{dataRequest.createdDateTime}">
+											<h:outputText value="#{dataRequest.dateResolved}">
+												<f:converter converterId="defaultDateConverter" />
+											</h:outputText>
+										</pf:column>
+										<pf:column headerText="Last Updated On" sortBy="#{dataRequest.createdDateTime}">
+											<h:outputText value="#{dataRequest.lastUpdatedDate}">
+												<f:converter converterId="defaultDateTimeConverter" />
+											</h:outputText>
+										</pf:column>
+									</pf:dataTable>
+
+									<div class="form-control col-1-1 mobile-col-1-1">
+										<h:commandButton styleClass="button" value="Export Table to PDF"
+											rendered="#{userSession.allowedToExportReports eq true}">
+											<pe:exporter type="pdf" tableTitle="Overdue Requests Report" target="tbl1" fileName="request_filter_report"
+												subTable="false" orientation="Landscape" />
+										</h:commandButton>
+									</div>
+								</h:panelGroup>
+								<h:panelGroup rendered="#{empty report1.resultsTable.dataRequests}">
+									<p>The search criteria did not match any data requests.</p>
+								</h:panelGroup>
+							</h:panelGroup>
+
+						</h:form>
+
+					</section>
+				</div>
+			</section>
+		</div>
+	</div>
+
+	<ui:include src="#{root}includes/footer.xhtml" />
+
+</h:body>
+
 </html>
