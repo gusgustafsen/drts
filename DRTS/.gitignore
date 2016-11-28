@@ -22,3 +22,4 @@ TEST-*.xml
 *.BASE.*
 *.migration.prefs
 .eclipse-pmd
+/.apt_generated/

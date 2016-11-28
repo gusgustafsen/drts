@@ -110,11 +110,6 @@
 				<exclude name="**/*.java" />
 			</fileset>
 		</copy>
-		<copy includeemptydirs="false" todir="WebContent/WEB-INF/classes">
-			<fileset dir=".apt_generated">
-				<exclude name="**/*.java" />
-			</fileset>
-		</copy>
 	</target>
 	<target name="clean">
 		<delete dir="WebContent/WEB-INF/classes" />
