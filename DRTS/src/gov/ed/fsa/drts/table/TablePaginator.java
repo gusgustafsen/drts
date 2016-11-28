@@ -31,7 +31,7 @@ public abstract class TablePaginator {
 	protected TablePaginator(UserSession user_session) {
 		this.user_session = user_session;
 
-		this.rows_per_page = 0;
+		this.rows_per_page = Integer.MAX_VALUE;
 		this.page_range = 10;
 		this.sort_field = "request_display_id";
 		this.sort_ascending = true;
