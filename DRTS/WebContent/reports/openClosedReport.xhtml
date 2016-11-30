@@ -49,7 +49,7 @@
 	                        	
 								</div>
 								
-								<pf:dataTable id="report_2_table" var="row" styleClass="drtsTable" value="#{report2.rows}" paginator="true" rows="10">
+								<pf:dataTable id="report_2_table" var="row" styleClass="drtsTable" value="#{report2.rows}" paginator="true" paginatorAlwaysVisible="false" rows="10">
 									<pf:column>
 							      		<f:facet name="header">Date</f:facet>
 							      		<h:outputText value="#{row.reportDate}">

@@ -54,7 +54,7 @@
 	                        			
 	                        		</div>
 	                        				
-									<pf:dataTable id="report_3_table" var="row" styleClass="drtsTable" value="#{report3.rows}" paginator="true" rows="10">
+									<pf:dataTable id="report_3_table" var="row" styleClass="drtsTable" value="#{report3.rows}" paginator="true" paginatorAlwaysVisible="false" rows="10">
 										<pf:column>
 											<f:facet name="header">SME Username</f:facet>
 											<h:outputText value="#{row.name}" />
