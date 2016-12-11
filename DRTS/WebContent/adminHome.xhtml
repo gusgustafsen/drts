@@ -19,7 +19,7 @@
 
 </h:head>
 
-<h:body class="section-one">
+<h:body styleClass="section-one">
 
 	<ui:include src="#{root}includes/header.xhtml">
 		<ui:param name="active" value="1" />
@@ -47,7 +47,7 @@
 							<h:panelGroup rendered="#{not empty requestTable.table1.dataRequests}">
 
 								<pf:dataTable id="tbl1" var="dataRequest" value="#{requestTable.table1.dataRequests}" paginator="true" paginatorAlwaysVisible="false"
-									sortMode="single" rows="10" class="drtsTable" sortBy="#{dataRequest.dueDate}">
+									sortMode="single" rows="10" styleClass="drtsTable" sortBy="#{dataRequest.dueDate}">
 									<pf:column headerText="ID" sortBy="#{dataRequest.displayId}">
 										<h:outputText value="#{dataRequest.displayId}" />
 									</pf:column>
@@ -71,13 +71,6 @@
 									</pf:column>
 								</pf:dataTable>
 
-								<div class="form-control col-1-1 mobile-col-1-1">
-									<h:commandButton styleClass="button" value="Export Table to PDF"
-										rendered="#{userSession.allowedToExportReports eq true}">
-										<pe:exporter type="pdf" tableTitle="Available Tasks" target="tbl1" fileName="available_tasks" subTable="false"
-											orientation="Landscape" />
-									</h:commandButton>
-								</div>
 							</h:panelGroup>
 
 							<h:panelGroup rendered="#{empty requestTable.table1.dataRequests}">

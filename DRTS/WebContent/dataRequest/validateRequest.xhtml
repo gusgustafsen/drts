@@ -1,253 +1,267 @@
 <!DOCTYPE html>
 
-<html xmlns:h="http://xmlns.jcp.org/jsf/html"
-	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
-	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core" lang="en-us"
-	xmlns="http://www.w3.org/1999/xhtml" class="no-js">
+<html xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://xmlns.jcp.org/jsf/passthrough" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core" lang="en-us" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:pf="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions" class="no-js">
 
-	<c:set var="root" value="#{request.requestURL.substring(0, request.requestURL.length() - request.requestURI.length())}#{request.contextPath}/" scope="request" />
+<c:set var="root" value="#{r
 
-    <h:head>
-    	
-    	<ui:include src="#{root}includes/scripts.xhtml" />
+<c:set var="
+	root"
+	value="#{request.requestURL.substring(0, request.requestURL.length() - request.requestURI.length())}#{request.contextPath}/"
+	scope="request" />
 
-	   	<title>Data Request Tracking System | Federal Student Aid</title>
-    
-    </h:head>
-    
-    <h:body class="section-two">
-    
-    	<ui:include src="#{root}includes/header.xhtml">
-    		<ui:param name="active" value="2" />
-    	</ui:include>
-    	
-    	<div id="content-wrapper">
-            <div class="grid">
-                <div id="breadcrumb" class="col-1-1 mobile-col-1-1">
-                    <h:link value="Home" outcome="#{userSession.homePage}" /> » Request <h:outputText value="#{dataRequest.displayId}" />
-                </div>
-                <section class="col-1-1 mobile-col-1-1">
-                    <header id="content-header" class="col-1-1 mobile-col-1-1">
-                        <span class="content-header-box">
-                            <h1>Validate Request</h1>
-                        </span>
-                    </header>
-                    <div id="main-content" class="col-1-1 mobile-col-1-1">
-                        <section class="col-1-1 mobile-col-1-1">
-                        
-                        	<h:form id="request-form" styleClass="col-1-1 mobile-col-1-1">
-                        	
-                        		<p>
-      								Below is a data request that has been assigned to you by an administrator for validation. You can validate the request, reject it, or update 
-      								the request's information.
-      							</p>
-                        	
-                        		<div class="form-wrapper col-1-1 mobile-col-1-1">
-                                    
-                                    <div id="drtsTabs">
-                                         <ul>
-                                            <li><a href="#general">Request Details</a></li>
-                                            <li><a href="#requestor">Requestor</a></li>
-                                            <li><a href="#receiver">Receiver</a></li>
-                                            <h:panelGroup rendered="#{userSession.admin}">
-                                            	<li><a href="#assignment">Assignment</a></li>
-                                            </h:panelGroup>
-                                            <li><a href="#validation">Validation</a></li>
-                                            <li><a href="#attachments">Attachments</a></li>
-                                            <li><a href="#comments">Comments</a></li>
-                                        </ul>
-                                        <div id="general">
-                                            <h:outputLabel value="ID"/>
-                                            <h:outputText styleClass="form-text" value="#{dataRequest.displayId}" />
+<h:head>
 
-											<h:outputLabel value="Iteration"/>
-                                            <h:outputText styleClass="form-text" value="#{dataRequest.iteration}" />
+	<ui:include src="#{root}includes/scripts.xhtml" />
 
-											<h:outputLabel value="Status"/>
-                                            <h:outputText styleClass="form-text" value="#{dataRequest.status}" />
-                                            
-                                            <label>Creation Date</label>
-                                            <h:outputText styleClass="form-text" value="#{dataRequest.createdDateTime}">
-								      			<f:converter converterId="defaultDateTimeConverter" />
-								      		</h:outputText>
-								      		
-								      		<label>Original Request Date</label>
-								      		<h:inputText styleClass="datepicker" value="#{dataRequest.originalRequestDate}">
-                                            	<f:converter converterId="defaultDateConverter" />
-                                            </h:inputText>
-								      		
-								      		<h:outputLabel value="Type"/>
-		                                    <h:selectOneMenu value="#{dataRequest.type}">
-									   			<f:selectItems value="#{dataRequest.types}" />
-									   		</h:selectOneMenu>
-									   		
-									   		<h:outputLabel value="System"/>
-		                                    <h:selectOneMenu value="#{dataRequest.system}">
-									   			<f:selectItems value="#{dataRequest.systems}" />
-									   		</h:selectOneMenu>
-                                            
-                                            <h:outputLabel value="Requested Due Date"/>
-                                            <h:inputText styleClass="datepicker" value="#{dataRequest.dueDate}">
-                                            	<f:converter converterId="defaultDateConverter" />
-                                            </h:inputText>
-                                            
-                                            <h:outputLabel value="Tier"/>
-		                                    <h:selectOneMenu value="#{dataRequest.tier}">
-									   			<f:selectItems value="#{dataRequest.tiers}" />
-									   		</h:selectOneMenu>
-									   		
-									   		<h:outputLabel value="Delay Reason"/>
-		                                    <h:selectOneMenu value="#{dataRequest.delayReason}">
-									   			<f:selectItems value="#{dataRequest.delayReasons}" />
-									   		</h:selectOneMenu>
-									   		
-									   		<label>Agreed Due Date</label>
-								      		<h:inputText styleClass="datepicker" value="#{dataRequest.agreedDueDate}">
-                                            	<f:converter converterId="defaultDateConverter" />
-                                            </h:inputText>
-									   		
-									   		<label>Anticipated Due Date</label>
-								      		<h:inputText styleClass="datepicker" value="#{dataRequest.anticipatedDueDate}">
-                                            	<f:converter converterId="defaultDateConverter" />
-                                            </h:inputText>
-									   		
-									   		<label>Date Run</label>
-								      		<h:inputText styleClass="datepicker" value="#{dataRequest.dateRun}">
-                                            	<f:converter converterId="defaultDateConverter" />
-                                            </h:inputText>
-								      		
-								      		<h:outputLabel value="Report Type"/>
-		                                    <h:selectOneMenu value="#{dataRequest.reportType}">
-									   			<f:selectItems value="#{dataRequest.reportTypes}" />
-									   		</h:selectOneMenu>
-                                            
-                                            <h:outputLabel value="Urgency Flag"/>
-                                            <h:selectBooleanCheckbox value="#{dataRequest.urgent}" />
-                                            
-                                            <h:outputLabel value="Query/Report Name"/>
-                                            <h:inputText value="#{dataRequest.queryReportName}" />
-                                            
-                                            <h:outputLabel value="PII Flag"/>
-                                            <h:selectBooleanCheckbox value="#{dataRequest.pii}" />
-                                            
-                                            <h:outputLabel value="Related Requests"/>
-                                    		<h:inputTextarea value="#{dataRequest.relatedRequests}" />
+	<title>Data Request Tracking System | Federal Student Aid</title>
 
-											<h:outputLabel value="Topic/Keywords"/>
-                                    		<h:inputTextarea value="#{dataRequest.topicKeywords}" />
+</h:head>
 
-											<h:outputLabel value="Description"/>
-                                    		<h:inputTextarea value="#{dataRequest.description}" />
+<h:body class="section-two">
 
-                                            <h:outputLabel value="Purpose"/>
-                                    		<h:inputTextarea value="#{dataRequest.purpose}" />
+	<ui:include src="#{root}includes/header.xhtml">
+		<ui:param name="active" value="2" />
+	</ui:include>
 
-                                            <h:outputLabel value="Special Considerations/Issues"/>
-                                    		<h:inputTextarea value="#{dataRequest.specialConsiderationsIssues}" />
+	<div id="content-wrapper">
+		<div class="grid">
+			<div id="breadcrumb" class="col-1-1 mobile-col-1-1">
+				<h:link value="Home" outcome="#{userSession.homePage}" />
+				» Request
+				<h:outputText value="#{dataRequest.displayId}" />
+			</div>
+			<section class="col-1-1 mobile-col-1-1">
+				<header id="content-header" class="col-1-1 mobile-col-1-1">
+					<span class="content-header-box">
+						<h1>Validate Request</h1>
+					</span>
+				</header>
+				<div id="main-content" class="col-1-1 mobile-col-1-1">
+					<section class="col-1-1 mobile-col-1-1">
 
-                                            <h:outputLabel value="Clarifications/Assumptions"/>
-                                    		<h:inputTextarea value="#{dataRequest.clarificationsAssumptions}" />
+						<h:form id="request-form" styleClass="col-1-1 mobile-col-1-1">
 
-                                            <h:outputLabel value="Golden Query Library"/>
-                                    		<h:inputTextarea value="#{dataRequest.goldenQueryLibrary}" />
+							<p>Below is a data request that has been assigned to you by an administrator for validation. You can validate
+								the request, reject it, or update the request's information.</p>
 
-                                            <h:outputLabel value="Business Requirements"/>
-                                    		<h:inputTextarea value="#{dataRequest.businessRequirements}" />
+							<div class="form-wrapper col-1-1 mobile-col-1-1">
 
-                                            <h:outputLabel value="Detailed Steps"/>
-                                    		<h:inputTextarea value="#{dataRequest.detailedSteps}" />
-                                        </div>
-                                        <div id="requestor">
-                                        	<p>Information, below, is about the person who is requesting the data.</p>
-                                        	
-                                            <h:outputLabel value="Requestor"/>
-                                            <h:outputText styleClass="form-text" value="#{dataRequest.requestorName}" />
-                                            
-                                        	<h:outputLabel value="Requestor Organization"/>
-                                            <h:outputText styleClass="form-text" value="#{dataRequest.requestorOrganization}" />
-                                            
-                                        	<h:outputLabel value="Requestor Phone"/>
-                                            <h:outputText styleClass="form-text" value="#{dataRequest.requestorPhone}" />
-                                            
-                                        	<h:outputLabel value="Requestor Email"/>
-                                            <h:outputText styleClass="form-text" value="#{dataRequest.requestorEmail}" />
-                                        </div>
-                                        <div id="receiver">
-                                        	<p>Information, below, is about the person who will receive the requested data.</p>
-                                        
-                                            <h:outputLabel value="Receiver"/>
-                                            <h:outputText styleClass="form-text" value="#{dataRequest.receiverName}" />
-                                            
-                                        	<h:outputLabel value="Receiver Email"/>
-                                            <h:outputText styleClass="form-text" value="#{dataRequest.receiverEmail}" />
-                                        </div>
-                                        <h:panelGroup rendered="#{userSession.admin}">
-	                                        <div id="assignment">
-	                                        	<h:outputLabel value="SME To Resolve The Request"/>
-	                                        	<h:outputText styleClass="form-text" value="#{dataRequest.assignedSme}" />
-		                                  	</div>
-	                                  	</h:panelGroup>
-	                                  	<div id="validation">
-                                        	<h:panelGroup rendered="#{userSession.admin}">
-	                                        	<h:outputLabel value="SME To Validate The Request"/>
-	                                            <h:selectOneMenu value="#{dataRequest.assignedValidator}">
-										   			<f:selectItems value="#{dataRequest.smes}" />
-										   		</h:selectOneMenu>
-										   	</h:panelGroup>
-									   		
-										   	<h:outputLabel value="Validation"/>
-	                                    	<h:inputTextarea value="#{dataRequest.validationDescription}" />
-										   		
-										   	<h:outputLabel value="Validation Result"/>
-	                                    	<h:inputTextarea value="#{dataRequest.validationResult}" />
-                                        </div>
-                                        <div id="attachments">
-                                        	<label>Attached Files</label>
-                                        	<h:panelGroup rendered="#{empty dataRequest.attachments}">
-                                        		<p id="no-file">There are no attachments.</p>
-                                        	</h:panelGroup>
-                                        	<ui:repeat var="file" value="#{dataRequest.attachments}" varStatus="status">
-                                        		<span class="form-text">
-                                        			#{file.name}
-                                        			<a href="/drts/file?file_id=#{file.id}">View</a>
-                                        		</span>
-                                        	</ui:repeat>
-                                        </div>
-                                        <div id="comments">
-									   		<h:outputLabel value="Add Comments"/>
-                                            <h:inputTextarea value="#{dataRequest.newComments}" />
-                                            
-                                            <h:outputLabel value="Comments"/>
-                                            <h:panelGroup rendered="#{empty dataRequest.comments}">
-                                        		<p>There are no comments.</p>
-                                        	</h:panelGroup>
-                                            <h:outputText value="#{dataRequest.comments}" escape="false" />
-                                        </div>
-                                    </div>
-                        	
-                        		</div>
-                                
-                                <div class="form-control col-1-1 mobile-col-1-1">
-                                	<h:commandButton styleClass="button" value="Update" action="#{dataRequest.updateRequest(12)}" />
-                                	<h:commandButton styleClass="button" value="Validate" action="#{dataRequest.updateRequest(13)}" />
-                                	<h:commandButton styleClass="button" value="Reject" action="#{dataRequest.updateRequest(18)}" />
-                                </div>
-    	
-    						</h:form>
-    						
-    						<div id="current_request_id_div" hidden="true"><h:outputText value="#{dataRequest.id}" /></div>
-					    	<div id="fileuploader">Upload</div>
-					    	
-                        </section>
-                    </div>
-                </section>
-            </div>
-        </div>
-        
-        <ui:include src="#{root}includes/footer.xhtml" />
-    	
-    </h:body>
-    
+								<div id="drtsTabs">
+									<ul>
+										<li><a href="#general">Request Details</a></li>
+										<li><a href="#requestor">Requestor</a></li>
+										<li><a href="#receiver">Receiver</a></li>
+										<h:panelGroup rendered="#{userSession.admin}">
+											<li><a href="#assignment">Assignment</a></li>
+										</h:panelGroup>
+										<li><a href="#validation">Validation</a></li>
+										<li><a href="#attachments">Attachments</a></li>
+										<li><a href="#comments">Comments</a></li>
+									</ul>
+									<div id="general">
+										<h:outputLabel value="ID" />
+										<h:outputText styleClass="form-text" value="#{dataRequest.displayId}" />
+
+										<h:outputLabel value="Iteration" />
+										<h:outputText styleClass="form-text" value="#{dataRequest.iteration}" />
+
+										<h:outputLabel value="Status" />
+										<h:outputText styleClass="form-text" value="#{dataRequest.status}" />
+
+										<label>Creation Date</label>
+										<h:outputText styleClass="form-text" value="#{dataRequest.createdDateTime}">
+											<f:converter converterId="defaultDateTimeConverter" />
+										</h:outputText>
+
+										<label>Original Request Date</label>
+										<h:inputText styleClass="datepicker" value="#{dataRequest.originalRequestDate}">
+											<f:converter converterId="defaultDateConverter" />
+										</h:inputText>
+
+										<h:outputLabel value="Type" />
+										<h:selectOneMenu value="#{dataRequest.type}">
+											<f:selectItems value="#{dataRequest.types}" />
+										</h:selectOneMenu>
+
+										<h:outputLabel value="System" />
+										<h:selectOneMenu value="#{dataRequest.system}">
+											<f:selectItems value="#{dataRequest.systems}" />
+										</h:selectOneMenu>
+
+										<h:outputLabel value="Requested Due Date" />
+										<h:inputText styleClass="datepicker" value="#{dataRequest.dueDate}">
+											<f:converter converterId="defaultDateConverter" />
+										</h:inputText>
+
+										<h:outputLabel value="Tier" />
+										<h:selectOneMenu value="#{dataRequest.tier}">
+											<f:selectItems value="#{dataRequest.tiers}" />
+										</h:selectOneMenu>
+
+										<h:outputLabel value="Delay Reason" />
+										<h:selectOneMenu value="#{dataRequest.delayReason}">
+											<f:selectItems value="#{dataRequest.delayReasons}" />
+										</h:selectOneMenu>
+
+										<label>Agreed Due Date</label>
+										<h:inputText styleClass="datepicker" value="#{dataRequest.agreedDueDate}">
+											<f:converter converterId="defaultDateConverter" />
+										</h:inputText>
+
+										<label>Anticipated Due Date</label>
+										<h:inputText styleClass="datepicker" value="#{dataRequest.anticipatedDueDate}">
+											<f:converter converterId="defaultDateConverter" />
+										</h:inputText>
+
+										<label>Date Run</label>
+										<h:inputText styleClass="datepicker" value="#{dataRequest.dateRun}">
+											<f:converter converterId="defaultDateConverter" />
+										</h:inputText>
+
+										<h:outputLabel value="Report Type" />
+										<h:selectOneMenu value="#{dataRequest.reportType}">
+											<f:selectItems value="#{dataRequest.reportTypes}" />
+										</h:selectOneMenu>
+
+										<h:outputLabel value="Urgency Flag" />
+										<h:selectBooleanCheckbox value="#{dataRequest.urgent}" />
+
+										<h:outputLabel value="Query/Report Name" />
+										<h:inputText value="#{dataRequest.queryReportName}" />
+
+										<h:outputLabel value="PII Flag" />
+										<h:selectBooleanCheckbox value="#{dataRequest.pii}" />
+
+										<h:outputLabel value="Related Requests" />
+										<h:inputTextarea value="#{dataRequest.relatedRequests}" />
+
+										<h:outputLabel value="Topic/Keywords" />
+										<h:inputTextarea value="#{dataRequest.topicKeywords}" />
+
+										<h:outputLabel value="Description" />
+										<h:inputTextarea value="#{dataRequest.description}" />
+
+										<h:outputLabel value="Purpose" />
+										<h:inputTextarea value="#{dataRequest.purpose}" />
+
+										<h:outputLabel value="Special Considerations/Issues" />
+										<h:inputTextarea value="#{dataRequest.specialConsiderationsIssues}" />
+
+										<h:outputLabel value="Clarifications/Assumptions" />
+										<h:inputTextarea value="#{dataRequest.clarificationsAssumptions}" />
+
+										<h:outputLabel value="Golden Query Library" />
+										<h:inputTextarea value="#{dataRequest.goldenQueryLibrary}" />
+
+										<h:outputLabel value="Business Requirements" />
+										<h:inputTextarea value="#{dataRequest.businessRequirements}" />
+
+										<h:outputLabel value="Detailed Steps" />
+										<h:inputTextarea value="#{dataRequest.detailedSteps}" />
+									</div>
+									<div id="requestor">
+										<p>Information, below, is about the person who is requesting the data.</p>
+
+										<h:outputLabel value="Requestor" />
+										<h:outputText styleClass="form-text" value="#{dataRequest.requestorName}" />
+
+										<h:outputLabel value="Requestor Organization" />
+										<h:outputText styleClass="form-text" value="#{dataRequest.requestorOrganization}" />
+
+										<h:outputLabel value="Requestor Phone" />
+										<h:outputText styleClass="form-text" value="#{dataRequest.requestorPhone}" />
+
+										<h:outputLabel value="Requestor Email" />
+										<h:outputText styleClass="form-text" value="#{dataRequest.requestorEmail}" />
+									</div>
+									<div id="receiver">
+										<p>Information, below, is about the person who will receive the requested data.</p>
+
+										<h:outputLabel value="Receiver" />
+										<h:outputText styleClass="form-text" value="#{dataRequest.receiverName}" />
+
+										<h:outputLabel value="Receiver Email" />
+										<h:outputText styleClass="form-text" value="#{dataRequest.receiverEmail}" />
+									</div>
+									<h:panelGroup rendered="#{userSession.admin}">
+										<div id="assignment">
+											<h:outputLabel value="SME To Resolve The Request" />
+											<h:outputText styleClass="form-text" value="#{dataRequest.assignedSme}" />
+										</div>
+									</h:panelGroup>
+									<div id="validation">
+										<h:panelGroup rendered="#{userSession.admin}">
+											<h:outputLabel value="SME To Validate The Request" />
+											<h:selectOneMenu value="#{dataRequest.assignedValidator}">
+												<f:selectItems value="#{dataRequest.smes}" />
+											</h:selectOneMenu>
+										</h:panelGroup>
+
+										<h:outputLabel value="Validation" />
+										<h:inputTextarea value="#{dataRequest.validationDescription}" />
+
+										<h:outputLabel value="Validation Result" />
+										<h:inputTextarea value="#{dataRequest.validationResult}" />
+									</div>
+									<div id="attachments">
+										<label>Attached Files</label>
+										<h:panelGroup rendered="#{empty dataRequest.attachments}">
+											<p id="no-file">There are no attachments.</p>
+										</h:panelGroup>
+										<h:panelGroup rendered="#{not empty dataRequest.attachments}">
+											<pf:dataTable id="tbl1" var="file" value="#{dataRequest.attachments}" paginator="true"
+												paginatorAlwaysVisible="false" rows="10" styleClass="drtsTable">
+												<pf:column headerText="File Name">
+													<h:outputText value="#{file.name}" />
+												</pf:column>
+												<pf:column headerText="View">
+													<a href="/drts/file?file_id=#{file.id}" target="_blank">View</a>
+												</pf:column>
+												<pf:column headerText="Delete" rendered="false">
+													<h:commandLink value="Delete" action="#{dataRequest.deleteAttachmentConfirm(file.id)}" />
+												</pf:column>
+											</pf:dataTable>
+										</h:panelGroup>
+									</div>
+									<div id="comments">
+										<h:outputLabel value="Add Comments" />
+										<h:inputTextarea value="#{dataRequest.newComments}" />
+
+										<h:outputLabel value="Comments" />
+										<h:panelGroup rendered="#{empty dataRequest.comments}">
+											<p>There are no comments.</p>
+										</h:panelGroup>
+										<h:outputText value="#{dataRequest.comments}" escape="false" />
+									</div>
+								</div>
+
+							</div>
+
+							<div class="form-control col-1-1 mobile-col-1-1">
+								<h:commandButton styleClass="button" value="Update" action="#{dataRequest.updateRequest(12)}" />
+								<h:commandButton styleClass="button" value="Validate" action="#{dataRequest.updateRequest(13)}" />
+								<h:commandButton styleClass="button" value="Reject" action="#{dataRequest.updateRequest(18)}" />
+								<h:commandButton styleClass="button" value="Cancel" action="#{userSession.getHomePageRedirect}" />
+							</div>
+
+						</h:form>
+
+						<div id="current_request_id_div" hidden="true">
+							<h:outputText value="#{dataRequest.id}" />
+						</div>
+						<div id="fileuploader">Upload</div>
+
+					</section>
+				</div>
+			</section>
+		</div>
+	</div>
+
+	<ui:include src="#{root}includes/footer.xhtml" />
+
+</h:body>
+
 </html>

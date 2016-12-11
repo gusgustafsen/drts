@@ -1,8 +1,5 @@
 package gov.ed.fsa.drts.util;
 
-import gov.ed.fsa.drts.dataaccess.DataLayer;
-import gov.ed.fsa.drts.object.Attachment;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
@@ -22,14 +19,20 @@ import org.apache.commons.io.FilenameUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+import gov.ed.fsa.drts.dataaccess.DataLayer;
+import gov.ed.fsa.drts.object.Attachment;
+import gov.ed.fsa.drts.process.dataRequest.DataRequestBean;
+
 public class FileServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1726560878580768502L;
 
+	private static final String FILE_ID_PARAMETER = "file_id";
+
 	@Override
 	protected void doPost(final HttpServletRequest request, final HttpServletResponse response)
-		throws IOException, ServletException
-	{
+			throws IOException, ServletException {
+
 		DiskFileItemFactory disk_file_item_factory = null;
 		ServletFileUpload servlet_file_upload = null;
 		String file_name = null;
@@ -37,91 +40,89 @@ public class FileServlet extends HttpServlet {
 		FileItem upload_file = null;
 		String current_request_id = null;
 		String error = null;
-		
-		try
-		{
+
+		try {
 			disk_file_item_factory = new DiskFileItemFactory();
-			
+
 			servlet_file_upload = new ServletFileUpload(disk_file_item_factory);
-			
+
 			List<FileItem> items = servlet_file_upload.parseRequest(request);
-			
-	        for (FileItem item : items)
-	        {
-	            if(item.isFormField() == false)
-	            {
-	            	upload_file = item;
-	            }
-	            else
-	            {
-	            	String field_name = item.getFieldName();
-	                String field_value = item.getString();
-	                
-	                if(field_name.equalsIgnoreCase("current_request_id") == true)
-	                {
-	                	current_request_id = field_value;
-	                }
-	            }
-	        }
-	        
-	        file_id = UUID.randomUUID().toString();
-	        file_name = FilenameUtils.getName(upload_file.getName());
-	        
-	        DataLayer.getInstance().insertAttachment(file_id, current_request_id, upload_file);
-	    }
-		catch(FileUploadException fue)
-		{
+
+			for (FileItem item : items) {
+				if (item.isFormField() == false) {
+					upload_file = item;
+				} else {
+					String field_name = item.getFieldName();
+					String field_value = item.getString();
+
+					if (field_name.equalsIgnoreCase("current_request_id") == true) {
+						current_request_id = field_value;
+					}
+				}
+			}
+
+			file_id = UUID.randomUUID().toString();
+			file_name = FilenameUtils.getName(upload_file.getName());
+
+			DataLayer.getInstance().insertAttachment(file_id, current_request_id, upload_file);
+		} catch (FileUploadException fue) {
 			fue.printStackTrace();
-	    }
-		catch(Exception e)
-		{
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
+		DataRequestBean dataRequest = (DataRequestBean) request.getSession().getAttribute("dataRequest");
+
+		if (dataRequest != null) {
+			Attachment attachment;
+			try {
+				attachment = DataLayer.getInstance().getAttachmentByID(file_id);
+			} catch (Exception e) {
+				e.printStackTrace();
+				return;
+			}
+			dataRequest.getAttachments().add(attachment);
+		}
+
 		final JsonObject json_return_object = new JsonObject();
 		json_return_object.addProperty("uploaded_file_name", file_name);
 		json_return_object.addProperty("uploaded_file_id", file_id);
 		json_return_object.addProperty("error", error);
-		
+
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
 		response.getWriter().write(new Gson().toJson(json_return_object));
 	}
-	
+
 	@Override
 	protected void doGet(final HttpServletRequest request, final HttpServletResponse response)
-		throws IOException, ServletException
-	{
+			throws IOException, ServletException {
 		String file_id = null;
 		Attachment file = null;
 		ServletOutputStream output_stream = null;
-		
-		try
-		{
-			file_id = request.getParameter("file_id");
-			
-			if(file_id != null)
-			{
+
+		try {
+			file_id = request.getParameter(FILE_ID_PARAMETER);
+
+			if (file_id != null) {
 				file = DataLayer.getInstance().getAttachmentByID(file_id);
-				
+
 				response.setContentType(file.getContentType());
 				response.setContentLength((int) file.getSize());
 				response.setHeader("Content-disposition", "attachment; filename=\"" + file.getName() + "\"");
-				
+
 				output_stream = response.getOutputStream();
-				
+
 				output_stream.write(file.getContent(), 0, (int) file.getSize());
-				
+
 				output_stream.flush();
 				output_stream.close();
+
+			} else {
+				response.getWriter().print("Request parameter filed_id not specified, required");
 			}
-			else
-			{
-				response.getWriter().print("File not found for the id: " + file_id);
-			}
-		}
-		catch(Exception e)
-		{
+
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
