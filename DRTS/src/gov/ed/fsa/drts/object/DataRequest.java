@@ -60,6 +60,7 @@ public class DataRequest {
 	private int tier;
 	private String sme_group = null;
 	private String validation_sme_group = null;
+	private String dataRequestCopy = null;
 
 	private int display_id = 1;
 
@@ -68,12 +69,22 @@ public class DataRequest {
 	public DataRequest() {
 	}
 
-	public void initialize(String created_by) {
+	public void initialize(String created_by) throws Exception {
+		this.drts_requestor = created_by;
+		initialize(false);
+	}
+
+	public void initialize(boolean copyAttachments) throws Exception {
+		if (copyAttachments) {
+			dataRequestCopy = this.id;
+		}
+
+		this.parent_id = this.id;
+
 		this.id = UUID.randomUUID().toString();
 		this.iteration = 1;
 		this.created_date_time = new Date();
 		this.status = ApplicationProperties.DATA_REQUEST_STATUS_DRAFTED.getStringValue();
-		this.drts_requestor = created_by;
 
 		Calendar date = new GregorianCalendar();
 		// reset hour, minutes, seconds and millis
@@ -516,5 +527,13 @@ public class DataRequest {
 
 	public void setValidationSmeGroup(String validation_sme_group) {
 		this.validation_sme_group = validation_sme_group;
+	}
+
+	public String getDataRequestCopy() {
+		return dataRequestCopy;
+	}
+
+	public void setDataRequestCopy(String dataRequestCopy) {
+		this.dataRequestCopy = dataRequestCopy;
 	}
 }

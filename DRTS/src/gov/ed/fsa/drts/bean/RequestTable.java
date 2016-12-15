@@ -75,18 +75,23 @@ public class RequestTable extends PageUtil implements Serializable {
 		try {
 			next_iteration = DataLayer.getInstance().getNextIteration(dataRequest.getId());
 
-			DataRequest new_request = new DataRequest();
-			new_request.initialize(this.userSession.getUser().getId());
+			/*
+			 * DataRequest new_request = new DataRequest();
+			 * new_request.initialize(this.userSession.getUser().getId());
+			 * 
+			 * new_request.setIteration(next_iteration);
+			 * new_request.setDescription(dataRequest.getDescription());
+			 * new_request.setParentId(dataRequest.getId());
+			 */
+			dataRequest.initialize(true);
+			FacesContext.getCurrentInstance().getExternalContext().getFlash().put("drtsDataRequest", dataRequest);
+			FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("dataRequest", null);
 
-			new_request.setIteration(next_iteration);
-			new_request.setDescription(dataRequest.getDescription());
-			new_request.setParentId(dataRequest.getId());
-
-			FacesContext.getCurrentInstance().getExternalContext().getFlash().put("drtsDataRequest", new_request);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		return "/dataRequest/view.htm?faces-redirect=true";
+		// return "/dataRequest/view.htm?faces-redirect=true";
+		return "/dataRequest/newRequest.htm?faces-redirect=true";
 	}
 }

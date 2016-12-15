@@ -1,5 +1,6 @@
 package gov.ed.fsa.drts.dataaccess;
 
+import java.io.InputStream;
 import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -1084,19 +1085,21 @@ public class DataLayer {
 	}
 
 	public void insertAttachment(String file_id, String current_request_id, FileItem file) throws Exception {
+		String file_name = FilenameUtils.getName(file.getName());
+		String content_type = file.getContentType();
+		Long file_size = file.getSize();
+		InputStream is = file.getInputStream();
+
+		insertAttachment(file_id, current_request_id, file_name, content_type, file_size, is);
+	}
+
+	public void insertAttachment(String file_id, String current_request_id, String file_name, String content_type,
+			Long file_size, InputStream is) throws Exception {
 		Connection oracle_connection = null;
 		int sql_result = 0;
 
-		String file_name = null;
-		String content_type = null;
-		long file_size = 0;
-
 		try {
 			oracle_connection = OracleFactory.createConnection();
-
-			file_name = FilenameUtils.getName(file.getName());
-			content_type = file.getContentType();
-			file_size = file.getSize();
 
 			PreparedStatement prepared_statement = oracle_connection.prepareStatement(QUERY_INSERT_ATTACHMENT);
 
@@ -1105,7 +1108,7 @@ public class DataLayer {
 			prepared_statement.setString(3, file_name);
 			prepared_statement.setString(4, content_type);
 			prepared_statement.setLong(5, file_size);
-			prepared_statement.setBinaryStream(6, file.getInputStream(), file_size);
+			prepared_statement.setBinaryStream(6, is, file_size);
 
 			sql_result = prepared_statement.executeUpdate();
 

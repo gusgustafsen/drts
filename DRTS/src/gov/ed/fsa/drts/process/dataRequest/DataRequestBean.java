@@ -1,5 +1,6 @@
 package gov.ed.fsa.drts.process.dataRequest;
 
+import java.io.ByteArrayInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -8,6 +9,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
@@ -31,9 +33,11 @@ import gov.ed.fsa.drts.object.DataRequest;
 import gov.ed.fsa.drts.util.ApplicationProperties;
 import gov.ed.fsa.drts.util.Utils;
 
-/** Managed bean that controls a data request workflow.
+/**
+ * Managed bean that controls a data request workflow.
  *
- * @author Timur Asanov | tasanov@ppsco.com */
+ * @author Timur Asanov | tasanov@ppsco.com
+ */
 @ManagedBean(name = "dataRequest")
 @SessionScoped
 public class DataRequestBean extends PageUtil implements Serializable {
@@ -107,22 +111,34 @@ public class DataRequestBean extends PageUtil implements Serializable {
 		this.task_service = this.process_engine.getTaskService();
 		this.identity_service = this.process_engine.getIdentityService();
 
-		this.current_data_request = (DataRequest) FacesContext.getCurrentInstance().getExternalContext().getFlash()
-				.get("drtsDataRequest");
+		this.current_data_request =
+				(DataRequest) FacesContext.getCurrentInstance().getExternalContext().getFlash().get("drtsDataRequest");
 
 		if (this.current_data_request == null) {
 			this.current_data_request = new DataRequest();
-			this.current_data_request.initialize(this.userSession.getUser().getId());
+			try {
+				this.current_data_request.initialize(this.userSession.getUser().getId());
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
 		} else {
 			if (this.current_data_request.getParentId() == null) {
 				try {
-					this.request_attachments = DataLayer.getInstance()
-							.getAttachmentByRequestID(this.current_data_request.getId());
+					this.request_attachments =
+							DataLayer.getInstance().getAttachmentByRequestID(this.current_data_request.getId());
 				} catch (Exception e) {
-					e.printStackTrace();
+					throw new RuntimeException(e);
+				}
+			} else {
+				try {
+					this.request_attachments =
+							DataLayer.getInstance().getAttachmentByRequestID(this.current_data_request.getParentId());
+				} catch (Exception e) {
+					throw new RuntimeException(e);
 				}
 			}
 		}
+
 		this.original_description = this.current_data_request.getDescription();
 		this.original_sme = this.current_data_request.getAssignedSme();
 		this.original_status = this.current_data_request.getStatus();
@@ -133,12 +149,14 @@ public class DataRequestBean extends PageUtil implements Serializable {
 		setCreators();
 	}
 
-	/** This method handles all actions that are performed by users on a data request.
+	/**
+	 * This method handles all actions that are performed by users on a data request.
 	 * 
 	 * @param action_type_long
 	 *            action type passed by a JSF action
-	 * @return Returns the user to their home page. */
-	public String updateRequest(Long action_type_long) {
+	 * @return Returns the user to their home page.
+	 */
+	public String updateRequest(Long action_type_long) throws Exception {
 		String status = this.current_data_request.getStatus();
 		String candidate_group = this.current_data_request.getCandidateGroup();
 		String assignee = this.current_data_request.getAssignee();
@@ -155,247 +173,260 @@ public class DataRequestBean extends PageUtil implements Serializable {
 
 		// TODO change to ENUM if possible
 		switch (action_type) {
-		// user created a new request as drafted
-		case 1:
-			status = ApplicationProperties.DATA_REQUEST_STATUS_DRAFTED.getStringValue();
-			this.request_variables.put(ApplicationProperties.DATA_REQUEST_WORKFLOW_REQUEST_DRAFTED.getStringValue(), 1);
-			this.current_data_request.setCreatedDateTime(new Date());
-			candidate_group = null;
-			assignee = this.userSession.getUser().getId();
-			start_new_request = true;
-			break;
+			// user created a new request as drafted
+			case 1:
+				status = ApplicationProperties.DATA_REQUEST_STATUS_DRAFTED.getStringValue();
+				this.request_variables.put(ApplicationProperties.DATA_REQUEST_WORKFLOW_REQUEST_DRAFTED.getStringValue(),
+						1);
+				this.current_data_request.setCreatedDateTime(new Date());
+				candidate_group = null;
+				assignee = this.userSession.getUser().getId();
+				start_new_request = true;
 
-		// user created a new request and submitted
-		case 2:
-			status = ApplicationProperties.DATA_REQUEST_STATUS_PENDING.getStringValue();
-			this.request_variables.put(ApplicationProperties.DATA_REQUEST_WORKFLOW_REQUEST_DRAFTED.getStringValue(), 2);
-			this.current_data_request.setCreatedDateTime(new Date());
-			candidate_group = ApplicationProperties.GROUP_ADMIN.getStringValue();
-			assignee = null;
-			start_new_request = true;
-			redirectPage = "confirmCreateRequest.htm";
-			break;
+				if (request_attachments != null) {
+					for (Attachment attachment : request_attachments) {
+						DataLayer.getInstance().insertAttachment(UUID.randomUUID().toString(),
+								current_data_request.getId(), attachment.getName(), attachment.getContentType(),
+								attachment.getSize(), new ByteArrayInputStream(attachment.getContent()));
+					}
+				}
+				current_data_request.setParentId(null);
 
-		// user submitted a drafted request
-		case 3:
-			status = ApplicationProperties.DATA_REQUEST_STATUS_PENDING.getStringValue();
-			this.request_variables
-					.put(ApplicationProperties.DATA_REQUEST_WORKFLOW_REQUEST_DRAFTED_SUBMITTED.getStringValue(), 1);
-			candidate_group = ApplicationProperties.GROUP_ADMIN.getStringValue();
-			assignee = null;
-			complete_task = true;
-			break;
+				break;
 
-		case 19:
-			status = ApplicationProperties.DATA_REQUEST_STATUS_DISCARDED.getStringValue();
-			this.request_variables
-					.put(ApplicationProperties.DATA_REQUEST_WORKFLOW_REQUEST_DRAFTED_SUBMITTED.getStringValue(), 2);
-			candidate_group = null;
-			assignee = null;
-			complete_task = true;
-			break;
-
-		// administrator updated a new request
-		case 4:
-			// if the assigned SME was picked, then the request will be assigned to that SME
-			if (Utils.isStringEmpty(this.assigned_sme) == false) {
-				status = ApplicationProperties.DATA_REQUEST_STATUS_ASSIGNED_TO_SME.getStringValue();
-				this.request_variables
-						.put(ApplicationProperties.DATA_REQUEST_WORKFLOW_REQUEST_REJECTED_BY_ADMIN.getStringValue(), 1);
-				this.current_data_request.setDateAssignedToSme(new Date());
+			// user created a new request and submitted
+			case 2:
+				status = ApplicationProperties.DATA_REQUEST_STATUS_PENDING.getStringValue();
+				this.request_variables.put(ApplicationProperties.DATA_REQUEST_WORKFLOW_REQUEST_DRAFTED.getStringValue(),
+						2);
+				this.current_data_request.setCreatedDateTime(new Date());
 				candidate_group = ApplicationProperties.GROUP_ADMIN.getStringValue();
-				assignee = this.assigned_sme;
-				assigned_sme = this.assigned_sme;
-				complete_task = true;
-			}
-			if (Utils.isStringEmpty(this.assigned_validator) == false) {
-				assigned_validator = this.assigned_validator;
-			}
-			break;
+				assignee = null;
+				start_new_request = true;
+				redirectPage = "confirmCreateRequest.htm";
 
-		// administrator rejected a request
-		case 5:
-			status = ApplicationProperties.DATA_REQUEST_STATUS_REJECTED_BY_ADMIN.getStringValue();
-			this.request_variables
-					.put(ApplicationProperties.DATA_REQUEST_WORKFLOW_REQUEST_REJECTED_BY_ADMIN.getStringValue(), 2);
-			this.current_data_request.setDateClosed(new Date());
-			complete_task = true;
-			// scandidate_group = null;
-			assignee = null;
-			break;
+				if (request_attachments != null) {
+					for (Attachment attachment : request_attachments) {
+						DataLayer.getInstance().insertAttachment(UUID.randomUUID().toString(),
+								current_data_request.getId(), attachment.getName(), attachment.getContentType(),
+								attachment.getSize(), new ByteArrayInputStream(attachment.getContent()));
+					}
+				}
+				current_data_request.setParentId(null);
 
-		// administrator or SME updated a request
-		case 6:
-			// if the assigned SME was changed, then the request will be reassigned to a new SME
-			if ((Utils.isStringEmpty(this.assigned_sme) == false)
-					&& (this.assigned_sme.equalsIgnoreCase(this.current_data_request.getAssignedSme()) == false)) {
-				status = ApplicationProperties.DATA_REQUEST_STATUS_ASSIGNED_TO_SME.getStringValue();
+				break;
+
+			// user submitted a drafted request
+			case 3:
+				status = ApplicationProperties.DATA_REQUEST_STATUS_PENDING.getStringValue();
 				this.request_variables
-						.put(ApplicationProperties.DATA_REQUEST_WORKFLOW_REQUEST_REJECTED_BY_SME.getStringValue(), 3);
-				this.current_data_request.setDateAssignedToSme(new Date());
-				candidate_group = ApplicationProperties.GROUP_ADMIN.getStringValue();
-				assignee = this.assigned_sme;
-				assigned_sme = this.assigned_sme;
-				complete_task = true;
-			}
-			break;
-
-		// SME resolved a request
-		case 7:
-			// if a validator has not been picked by administrator before
-			if (Utils.isStringEmpty(this.current_data_request.getAssignedValidator()) == true) {
-				status = ApplicationProperties.DATA_REQUEST_STATUS_RESOLVED.getStringValue();
-				this.request_variables
-						.put(ApplicationProperties.DATA_REQUEST_WORKFLOW_REQUEST_REJECTED_BY_SME.getStringValue(), 1);
-				this.current_data_request.setDateResolved(new Date());
+						.put(ApplicationProperties.DATA_REQUEST_WORKFLOW_REQUEST_DRAFTED_SUBMITTED.getStringValue(), 1);
 				candidate_group = ApplicationProperties.GROUP_ADMIN.getStringValue();
 				assignee = null;
 				complete_task = true;
-			}
-			// if a validator has already been picked by administrator
-			else {
-				status = ApplicationProperties.DATA_REQUEST_STATUS_ASSIGNED_TO_VALIDATOR.getStringValue();
+				break;
+
+			case 19:
+				status = ApplicationProperties.DATA_REQUEST_STATUS_DISCARDED.getStringValue();
 				this.request_variables
-						.put(ApplicationProperties.DATA_REQUEST_WORKFLOW_REQUEST_REJECTED_BY_SME.getStringValue(), 4);
-				this.current_data_request.setDateAssignedToValidator(new Date());
-				candidate_group = ApplicationProperties.GROUP_ADMIN.getStringValue();
-				assignee = this.current_data_request.getAssignedValidator();
-				assigned_validator = this.current_data_request.getAssignedValidator();
+						.put(ApplicationProperties.DATA_REQUEST_WORKFLOW_REQUEST_DRAFTED_SUBMITTED.getStringValue(), 2);
+				candidate_group = null;
+				assignee = null;
 				complete_task = true;
-			}
-			break;
+				break;
 
-		// SME rejected a request
-		case 8:
-			status = ApplicationProperties.DATA_REQUEST_STATUS_REJECTED_BY_SME.getStringValue();
-			this.request_variables
-					.put(ApplicationProperties.DATA_REQUEST_WORKFLOW_REQUEST_REJECTED_BY_SME.getStringValue(), 2);
-			candidate_group = ApplicationProperties.GROUP_ADMIN.getStringValue();
-			assignee = null;
-			complete_task = true;
-			break;
+			// administrator updated a new request
+			case 4:
+				// if the assigned SME was picked, then the request will be assigned to that SME
+				if (Utils.isStringEmpty(this.assigned_sme) == false) {
+					status = ApplicationProperties.DATA_REQUEST_STATUS_ASSIGNED_TO_SME.getStringValue();
+					this.request_variables.put(
+							ApplicationProperties.DATA_REQUEST_WORKFLOW_REQUEST_REJECTED_BY_ADMIN.getStringValue(), 1);
+					this.current_data_request.setDateAssignedToSme(new Date());
+					candidate_group = ApplicationProperties.GROUP_ADMIN.getStringValue();
+					assignee = this.assigned_sme;
+					assigned_sme = this.assigned_sme;
+					complete_task = true;
+				}
+				if (Utils.isStringEmpty(this.assigned_validator) == false) {
+					assigned_validator = this.assigned_validator;
+				}
+				break;
 
-		// administrator updated a resolved request
-		case 9:
-			// if the assigned validator was picked, then the request will be assigned to that validator
-			if (Utils.isStringEmpty(this.assigned_validator) == false) {
-				status = ApplicationProperties.DATA_REQUEST_STATUS_ASSIGNED_TO_VALIDATOR.getStringValue();
+			// administrator rejected a request
+			case 5:
+				status = ApplicationProperties.DATA_REQUEST_STATUS_REJECTED_BY_ADMIN.getStringValue();
+				this.request_variables
+						.put(ApplicationProperties.DATA_REQUEST_WORKFLOW_REQUEST_REJECTED_BY_ADMIN.getStringValue(), 2);
+				this.current_data_request.setDateClosed(new Date());
+				complete_task = true;
+			// scandidate_group = null;
+				assignee = null;
+				break;
+
+			// administrator or SME updated a request
+			case 6:
+				// if the assigned SME was changed, then the request will be reassigned to a new SME
+				if ((Utils.isStringEmpty(this.assigned_sme) == false)
+						&& (this.assigned_sme.equalsIgnoreCase(this.current_data_request.getAssignedSme()) == false)) {
+					status = ApplicationProperties.DATA_REQUEST_STATUS_ASSIGNED_TO_SME.getStringValue();
+					this.request_variables.put(
+							ApplicationProperties.DATA_REQUEST_WORKFLOW_REQUEST_REJECTED_BY_SME.getStringValue(), 3);
+					this.current_data_request.setDateAssignedToSme(new Date());
+					candidate_group = ApplicationProperties.GROUP_ADMIN.getStringValue();
+					assignee = this.assigned_sme;
+					assigned_sme = this.assigned_sme;
+					complete_task = true;
+				}
+				break;
+
+			// SME resolved a request
+			case 7:
+				// if a validator has not been picked by administrator before
+				if (Utils.isStringEmpty(this.current_data_request.getAssignedValidator()) == true) {
+					status = ApplicationProperties.DATA_REQUEST_STATUS_RESOLVED.getStringValue();
+					this.request_variables.put(
+							ApplicationProperties.DATA_REQUEST_WORKFLOW_REQUEST_REJECTED_BY_SME.getStringValue(), 1);
+					this.current_data_request.setDateResolved(new Date());
+					candidate_group = ApplicationProperties.GROUP_ADMIN.getStringValue();
+					assignee = null;
+					complete_task = true;
+				}
+				// if a validator has already been picked by administrator
+				else {
+					status = ApplicationProperties.DATA_REQUEST_STATUS_ASSIGNED_TO_VALIDATOR.getStringValue();
+					this.request_variables.put(
+							ApplicationProperties.DATA_REQUEST_WORKFLOW_REQUEST_REJECTED_BY_SME.getStringValue(), 4);
+					this.current_data_request.setDateAssignedToValidator(new Date());
+					candidate_group = ApplicationProperties.GROUP_ADMIN.getStringValue();
+					assignee = this.current_data_request.getAssignedValidator();
+					assigned_validator = this.current_data_request.getAssignedValidator();
+					complete_task = true;
+				}
+				break;
+
+			// SME rejected a request
+			case 8:
+				status = ApplicationProperties.DATA_REQUEST_STATUS_REJECTED_BY_SME.getStringValue();
+				this.request_variables
+						.put(ApplicationProperties.DATA_REQUEST_WORKFLOW_REQUEST_REJECTED_BY_SME.getStringValue(), 2);
+				candidate_group = ApplicationProperties.GROUP_ADMIN.getStringValue();
+				assignee = null;
+				complete_task = true;
+				break;
+
+			// administrator updated a resolved request
+			case 9:
+				// if the assigned validator was picked, then the request will be assigned to that validator
+				if (Utils.isStringEmpty(this.assigned_validator) == false) {
+					status = ApplicationProperties.DATA_REQUEST_STATUS_ASSIGNED_TO_VALIDATOR.getStringValue();
+					this.request_variables.put(
+							ApplicationProperties.DATA_REQUEST_WORKFLOW_REQUEST_ASSIGNED_TO_VALIDATOR.getStringValue(),
+							1);
+					this.current_data_request.setDateAssignedToValidator(new Date());
+					candidate_group = ApplicationProperties.GROUP_ADMIN.getStringValue();
+					assignee = this.assigned_validator;
+					assigned_validator = this.assigned_validator;
+					complete_task = true;
+				}
+				break;
+
+			// administrator changed a resolved request to the "Pending Requestor Approval" status
+			case 10:
+				status = ApplicationProperties.DATA_REQUEST_STATUS_PENDING_REQUESTOR_APPROVAL.getStringValue();
 				this.request_variables.put(
-						ApplicationProperties.DATA_REQUEST_WORKFLOW_REQUEST_ASSIGNED_TO_VALIDATOR.getStringValue(), 1);
-				this.current_data_request.setDateAssignedToValidator(new Date());
+						ApplicationProperties.DATA_REQUEST_WORKFLOW_REQUEST_ASSIGNED_TO_VALIDATOR.getStringValue(), 2);
 				candidate_group = ApplicationProperties.GROUP_ADMIN.getStringValue();
-				assignee = this.assigned_validator;
-				assigned_validator = this.assigned_validator;
+				assignee = null;
 				complete_task = true;
-			}
-			break;
+				break;
 
-		// administrator changed a resolved request to the "Pending Requestor Approval" status
-		case 10:
-			status = ApplicationProperties.DATA_REQUEST_STATUS_PENDING_REQUESTOR_APPROVAL.getStringValue();
-			this.request_variables
-					.put(ApplicationProperties.DATA_REQUEST_WORKFLOW_REQUEST_ASSIGNED_TO_VALIDATOR.getStringValue(), 2);
-			candidate_group = ApplicationProperties.GROUP_ADMIN.getStringValue();
-			assignee = null;
-			complete_task = true;
-			break;
+			// administrator closed a resolved request
+			case 11:
+				status = ApplicationProperties.DATA_REQUEST_STATUS_CLOSED.getStringValue();
+				this.request_variables.put(
+						ApplicationProperties.DATA_REQUEST_WORKFLOW_REQUEST_ASSIGNED_TO_VALIDATOR.getStringValue(), 3);
+				this.current_data_request.setDateClosed(new Date());
+				candidate_group = null;
+				assignee = null;
+				complete_task = true;
+				break;
 
-		// administrator closed a resolved request
-		case 11:
-			status = ApplicationProperties.DATA_REQUEST_STATUS_CLOSED.getStringValue();
-			this.request_variables
-					.put(ApplicationProperties.DATA_REQUEST_WORKFLOW_REQUEST_ASSIGNED_TO_VALIDATOR.getStringValue(), 3);
-			this.current_data_request.setDateClosed(new Date());
-			candidate_group = null;
-			assignee = null;
-			complete_task = true;
-			break;
+			// administrator or validator updated a resolved request
+			case 12:
+				// if the assigned validator was changed, then the request will be reassigned to a new validator
+				if ((Utils.isStringEmpty(this.assigned_validator) == false) && (this.assigned_validator
+						.equalsIgnoreCase(this.current_data_request.getAssignedValidator()) == false)) {
+					status = ApplicationProperties.DATA_REQUEST_STATUS_ASSIGNED_TO_VALIDATOR.getStringValue();
+					this.request_variables
+							.put(ApplicationProperties.DATA_REQUEST_WORKFLOW_REQUEST_VALIDATED.getStringValue(), 2);
+					this.current_data_request.setDateAssignedToValidator(new Date());
+					candidate_group = ApplicationProperties.GROUP_ADMIN.getStringValue();
+					assignee = this.assigned_validator;
+					assigned_validator = this.assigned_validator;
+					complete_task = true;
+				}
+				break;
 
-		// administrator or validator updated a resolved request
-		case 12:
-			// if the assigned validator was changed, then the request will be reassigned to a new validator
-			if ((Utils.isStringEmpty(this.assigned_validator) == false) && (this.assigned_validator
-					.equalsIgnoreCase(this.current_data_request.getAssignedValidator()) == false)) {
-				status = ApplicationProperties.DATA_REQUEST_STATUS_ASSIGNED_TO_VALIDATOR.getStringValue();
+			// validator validated a request
+			case 13:
+				status = ApplicationProperties.DATA_REQUEST_STATUS_VALIDATED.getStringValue();
 				this.request_variables
-						.put(ApplicationProperties.DATA_REQUEST_WORKFLOW_REQUEST_VALIDATED.getStringValue(), 2);
-				this.current_data_request.setDateAssignedToValidator(new Date());
+						.put(ApplicationProperties.DATA_REQUEST_WORKFLOW_REQUEST_VALIDATED.getStringValue(), 1);
+				this.current_data_request.setDateValidated(new Date());
 				candidate_group = ApplicationProperties.GROUP_ADMIN.getStringValue();
-				assignee = this.assigned_validator;
-				assigned_validator = this.assigned_validator;
+				assignee = null;
 				complete_task = true;
-			}
-			break;
+				break;
 
-		// validator validated a request
-		case 13:
-			status = ApplicationProperties.DATA_REQUEST_STATUS_VALIDATED.getStringValue();
-			this.request_variables.put(ApplicationProperties.DATA_REQUEST_WORKFLOW_REQUEST_VALIDATED.getStringValue(),
-					1);
-			this.current_data_request.setDateValidated(new Date());
-			candidate_group = ApplicationProperties.GROUP_ADMIN.getStringValue();
-			assignee = null;
-			complete_task = true;
-			break;
+			// administrator changed a validated request to the "Pending Requestor Approval" status
+			case 14:
+				status = ApplicationProperties.DATA_REQUEST_STATUS_PENDING_REQUESTOR_APPROVAL.getStringValue();
+				this.request_variables
+						.put(ApplicationProperties.DATA_REQUEST_WORKFLOW_VALIDATED_REQUEST_CLOSED.getStringValue(), 2);
+				candidate_group = ApplicationProperties.GROUP_ADMIN.getStringValue();
+				assignee = null;
+				complete_task = true;
+				break;
 
-		// administrator changed a validated request to the "Pending Requestor Approval" status
-		case 14:
-			status = ApplicationProperties.DATA_REQUEST_STATUS_PENDING_REQUESTOR_APPROVAL.getStringValue();
-			this.request_variables
-					.put(ApplicationProperties.DATA_REQUEST_WORKFLOW_VALIDATED_REQUEST_CLOSED.getStringValue(), 2);
-			candidate_group = ApplicationProperties.GROUP_ADMIN.getStringValue();
-			assignee = null;
-			complete_task = true;
-			break;
+			// administrator closed a validated request
+			case 15:
+				status = ApplicationProperties.DATA_REQUEST_STATUS_CLOSED.getStringValue();
+				this.request_variables
+						.put(ApplicationProperties.DATA_REQUEST_WORKFLOW_VALIDATED_REQUEST_CLOSED.getStringValue(), 1);
+				this.current_data_request.setDateClosed(new Date());
+				candidate_group = null;
+				assignee = null;
+				complete_task = true;
+				break;
 
-		// administrator closed a validated request
-		case 15:
-			status = ApplicationProperties.DATA_REQUEST_STATUS_CLOSED.getStringValue();
-			this.request_variables
-					.put(ApplicationProperties.DATA_REQUEST_WORKFLOW_VALIDATED_REQUEST_CLOSED.getStringValue(), 1);
-			this.current_data_request.setDateClosed(new Date());
-			candidate_group = null;
-			assignee = null;
-			complete_task = true;
-			break;
+			// administrator closed a request that was in "Pending Requestor Approval" status
+			case 16:
+				status = ApplicationProperties.DATA_REQUEST_STATUS_CLOSED.getStringValue();
+				this.current_data_request.setDateClosed(new Date());
+				candidate_group = null;
+				assignee = null;
+				complete_task = true;
+				break;
 
-		// administrator closed a request that was in "Pending Requestor Approval" status
-		case 16:
-			status = ApplicationProperties.DATA_REQUEST_STATUS_CLOSED.getStringValue();
-			this.current_data_request.setDateClosed(new Date());
-			candidate_group = null;
-			assignee = null;
-			complete_task = true;
-			break;
+			// administrator put request on hold
+			case 17:
+				status = ApplicationProperties.DATA_REQUEST_STATUS_ON_HOLD.getStringValue();
+				break;
 
-		// administrator put request on hold
-		case 17:
-			status = ApplicationProperties.DATA_REQUEST_STATUS_ON_HOLD.getStringValue();
-			break;
+			// validator rejected a request
+			case 18:
+				status = ApplicationProperties.DATA_REQUEST_STATUS_VALIDATION_REJECTED.getStringValue();
+				this.request_variables
+						.put(ApplicationProperties.DATA_REQUEST_WORKFLOW_REQUEST_VALIDATED.getStringValue(), 3);
+				candidate_group = ApplicationProperties.GROUP_ADMIN.getStringValue();
+				assignee = null;
+				complete_task = true;
+				break;
 
-		// validator rejected a request
-		case 18:
-			status = ApplicationProperties.DATA_REQUEST_STATUS_VALIDATION_REJECTED.getStringValue();
-			this.request_variables.put(ApplicationProperties.DATA_REQUEST_WORKFLOW_REQUEST_VALIDATED.getStringValue(),
-					3);
-			candidate_group = ApplicationProperties.GROUP_ADMIN.getStringValue();
-			assignee = null;
-			complete_task = true;
-			break;
-
-		// reopen request
-		case 20:
-			status = ApplicationProperties.DATA_REQUEST_STATUS_PENDING.getStringValue();
-			this.request_variables.put(ApplicationProperties.DATA_REQUEST_WORKFLOW_REQUEST_DRAFTED.getStringValue(), 2);
-			candidate_group = ApplicationProperties.GROUP_ADMIN.getStringValue();
-			assignee = null;
-			start_new_request = true;
-			redirectPage = "confirmReopenRequest.htm";
-			break;
-
-		// a request was updated, but a workflow action has not been made
-		default:
-			break;
+			// a request was updated, but a workflow action has not been made
+			default:
+				break;
 		}
 
 		try {
@@ -490,10 +521,12 @@ public class DataRequestBean extends PageUtil implements Serializable {
 		return (redirectPage == null ? userSession.getHomePage() : redirectPage) + "?faces-redirect=true";
 	}
 
-	/** This method updates all of the data request and email values.
+	/**
+	 * This method updates all of the data request and email values.
 	 * 
 	 * @param status
-	 *            current status of the request */
+	 *            current status of the request
+	 */
 	private void updateVariables(String status, String assigned_sme, String assigned_validator) {
 		String assigned_sme_email = null;
 		String assigned_validator_email = null;
@@ -637,16 +670,14 @@ public class DataRequestBean extends PageUtil implements Serializable {
 		this.request_variables.put(
 				ApplicationProperties.EMAIL_LABEL_NOTIFY_ADMIN_REQUEST_RESOLVED_FROM.getStringValue(),
 				ApplicationProperties.EMAIL_NOTIFY_ADMIN_REQUEST_RESOLVED_FROM.getStringValue());
-		this.request_variables
-				.put(ApplicationProperties.EMAIL_LABEL_NOTIFY_ADMIN_REQUEST_RESOLVED_SUBJECT.getStringValue(),
-						Utils.replaceAll(
-								ApplicationProperties.EMAIL_NOTIFY_ADMIN_REQUEST_RESOLVED_SUBJECT.getStringValue(),
-								this.email_replace_tokens));
-		this.request_variables
-				.put(ApplicationProperties.EMAIL_LABEL_NOTIFY_ADMIN_REQUEST_RESOLVED_CONTENT.getStringValue(),
-						Utils.replaceAll(
-								ApplicationProperties.EMAIL_NOTIFY_ADMIN_REQUEST_RESOLVED_CONTENT.getStringValue(),
-								this.email_replace_tokens));
+		this.request_variables.put(
+				ApplicationProperties.EMAIL_LABEL_NOTIFY_ADMIN_REQUEST_RESOLVED_SUBJECT.getStringValue(),
+				Utils.replaceAll(ApplicationProperties.EMAIL_NOTIFY_ADMIN_REQUEST_RESOLVED_SUBJECT.getStringValue(),
+						this.email_replace_tokens));
+		this.request_variables.put(
+				ApplicationProperties.EMAIL_LABEL_NOTIFY_ADMIN_REQUEST_RESOLVED_CONTENT.getStringValue(),
+				Utils.replaceAll(ApplicationProperties.EMAIL_NOTIFY_ADMIN_REQUEST_RESOLVED_CONTENT.getStringValue(),
+						this.email_replace_tokens));
 
 		// email to notify a validator that a request has been assigned to him/her
 		this.request_variables.put(ApplicationProperties.EMAIL_LABEL_NOTIFY_VALIDATOR_TO.getStringValue(),
@@ -670,16 +701,14 @@ public class DataRequestBean extends PageUtil implements Serializable {
 		this.request_variables.put(
 				ApplicationProperties.EMAIL_LABEL_NOTIFY_ADMIN_REQUEST_VALIDATED_FROM.getStringValue(),
 				ApplicationProperties.EMAIL_NOTIFY_ADMIN_REQUEST_VALIDATED_FROM.getStringValue());
-		this.request_variables
-				.put(ApplicationProperties.EMAIL_LABEL_NOTIFY_ADMIN_REQUEST_VALIDATED_SUBJECT.getStringValue(),
-						Utils.replaceAll(
-								ApplicationProperties.EMAIL_NOTIFY_ADMIN_REQUEST_VALIDATED_SUBJECT.getStringValue(),
-								this.email_replace_tokens));
-		this.request_variables
-				.put(ApplicationProperties.EMAIL_LABEL_NOTIFY_ADMIN_REQUEST_VALIDATED_CONTENT.getStringValue(),
-						Utils.replaceAll(
-								ApplicationProperties.EMAIL_NOTIFY_ADMIN_REQUEST_VALIDATED_CONTENT.getStringValue(),
-								this.email_replace_tokens));
+		this.request_variables.put(
+				ApplicationProperties.EMAIL_LABEL_NOTIFY_ADMIN_REQUEST_VALIDATED_SUBJECT.getStringValue(),
+				Utils.replaceAll(ApplicationProperties.EMAIL_NOTIFY_ADMIN_REQUEST_VALIDATED_SUBJECT.getStringValue(),
+						this.email_replace_tokens));
+		this.request_variables.put(
+				ApplicationProperties.EMAIL_LABEL_NOTIFY_ADMIN_REQUEST_VALIDATED_CONTENT.getStringValue(),
+				Utils.replaceAll(ApplicationProperties.EMAIL_NOTIFY_ADMIN_REQUEST_VALIDATED_CONTENT.getStringValue(),
+						this.email_replace_tokens));
 
 		// email to notify a requestor that a request is pending their approval
 		this.request_variables.put(
@@ -691,16 +720,14 @@ public class DataRequestBean extends PageUtil implements Serializable {
 		this.request_variables.put(
 				ApplicationProperties.EMAIL_LABEL_NOTIFY_REQUEST_PENDING_APPROVAL_FROM.getStringValue(),
 				ApplicationProperties.EMAIL_NOTIFY_REQUEST_PENDING_APPROVAL_FROM.getStringValue());
-		this.request_variables
-				.put(ApplicationProperties.EMAIL_LABEL_NOTIFY_REQUEST_PENDING_APPROVAL_SUBJECT.getStringValue(),
-						Utils.replaceAll(
-								ApplicationProperties.EMAIL_NOTIFY_REQUEST_PENDING_APPROVAL_SUBJECT.getStringValue(),
-								this.email_replace_tokens));
-		this.request_variables
-				.put(ApplicationProperties.EMAIL_LABEL_NOTIFY_REQUEST_PENDING_APPROVAL_CONTENT.getStringValue(),
-						Utils.replaceAll(
-								ApplicationProperties.EMAIL_NOTIFY_REQUEST_PENDING_APPROVAL_CONTENT.getStringValue(),
-								this.email_replace_tokens));
+		this.request_variables.put(
+				ApplicationProperties.EMAIL_LABEL_NOTIFY_REQUEST_PENDING_APPROVAL_SUBJECT.getStringValue(),
+				Utils.replaceAll(ApplicationProperties.EMAIL_NOTIFY_REQUEST_PENDING_APPROVAL_SUBJECT.getStringValue(),
+						this.email_replace_tokens));
+		this.request_variables.put(
+				ApplicationProperties.EMAIL_LABEL_NOTIFY_REQUEST_PENDING_APPROVAL_CONTENT.getStringValue(),
+				Utils.replaceAll(ApplicationProperties.EMAIL_NOTIFY_REQUEST_PENDING_APPROVAL_CONTENT.getStringValue(),
+						this.email_replace_tokens));
 
 		// email to notify a requestor that a request has been closed
 		this.request_variables.put(ApplicationProperties.EMAIL_LABEL_NOTIFY_REQUEST_CLOSED_TO.getStringValue(),
@@ -726,21 +753,21 @@ public class DataRequestBean extends PageUtil implements Serializable {
 		this.request_variables.put(
 				ApplicationProperties.EMAIL_LABEL_NOTIFY_ADMIN_VALIDATION_REJECTED_FROM.getStringValue(),
 				ApplicationProperties.EMAIL_NOTIFY_ADMIN_VALIDATION_REJECTED_FROM.getStringValue());
-		this.request_variables
-				.put(ApplicationProperties.EMAIL_LABEL_NOTIFY_ADMIN_VALIDATION_REJECTED_SUBJECT.getStringValue(),
-						Utils.replaceAll(
-								ApplicationProperties.EMAIL_NOTIFY_ADMIN_VALIDATION_REJECTED_SUBJECT.getStringValue(),
-								this.email_replace_tokens));
-		this.request_variables
-				.put(ApplicationProperties.EMAIL_LABEL_NOTIFY_ADMIN_VALIDATION_REJECTED_CONTENT.getStringValue(),
-						Utils.replaceAll(
-								ApplicationProperties.EMAIL_NOTIFY_ADMIN_VALIDATION_REJECTED_CONTENT.getStringValue(),
-								this.email_replace_tokens));
+		this.request_variables.put(
+				ApplicationProperties.EMAIL_LABEL_NOTIFY_ADMIN_VALIDATION_REJECTED_SUBJECT.getStringValue(),
+				Utils.replaceAll(ApplicationProperties.EMAIL_NOTIFY_ADMIN_VALIDATION_REJECTED_SUBJECT.getStringValue(),
+						this.email_replace_tokens));
+		this.request_variables.put(
+				ApplicationProperties.EMAIL_LABEL_NOTIFY_ADMIN_VALIDATION_REJECTED_CONTENT.getStringValue(),
+				Utils.replaceAll(ApplicationProperties.EMAIL_NOTIFY_ADMIN_VALIDATION_REJECTED_CONTENT.getStringValue(),
+						this.email_replace_tokens));
 	}
 
-	/** This method creates a map of request types, for use in a dropdown.
+	/**
+	 * This method creates a map of request types, for use in a dropdown.
 	 * 
-	 * @return Returns a map of request types. */
+	 * @return Returns a map of request types.
+	 */
 	public Map<String, String> getTypes() {
 		Map<String, String> request_types = new LinkedHashMap<String, String>();
 
@@ -753,9 +780,11 @@ public class DataRequestBean extends PageUtil implements Serializable {
 		return request_types;
 	}
 
-	/** This method creates a map of systems, for use in a dropdown.
+	/**
+	 * This method creates a map of systems, for use in a dropdown.
 	 * 
-	 * @return Returns a map of systems. */
+	 * @return Returns a map of systems.
+	 */
 	public Map<String, String> getSystems() {
 		Map<String, String> systems = new LinkedHashMap<String, String>();
 
@@ -855,9 +884,11 @@ public class DataRequestBean extends PageUtil implements Serializable {
 		}
 	}
 
-	/** This method reverses the keys and values of the SME names map, for use in a dropdown.
+	/**
+	 * This method reverses the keys and values of the SME names map, for use in a dropdown.
 	 * 
-	 * @return Returns a map of SME users and their full names. */
+	 * @return Returns a map of SME users and their full names.
+	 */
 	public Map<String, String> getSmes() {
 		Map<String, String> sme_dropdown = null;
 
@@ -878,9 +909,11 @@ public class DataRequestBean extends PageUtil implements Serializable {
 		return sme_dropdown;
 	}
 
-	/** This method creates a string with a comma separated list of administrator emails.
+	/**
+	 * This method creates a string with a comma separated list of administrator emails.
 	 * 
-	 * @return Returns a string with a comma separated list of administrator emails. */
+	 * @return Returns a string with a comma separated list of administrator emails.
+	 */
 	private String getAdminEmails() {
 		StringBuilder sb = new StringBuilder();
 		String email_list_delimiter = "";
@@ -899,9 +932,11 @@ public class DataRequestBean extends PageUtil implements Serializable {
 		return sb.toString();
 	}
 
-	/** This method creates a string with a comma separated list of administrator and DRT emails.
+	/**
+	 * This method creates a string with a comma separated list of administrator and DRT emails.
 	 * 
-	 * @return Returns a string with a comma separated list of administrator and DRT emails. */
+	 * @return Returns a string with a comma separated list of administrator and DRT emails.
+	 */
 	private String getAdminDRTEmails() {
 		StringBuilder sb = new StringBuilder();
 		String email_list_delimiter = "";
@@ -925,10 +960,12 @@ public class DataRequestBean extends PageUtil implements Serializable {
 		return sb.toString();
 	}
 
-	/** This method decides if the current request is in drafted state and was created by the currently logged in user.
+	/**
+	 * This method decides if the current request is in drafted state and was created by the currently logged in user.
 	 * 
 	 * @return Returns true if the current request is in drafted state and was created by the currently logged in user,
-	 *         false otherwise. */
+	 *         false otherwise.
+	 */
 	public boolean getStatusDrafted() {
 		if ((this.userSession.getUser().getId().equalsIgnoreCase(this.current_data_request.getDrtsRequestor()) == true)
 				&& (this.current_data_request.getStatus().equalsIgnoreCase(
@@ -939,17 +976,21 @@ public class DataRequestBean extends PageUtil implements Serializable {
 		return false;
 	}
 
-	/** This method decides if the current request is being opened as a new iteration of another request.
+	/**
+	 * This method decides if the current request is being opened as a new iteration of another request.
 	 * 
 	 * @return Returns true if the current request is being opened as a new iteration of another request, false
-	 *         otherwise. */
+	 *         otherwise.
+	 */
 	public boolean getRequestIsNewIteration() {
-		return (this.current_data_request.getParentId() != null);
+		return(this.current_data_request.getParentId() != null);
 	}
 
-	/** This method decides if an external email can be sent.
+	/**
+	 * This method decides if an external email can be sent.
 	 * 
-	 * @return Returns true if an external email can be sent, false otherwise. */
+	 * @return Returns true if an external email can be sent, false otherwise.
+	 */
 	public boolean getCanSendEmail() {
 		if ((this.current_data_request.getStatus().equalsIgnoreCase(
 				ApplicationProperties.DATA_REQUEST_STATUS_PENDING_REQUESTOR_APPROVAL.getStringValue()) == true)
@@ -961,11 +1002,13 @@ public class DataRequestBean extends PageUtil implements Serializable {
 		return false;
 	}
 
-	/** This method decides if the current request is in the "On Hold" state.
+	/**
+	 * This method decides if the current request is in the "On Hold" state.
 	 * 
-	 * @return Returns true if the current request is in the "On Hold" state, false otherwise. */
+	 * @return Returns true if the current request is in the "On Hold" state, false otherwise.
+	 */
 	public boolean getStatusOnHold() {
-		return (this.current_data_request.getStatus()
+		return(this.current_data_request.getStatus()
 				.equalsIgnoreCase(ApplicationProperties.DATA_REQUEST_STATUS_ON_HOLD.getStringValue()) == true);
 	}
 
