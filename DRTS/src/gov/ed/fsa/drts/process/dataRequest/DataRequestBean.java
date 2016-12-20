@@ -220,7 +220,7 @@ public class DataRequestBean extends PageUtil implements Serializable {
 					.put(ApplicationProperties.DATA_REQUEST_WORKFLOW_REQUEST_REJECTED_BY_ADMIN.getStringValue(), 2);
 			this.current_data_request.setDateClosed(new Date());
 			complete_task = true;
-			candidate_group = null;
+			// scandidate_group = null;
 			assignee = null;
 			break;
 
@@ -485,6 +485,7 @@ public class DataRequestBean extends PageUtil implements Serializable {
 			logger.error(e);
 			e.printStackTrace();
 		}
+		FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("requestTable", null);
 
 		return (redirectPage == null ? userSession.getHomePage() : redirectPage) + "?faces-redirect=true";
 	}

@@ -44,10 +44,11 @@
 
 							<h2>Available Tasks</h2>
 
-							<h:panelGroup rendered="#{not empty requestTable.table1.dataRequests}">
+							<h:panelGroup rendered="#{not empty requestTable.table4.dataRequests}">
 
-								<pf:dataTable id="tbl1" var="dataRequest" value="#{requestTable.table1.dataRequests}" paginator="true" paginatorAlwaysVisible="false"
-									sortMode="single" rows="10" styleClass="drtsTable" sortBy="#{dataRequest.dueDate}">
+								<pf:dataTable id="tbl1" var="dataRequest" value="#{requestTable.table1.dataRequests}" paginator="true"
+									paginatorAlwaysVisible="false" sortMode="single" rows="10" styleClass="drtsTable"
+									sortBy="#{dataRequest.createdDateTime}" sortOrder="descending">
 									<pf:column headerText="ID" sortBy="#{dataRequest.displayId}">
 										<h:outputText value="#{dataRequest.displayId}" />
 									</pf:column>
@@ -61,10 +62,14 @@
 										<h:outputText value="#{dataRequest.status}" />
 									</pf:column>
 									<pf:column headerText="Created On" sortBy="#{dataRequest.createdDateTime}">
-										<h:outputText value="#{dataRequest.createdDateTime}" />
+										<h:outputText value="#{dataRequest.createdDateTime}">
+											<f:converter converterId="defaultDateConverter" />
+										</h:outputText>
 									</pf:column>
 									<pf:column headerText="Rrequested Due Date" sortBy="#{dataRequest.dueDate}">
-										<h:outputText value="#{dataRequest.dueDate}" />
+										<h:outputText value="#{dataRequest.dueDate}">
+											<f:converter converterId="defaultDateConverter" />
+										</h:outputText>
 									</pf:column>
 									<pf:column headerText="Action" sortBy="#{dataRequest.dueDate}">
 										<h:commandLink action="#{requestTable.goToTask(dataRequest)}" value="#{dataRequest.currentTaskName}" />

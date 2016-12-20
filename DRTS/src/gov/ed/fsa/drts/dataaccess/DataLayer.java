@@ -60,107 +60,101 @@ public class DataLayer {
 			+ ApplicationProperties.DATA_REQUEST_FIELD_TIER.getStringValue() + ") "
 			+ "VALUES (?, SYSDATE, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-	private static final String QUERY_SELECT_DATA_REQUESTS_BY_GROUP_OR_ASSIGNEE =
-			"SELECT * FROM(SELECT T2.*, rownum AS ROW_NUM FROM(SELECT T.* FROM(SELECT * FROM "
-					+ ApplicationProperties.DATA_REQUEST_VIEW.getStringValue() + ") T " + "WHERE "
-					+ ApplicationProperties.DATA_REQUEST_FIELD_CANDIDATE_GROUP.getStringValue() + " IN (%s) OR "
-					+ ApplicationProperties.DATA_REQUEST_FIELD_ASSIGNEE.getStringValue()
-					+ " = ? ORDER BY %s %s) T2) T3 WHERE ROW_NUM > ?  AND ROW_NUM <= ?";
+	private static final String QUERY_SELECT_DATA_REQUESTS_BY_GROUP_OR_ASSIGNEE = "SELECT * FROM(SELECT T2.*, rownum AS ROW_NUM FROM(SELECT T.* FROM(SELECT * FROM "
+			+ ApplicationProperties.DATA_REQUEST_VIEW.getStringValue() + ") T " + "WHERE "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_CANDIDATE_GROUP.getStringValue() + " IN (%s) OR "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_ASSIGNEE.getStringValue()
+			+ " = ? ORDER BY %s %s) T2) T3 WHERE ROW_NUM > ?  AND ROW_NUM <= ?";
 
-	private static final String QUERY_SELECT_DATA_REQUESTS_BY_GROUP_OR_ASSIGNEE_COUNT =
-			"SELECT COUNT(*) FROM " + ApplicationProperties.DATA_REQUEST_VIEW.getStringValue() + " WHERE "
-					+ ApplicationProperties.DATA_REQUEST_FIELD_CANDIDATE_GROUP.getStringValue() + " IN (%s) OR "
-					+ ApplicationProperties.DATA_REQUEST_FIELD_ASSIGNEE.getStringValue() + " = ?";
+	private static final String QUERY_SELECT_DATA_REQUESTS_BY_GROUP_OR_ASSIGNEE_COUNT = "SELECT COUNT(*) FROM "
+			+ ApplicationProperties.DATA_REQUEST_VIEW.getStringValue() + " WHERE "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_CANDIDATE_GROUP.getStringValue() + " IN (%s) OR "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_ASSIGNEE.getStringValue() + " = ?";
 
-	private static final String QUERY_SELECT_DATA_REQUESTS_BY_CREATOR =
-			"SELECT * FROM(SELECT T2.*, rownum AS ROW_NUM FROM(SELECT T.* FROM(SELECT * FROM "
-					+ ApplicationProperties.DATA_REQUEST_VIEW.getStringValue() + ") T " + "WHERE "
-					+ ApplicationProperties.DATA_REQUEST_FIELD_CREATED_BY.getStringValue()
-					+ " = ? ORDER BY %s %s) T2) T3 " + "WHERE ROW_NUM > ?  AND ROW_NUM <= ?";
+	private static final String QUERY_SELECT_DATA_REQUESTS_BY_CREATOR = "SELECT * FROM(SELECT T2.*, rownum AS ROW_NUM FROM(SELECT T.* FROM(SELECT * FROM "
+			+ ApplicationProperties.DATA_REQUEST_VIEW.getStringValue() + ") T " + "WHERE "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_CREATED_BY.getStringValue() + " = ? ORDER BY %s %s) T2) T3 "
+			+ "WHERE ROW_NUM > ?  AND ROW_NUM <= ?";
 
-	private static final String QUERY_SELECT_DATA_REQUESTS_BY_CREATOR_COUNT =
-			"SELECT COUNT(*) FROM " + ApplicationProperties.DATA_REQUEST_TABLE.getStringValue() + " WHERE "
-					+ ApplicationProperties.DATA_REQUEST_FIELD_CREATED_BY.getStringValue() + " = ?";
+	private static final String QUERY_SELECT_DATA_REQUESTS_BY_CREATOR_COUNT = "SELECT COUNT(*) FROM "
+			+ ApplicationProperties.DATA_REQUEST_TABLE.getStringValue() + " WHERE "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_CREATED_BY.getStringValue() + " = ?";
 
-	private static final String QUERY_SELECT_DATA_REQUESTS_BY_STATUS =
-			"SELECT * FROM(SELECT T2.*, rownum AS ROW_NUM FROM(SELECT T.* FROM(SELECT * FROM "
-					+ ApplicationProperties.DATA_REQUEST_VIEW.getStringValue() + ") T " + "WHERE "
-					+ ApplicationProperties.DATA_REQUEST_FIELD_STATUS.getStringValue() + " = ? ORDER BY %s %s) T2) T3 "
-					+ "WHERE ROW_NUM > ?  AND ROW_NUM <= ?";
+	private static final String QUERY_SELECT_DATA_REQUESTS_BY_STATUS = "SELECT * FROM(SELECT T2.*, rownum AS ROW_NUM FROM(SELECT T.* FROM(SELECT * FROM "
+			+ ApplicationProperties.DATA_REQUEST_VIEW.getStringValue() + ") T " + "WHERE "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_STATUS.getStringValue() + " = ? ORDER BY %s %s) T2) T3 "
+			+ "WHERE ROW_NUM > ?  AND ROW_NUM <= ?";
 
-	private static final String QUERY_SELECT_DATA_REQUESTS_BY_STATUS_COUNT =
-			"SELECT COUNT(*) FROM " + ApplicationProperties.DATA_REQUEST_TABLE.getStringValue() + " WHERE "
-					+ ApplicationProperties.DATA_REQUEST_FIELD_STATUS.getStringValue() + " = ?";
+	private static final String QUERY_SELECT_DATA_REQUESTS_BY_STATUS_COUNT = "SELECT COUNT(*) FROM "
+			+ ApplicationProperties.DATA_REQUEST_TABLE.getStringValue() + " WHERE "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_STATUS.getStringValue() + " = ?";
 
-	private static final String QUERY_SELECT_DATA_REQUESTS_BY_ASSOCIATION =
-			"SELECT * FROM(SELECT T2.*, rownum AS ROW_NUM FROM(SELECT T.* FROM(SELECT * FROM "
-					+ ApplicationProperties.DATA_REQUEST_VIEW.getStringValue() + ") T " + "WHERE "
-					+ ApplicationProperties.DATA_REQUEST_FIELD_ASSIGNED_SME.getStringValue() + " = ? OR "
-					+ ApplicationProperties.DATA_REQUEST_FIELD_ASSIGNED_VALIDATOR.getStringValue()
-					+ " = ? ORDER BY %s %s) T2) T3 " + "WHERE ROW_NUM > ?  AND ROW_NUM <= ?";
+	private static final String QUERY_SELECT_DATA_REQUESTS_BY_ASSOCIATION = "SELECT * FROM(SELECT T2.*, rownum AS ROW_NUM FROM(SELECT T.* FROM(SELECT * FROM "
+			+ ApplicationProperties.DATA_REQUEST_VIEW.getStringValue() + ") T " + "WHERE "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_ASSIGNED_SME.getStringValue() + " = ? OR "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_ASSIGNED_VALIDATOR.getStringValue()
+			+ " = ? ORDER BY %s %s) T2) T3 " + "WHERE ROW_NUM > ?  AND ROW_NUM <= ?";
 
-	private static final String QUERY_SELECT_DATA_REQUESTS_BY_ASSOCIATION_COUNT =
-			"SELECT COUNT(*) FROM " + ApplicationProperties.DATA_REQUEST_TABLE.getStringValue() + " WHERE "
-					+ ApplicationProperties.DATA_REQUEST_FIELD_ASSIGNED_SME.getStringValue() + " = ? OR "
-					+ ApplicationProperties.DATA_REQUEST_FIELD_ASSIGNED_VALIDATOR.getStringValue() + " = ?";
+	private static final String QUERY_SELECT_DATA_REQUESTS_BY_ASSOCIATION_COUNT = "SELECT COUNT(*) FROM "
+			+ ApplicationProperties.DATA_REQUEST_TABLE.getStringValue() + " WHERE "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_ASSIGNED_SME.getStringValue() + " = ? OR "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_ASSIGNED_VALIDATOR.getStringValue() + " = ?";
 
-	private static final String QUERY_SELECT_ALL_DATA_REQUESTS =
-			"SELECT * FROM(SELECT T2.*, rownum AS ROW_NUM FROM(SELECT * FROM "
-					+ ApplicationProperties.DATA_REQUEST_VIEW.getStringValue()
-					+ " ORDER BY %s %s) T2) T3 WHERE ROW_NUM > ?  AND ROW_NUM <= ?";
+	private static final String QUERY_SELECT_ALL_DATA_REQUESTS = "SELECT * FROM(SELECT T2.*, rownum AS ROW_NUM FROM(SELECT * FROM "
+			+ ApplicationProperties.DATA_REQUEST_VIEW.getStringValue()
+			+ " ORDER BY %s %s) T2) T3 WHERE ROW_NUM > ?  AND ROW_NUM <= ?";
 
-	private static final String QUERY_SELECT_ALL_DATA_REQUESTS_COUNT =
-			"SELECT COUNT(*) FROM " + ApplicationProperties.DATA_REQUEST_TABLE.getStringValue();
+	private static final String QUERY_SELECT_ALL_DATA_REQUESTS_COUNT = "SELECT COUNT(*) FROM "
+			+ ApplicationProperties.DATA_REQUEST_TABLE.getStringValue();
 
-	private static final String QUERY_UPDATE_DATA_REQUEST =
-			"UPDATE " + ApplicationProperties.DATA_REQUEST_TABLE.getStringValue() + " SET "
-					+ ApplicationProperties.DATA_REQUEST_FIELD_CANDIDATE_GROUP.getStringValue() + " = ?, "
-					+ ApplicationProperties.DATA_REQUEST_FIELD_ASSIGNEE.getStringValue() + " = ?, "
-					+ ApplicationProperties.DATA_REQUEST_FIELD_TYPE.getStringValue() + " = ?, "
-					+ ApplicationProperties.DATA_REQUEST_FIELD_STATUS.getStringValue() + " = ?, "
-					+ ApplicationProperties.DATA_REQUEST_FIELD_DUE_DATE.getStringValue() + " = ?, "
-					+ ApplicationProperties.DATA_REQUEST_FIELD_URGENT.getStringValue() + " = ?, "
-					+ ApplicationProperties.DATA_REQUEST_FIELD_RELATED_REQUESTS.getStringValue() + " = ?, "
-					+ ApplicationProperties.DATA_REQUEST_FIELD_TOPIC_KEYWORDS.getStringValue() + " = ?, "
-					+ ApplicationProperties.DATA_REQUEST_FIELD_PURPOSE.getStringValue() + " = ?, "
-					+ ApplicationProperties.DATA_REQUEST_FIELD_SPECIAL_CONSIDERATIONS_ISSUES.getStringValue() + " = ?, "
-					+ ApplicationProperties.DATA_REQUEST_FIELD_DESCRIPTION.getStringValue() + " = ?, "
-					+ ApplicationProperties.DATA_REQUEST_FIELD_REQUESTOR_NAME.getStringValue() + " = ?, "
-					+ ApplicationProperties.DATA_REQUEST_FIELD_REQUESTOR_ORGANIZATION.getStringValue() + " = ?, "
-					+ ApplicationProperties.DATA_REQUEST_FIELD_REQUESTOR_PHONE.getStringValue() + " = ?, "
-					+ ApplicationProperties.DATA_REQUEST_FIELD_REQUESTOR_EMAIL.getStringValue() + " = ?, "
-					+ ApplicationProperties.DATA_REQUEST_FIELD_RECEIVER_NAME.getStringValue() + " = ?, "
-					+ ApplicationProperties.DATA_REQUEST_FIELD_RECEIVER_EMAIL.getStringValue() + " = ?, "
-					+ ApplicationProperties.DATA_REQUEST_FIELD_ASSIGNED_SME.getStringValue() + " = ?, "
-					+ ApplicationProperties.DATA_REQUEST_FIELD_ASSIGNED_TO_SME.getStringValue() + " = ?, "
-					+ ApplicationProperties.DATA_REQUEST_FIELD_DATE_RESOLVED.getStringValue() + " = ?, "
-					+ ApplicationProperties.DATA_REQUEST_FIELD_ASSIGNED_VALIDATOR.getStringValue() + " = ?, "
-					+ ApplicationProperties.DATA_REQUEST_FIELD_ASSIGNED_TO_VALIDATOR.getStringValue() + " = ?, "
-					+ ApplicationProperties.DATA_REQUEST_FIELD_DATE_VALIDATED.getStringValue() + " = ?, "
-					+ ApplicationProperties.DATA_REQUEST_FIELD_DATE_CLOSED.getStringValue() + " = ?, "
-					+ ApplicationProperties.DATA_REQUEST_FIELD_COMMENTS.getStringValue() + " = ?, "
-					+ ApplicationProperties.DATA_REQUEST_FIELD_LAST_UPDATED_DATE.getStringValue() + " = SYSDATE, "
-					+ ApplicationProperties.DATA_REQUEST_FIELD_SYSTEM.getStringValue() + " = ?, "
-					+ ApplicationProperties.DATA_REQUEST_FIELD_PII_FLAG.getStringValue() + " = ?, "
-					+ ApplicationProperties.DATA_REQUEST_FIELD_ORIGINAL_REQUEST_DATE.getStringValue() + " = ?, "
-					+ ApplicationProperties.DATA_REQUEST_FIELD_CLARIFICATIONS_ASSUMPTIONS.getStringValue() + " = ?, "
-					+ ApplicationProperties.DATA_REQUEST_FIELD_GOLDEN_QUERY_LIBRARY.getStringValue() + " = ?, "
-					+ ApplicationProperties.DATA_REQUEST_FIELD_BUSINESS_REQUIREMENTS.getStringValue() + " = ?, "
-					+ ApplicationProperties.DATA_REQUEST_FIELD_TIER.getStringValue() + " = ?, "
-					+ ApplicationProperties.DATA_REQUEST_FIELD_VALIDATION_DESCRIPTION.getStringValue() + " = ?, "
-					+ ApplicationProperties.DATA_REQUEST_FIELD_VALIDATION_RESULT.getStringValue() + " = ?, "
-					+ ApplicationProperties.DATA_REQUEST_FIELD_DELAY_REASON.getStringValue() + " = ?, "
-					+ ApplicationProperties.DATA_REQUEST_FIELD_AGREED_DUE_DATE.getStringValue() + " = ?, "
-					+ ApplicationProperties.DATA_REQUEST_FIELD_ANTICIPATED_DUE_DATE.getStringValue() + " = ?, "
-					+ ApplicationProperties.DATA_REQUEST_FIELD_DATE_RUN.getStringValue() + " = ?, "
-					+ ApplicationProperties.DATA_REQUEST_FIELD_REPORT_TYPE.getStringValue() + " = ?, "
-					+ ApplicationProperties.DATA_REQUEST_FIELD_QUERY_REPORT_NAME.getStringValue() + " = ?, "
-					+ ApplicationProperties.DATA_REQUEST_FIELD_DETAILED_STEPS.getStringValue() + " = ? "
-					+ "WHERE request_number = ?";
+	private static final String QUERY_UPDATE_DATA_REQUEST = "UPDATE "
+			+ ApplicationProperties.DATA_REQUEST_TABLE.getStringValue() + " SET "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_CANDIDATE_GROUP.getStringValue() + " = ?, "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_ASSIGNEE.getStringValue() + " = ?, "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_TYPE.getStringValue() + " = ?, "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_STATUS.getStringValue() + " = ?, "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_DUE_DATE.getStringValue() + " = ?, "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_URGENT.getStringValue() + " = ?, "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_RELATED_REQUESTS.getStringValue() + " = ?, "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_TOPIC_KEYWORDS.getStringValue() + " = ?, "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_PURPOSE.getStringValue() + " = ?, "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_SPECIAL_CONSIDERATIONS_ISSUES.getStringValue() + " = ?, "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_DESCRIPTION.getStringValue() + " = ?, "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_REQUESTOR_NAME.getStringValue() + " = ?, "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_REQUESTOR_ORGANIZATION.getStringValue() + " = ?, "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_REQUESTOR_PHONE.getStringValue() + " = ?, "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_REQUESTOR_EMAIL.getStringValue() + " = ?, "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_RECEIVER_NAME.getStringValue() + " = ?, "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_RECEIVER_EMAIL.getStringValue() + " = ?, "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_ASSIGNED_SME.getStringValue() + " = ?, "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_ASSIGNED_TO_SME.getStringValue() + " = ?, "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_DATE_RESOLVED.getStringValue() + " = ?, "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_ASSIGNED_VALIDATOR.getStringValue() + " = ?, "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_ASSIGNED_TO_VALIDATOR.getStringValue() + " = ?, "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_DATE_VALIDATED.getStringValue() + " = ?, "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_DATE_CLOSED.getStringValue() + " = ?, "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_COMMENTS.getStringValue() + " = ?, "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_LAST_UPDATED_DATE.getStringValue() + " = SYSDATE, "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_SYSTEM.getStringValue() + " = ?, "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_PII_FLAG.getStringValue() + " = ?, "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_ORIGINAL_REQUEST_DATE.getStringValue() + " = ?, "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_CLARIFICATIONS_ASSUMPTIONS.getStringValue() + " = ?, "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_GOLDEN_QUERY_LIBRARY.getStringValue() + " = ?, "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_BUSINESS_REQUIREMENTS.getStringValue() + " = ?, "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_TIER.getStringValue() + " = ?, "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_VALIDATION_DESCRIPTION.getStringValue() + " = ?, "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_VALIDATION_RESULT.getStringValue() + " = ?, "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_DELAY_REASON.getStringValue() + " = ?, "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_AGREED_DUE_DATE.getStringValue() + " = ?, "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_ANTICIPATED_DUE_DATE.getStringValue() + " = ?, "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_DATE_RUN.getStringValue() + " = ?, "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_REPORT_TYPE.getStringValue() + " = ?, "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_QUERY_REPORT_NAME.getStringValue() + " = ?, "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_DETAILED_STEPS.getStringValue() + " = ? "
+			+ "WHERE request_number = ?";
 
-	private static final String QUERY_SELECT_NEXT_DATA_REQUEST_ID =
-			"SELECT COALESCE(MAX(request_display_id), 0) + 1 FROM "
-					+ ApplicationProperties.DATA_REQUEST_TABLE.getStringValue();
+	private static final String QUERY_SELECT_NEXT_DATA_REQUEST_ID = "SELECT COALESCE(MAX(request_display_id), 0) + 1 FROM "
+			+ ApplicationProperties.DATA_REQUEST_TABLE.getStringValue();
 
 	private static final String QUERY_INSERT_ATTACHMENT = "INSERT INTO "
 			+ ApplicationProperties.DATA_ATTACHMENT_TABLE.getStringValue() + " ("
@@ -171,68 +165,64 @@ public class DataLayer {
 			+ ApplicationProperties.ATTACHMENT_FIELD_FILE_SIZE.getStringValue() + ", "
 			+ ApplicationProperties.ATTACHMENT_FIELD_FILE_CONTENT.getStringValue() + ") VALUES (?, ?, ?, ?, ?, ?)";
 
-	private static final String QUERY_DELETE_ATTACHMENT =
-			"DELETE FROM " + ApplicationProperties.DATA_ATTACHMENT_TABLE.getStringValue() + " where "
-					+ ApplicationProperties.ATTACHMENT_FIELD_ID.getStringValue() + " = ?";
+	private static final String QUERY_DELETE_ATTACHMENT = "DELETE FROM "
+			+ ApplicationProperties.DATA_ATTACHMENT_TABLE.getStringValue() + " where "
+			+ ApplicationProperties.ATTACHMENT_FIELD_ID.getStringValue() + " = ?";
 
-	private static final String QUERY_SELECT_ATTACHMENT_BY_ID =
-			"SELECT * FROM " + ApplicationProperties.DATA_ATTACHMENT_TABLE.getStringValue() + " WHERE "
-					+ ApplicationProperties.ATTACHMENT_FIELD_ID.getStringValue() + " = ?";
+	private static final String QUERY_SELECT_ATTACHMENT_BY_ID = "SELECT * FROM "
+			+ ApplicationProperties.DATA_ATTACHMENT_TABLE.getStringValue() + " WHERE "
+			+ ApplicationProperties.ATTACHMENT_FIELD_ID.getStringValue() + " = ?";
 
-	private static final String QUERY_SELECT_ATTACHMENT_BY_REQUEST_ID =
-			"SELECT * FROM " + ApplicationProperties.DATA_ATTACHMENT_TABLE.getStringValue() + " WHERE "
-					+ ApplicationProperties.ATTACHMENT_FIELD_REQUEST_ID.getStringValue() + " = ?";
+	private static final String QUERY_SELECT_ATTACHMENT_BY_REQUEST_ID = "SELECT * FROM "
+			+ ApplicationProperties.DATA_ATTACHMENT_TABLE.getStringValue() + " WHERE "
+			+ ApplicationProperties.ATTACHMENT_FIELD_REQUEST_ID.getStringValue() + " = ?";
 
-	private static final String QUERY_SELECT_NEXT_ITERATION =
-			"SELECT COALESCE(MAX(" + ApplicationProperties.ITERATION_FIELD_ITERATION.getStringValue() + "), 2) FROM "
-					+ ApplicationProperties.DATA_ITERATION_TABLE.getStringValue() + " WHERE "
-					+ ApplicationProperties.ITERATION_FIELD_PARENT_ID.getStringValue() + " = ?";
+	private static final String QUERY_SELECT_NEXT_ITERATION = "SELECT COALESCE(MAX("
+			+ ApplicationProperties.ITERATION_FIELD_ITERATION.getStringValue() + "), 2) FROM "
+			+ ApplicationProperties.DATA_ITERATION_TABLE.getStringValue() + " WHERE "
+			+ ApplicationProperties.ITERATION_FIELD_PARENT_ID.getStringValue() + " = ?";
 
-	private static final String QUERY_INSERT_ITERATION_ASSOCIATION =
-			"INSERT INTO " + ApplicationProperties.DATA_ITERATION_TABLE.getStringValue() + " ("
-					+ ApplicationProperties.ITERATION_FIELD_PARENT_ID.getStringValue() + ", "
-					+ ApplicationProperties.ITERATION_FIELD_ITERATION.getStringValue() + ", "
-					+ ApplicationProperties.ITERATION_FIELD_CHILD_ID.getStringValue() + ") VALUES (?, ?, ?)";
+	private static final String QUERY_INSERT_ITERATION_ASSOCIATION = "INSERT INTO "
+			+ ApplicationProperties.DATA_ITERATION_TABLE.getStringValue() + " ("
+			+ ApplicationProperties.ITERATION_FIELD_PARENT_ID.getStringValue() + ", "
+			+ ApplicationProperties.ITERATION_FIELD_ITERATION.getStringValue() + ", "
+			+ ApplicationProperties.ITERATION_FIELD_CHILD_ID.getStringValue() + ") VALUES (?, ?, ?)";
 
-	private static final String QUERY_SELECT_DATA_REQUESTS_BY_DISPLAY_ID =
-			"SELECT * FROM(SELECT T2.*, rownum AS ROW_NUM FROM(SELECT T.* FROM(SELECT * FROM "
-					+ ApplicationProperties.DATA_REQUEST_VIEW.getStringValue() + ") T " + "WHERE SYS_OP_C2C(TO_CHAR(\""
-					+ ApplicationProperties.DATA_REQUEST_FIELD_CREATED_DATE_TIME.getStringValue()
-					+ "\",'YYYY')||'-'||TO_CHAR(\"REQUEST_DISPLAY_ID\")||'-')||'D' like ? "
-					+ "ORDER BY %s %s) T2) T3 WHERE ROW_NUM > ?  AND ROW_NUM <= ?";
+	private static final String QUERY_SELECT_DATA_REQUESTS_BY_DISPLAY_ID = "SELECT * FROM(SELECT T2.*, rownum AS ROW_NUM FROM(SELECT T.* FROM(SELECT * FROM "
+			+ ApplicationProperties.DATA_REQUEST_VIEW.getStringValue() + ") T " + "WHERE SYS_OP_C2C(TO_CHAR(\""
+			+ ApplicationProperties.DATA_REQUEST_FIELD_CREATED_DATE_TIME.getStringValue()
+			+ "\",'YYYY')||'-'||TO_CHAR(\"REQUEST_DISPLAY_ID\")||'-')||'D' like ? "
+			+ "ORDER BY %s %s) T2) T3 WHERE ROW_NUM > ?  AND ROW_NUM <= ?";
 
 	private static final String QUERY_SELECT_DATA_REQUESTS_BY_DISPLAY_ID_COUNT = "SELECT COUNT(*) FROM "
 			+ ApplicationProperties.DATA_REQUEST_TABLE.getStringValue() + " WHERE SYS_OP_C2C(TO_CHAR(\""
 			+ ApplicationProperties.DATA_REQUEST_FIELD_CREATED_DATE_TIME.getStringValue()
 			+ "\",'YYYY')||'-'||TO_CHAR(\"REQUEST_DISPLAY_ID\")||'-')||'D' LIKE ?";
 
-	private static final String QUERY_SELECT_DATA_REQUESTS_BY_FIELDS =
-			"SELECT * FROM(SELECT T2.*, rownum AS ROW_NUM FROM(SELECT T.* FROM(SELECT * FROM "
-					+ ApplicationProperties.DATA_REQUEST_VIEW.getStringValue() + ") T "
-					+ "WHERE %s ORDER BY %s %s) T2) T3 WHERE ROW_NUM > ?  AND ROW_NUM <= ?";
+	private static final String QUERY_SELECT_DATA_REQUESTS_BY_FIELDS = "SELECT * FROM(SELECT T2.*, rownum AS ROW_NUM FROM(SELECT T.* FROM(SELECT * FROM "
+			+ ApplicationProperties.DATA_REQUEST_VIEW.getStringValue() + ") T "
+			+ "WHERE %s ORDER BY %s %s) T2) T3 WHERE ROW_NUM > ?  AND ROW_NUM <= ?";
 
-	private static final String QUERY_SELECT_DATA_REQUESTS_BY_FIELDS_COUNT =
-			"SELECT COUNT(*) FROM " + ApplicationProperties.DATA_REQUEST_TABLE.getStringValue() + " WHERE %s";
+	private static final String QUERY_SELECT_DATA_REQUESTS_BY_FIELDS_COUNT = "SELECT COUNT(*) FROM "
+			+ ApplicationProperties.DATA_REQUEST_TABLE.getStringValue() + " WHERE %s";
 
-	private static final String QUERY_SELECT_DATA_REQUESTS_BY_KEYWORD =
-			"SELECT * FROM(SELECT T2.*, rownum AS ROW_NUM FROM(SELECT T.* FROM(SELECT * FROM "
-					+ ApplicationProperties.DATA_REQUEST_VIEW.getStringValue() + ") T " + "WHERE "
-					+ ApplicationProperties.DATA_REQUEST_FIELD_DESCRIPTION.getStringValue() + " LIKE ? OR "
-					+ ApplicationProperties.DATA_REQUEST_FIELD_PURPOSE.getStringValue()
-					+ " LIKE ? ORDER BY %s %s) T2) T3 " + "WHERE ROW_NUM > ?  AND ROW_NUM <= ?";
+	private static final String QUERY_SELECT_DATA_REQUESTS_BY_KEYWORD = "SELECT * FROM(SELECT T2.*, rownum AS ROW_NUM FROM(SELECT T.* FROM(SELECT * FROM "
+			+ ApplicationProperties.DATA_REQUEST_VIEW.getStringValue() + ") T " + "WHERE "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_DESCRIPTION.getStringValue() + " LIKE ? OR "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_PURPOSE.getStringValue() + " LIKE ? ORDER BY %s %s) T2) T3 "
+			+ "WHERE ROW_NUM > ?  AND ROW_NUM <= ?";
 
-	private static final String QUERY_SELECT_DATA_REQUESTS_BY_KEYWORD_COUNT =
-			"SELECT COUNT(*) FROM " + ApplicationProperties.DATA_REQUEST_TABLE.getStringValue() + " WHERE "
-					+ ApplicationProperties.DATA_REQUEST_FIELD_DESCRIPTION.getStringValue() + " LIKE ? OR "
-					+ ApplicationProperties.DATA_REQUEST_FIELD_PURPOSE.getStringValue() + " LIKE ?";
+	private static final String QUERY_SELECT_DATA_REQUESTS_BY_KEYWORD_COUNT = "SELECT COUNT(*) FROM "
+			+ ApplicationProperties.DATA_REQUEST_TABLE.getStringValue() + " WHERE "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_DESCRIPTION.getStringValue() + " LIKE ? OR "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_PURPOSE.getStringValue() + " LIKE ?";
 
-	private static final String QUERY_REPORT_1 =
-			"SELECT * FROM(SELECT T2.*, rownum AS ROW_NUM FROM(SELECT T.* FROM(SELECT * FROM "
-					+ ApplicationProperties.DATA_REQUEST_VIEW.getStringValue() + ") T "
-					+ "WHERE %s ORDER BY %s %s) T2) T3 WHERE ROW_NUM > ?  AND ROW_NUM <= ?";
+	private static final String QUERY_REPORT_1 = "SELECT * FROM(SELECT T2.*, rownum AS ROW_NUM FROM(SELECT T.* FROM(SELECT * FROM "
+			+ ApplicationProperties.DATA_REQUEST_VIEW.getStringValue() + ") T "
+			+ "WHERE %s ORDER BY %s %s) T2) T3 WHERE ROW_NUM > ?  AND ROW_NUM <= ?";
 
-	private static final String QUERY_REPORT_1_COUNT =
-			"SELECT COUNT(*) FROM " + ApplicationProperties.DATA_REQUEST_TABLE.getStringValue() + " WHERE %s";
+	private static final String QUERY_REPORT_1_COUNT = "SELECT COUNT(*) FROM "
+			+ ApplicationProperties.DATA_REQUEST_TABLE.getStringValue() + " WHERE %s";
 
 	private static final String QUERY_INSERT_AUDIT_FIELD = "INSERT INTO "
 			+ ApplicationProperties.DATA_AUDIT_TABLE.getStringValue() + " ("
@@ -248,22 +238,20 @@ public class DataLayer {
 
 	private static final String QUERY_REPORT_3_ASSIGNED_SME = "SELECT * FROM SME_ASSIGNED_REPORT";
 
-	private static final String QUERY_REPORT_4_AVERAGE_AGE =
-			"SELECT (SYSDATE - ?) AS report_date, num_open_requests, COALESCE(total_age, 0) AS total_age, ROUND(((COALESCE(total_age, 0)) / (CASE num_open_requests WHEN 0 THEN 1 ELSE num_open_requests END)), 0) AS avg_age "
-					+ "FROM(SELECT COUNT(request_number) AS num_open_requests, SUM(TRUNC(SYSDATE - ?) - TRUNC(drt_request_date)) AS total_age "
-					+ "FROM DRTS_HISTORY WHERE drt_request_date < (SYSDATE - ?) AND ((closed_date IS NULL) OR (closed_date > (SYSDATE - ?))))";
+	private static final String QUERY_REPORT_4_AVERAGE_AGE = "SELECT (SYSDATE - ?) AS report_date, num_open_requests, COALESCE(total_age, 0) AS total_age, ROUND(((COALESCE(total_age, 0)) / (CASE num_open_requests WHEN 0 THEN 1 ELSE num_open_requests END)), 0) AS avg_age "
+			+ "FROM(SELECT COUNT(request_number) AS num_open_requests, SUM(TRUNC(SYSDATE - ?) - TRUNC(drt_request_date)) AS total_age "
+			+ "FROM DRTS_HISTORY WHERE drt_request_date < (SYSDATE - ?) AND ((closed_date IS NULL) OR (closed_date > (SYSDATE - ?))))";
 
-	private static final String QUERY_REPORT_5_OVERDUE =
-			"SELECT * FROM(SELECT T2.*, rownum AS ROW_NUM FROM(SELECT T.* FROM(SELECT * FROM "
-					+ ApplicationProperties.DATA_REQUEST_VIEW.getStringValue() + ") T " + "WHERE "
-					+ ApplicationProperties.DATA_REQUEST_FIELD_STATUS.getStringValue() + " NOT IN (?, ?) AND "
-					+ ApplicationProperties.DATA_REQUEST_FIELD_DUE_DATE.getStringValue()
-					+ " < SYSDATE ORDER BY %s %s) T2) T3 " + "WHERE ROW_NUM > ?  AND ROW_NUM <= ?";
+	private static final String QUERY_REPORT_5_OVERDUE = "SELECT * FROM(SELECT T2.*, rownum AS ROW_NUM FROM(SELECT T.* FROM(SELECT * FROM "
+			+ ApplicationProperties.DATA_REQUEST_VIEW.getStringValue() + ") T " + "WHERE "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_STATUS.getStringValue() + " NOT IN (?, ?) AND "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_DUE_DATE.getStringValue() + " < SYSDATE ORDER BY %s %s) T2) T3 "
+			+ "WHERE ROW_NUM > ?  AND ROW_NUM <= ?";
 
-	private static final String QUERY_REPORT_5_OVERDUE_COUNT =
-			"SELECT COUNT(*) FROM " + ApplicationProperties.DATA_REQUEST_VIEW.getStringValue() + " WHERE "
-					+ ApplicationProperties.DATA_REQUEST_FIELD_STATUS.getStringValue() + " NOT IN (?, ?) AND "
-					+ ApplicationProperties.DATA_REQUEST_FIELD_DUE_DATE.getStringValue() + " < SYSDATE";
+	private static final String QUERY_REPORT_5_OVERDUE_COUNT = "SELECT COUNT(*) FROM "
+			+ ApplicationProperties.DATA_REQUEST_VIEW.getStringValue() + " WHERE "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_STATUS.getStringValue() + " NOT IN (?, ?) AND "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_DUE_DATE.getStringValue() + " < SYSDATE";
 
 	public static DataLayer getInstance() {
 		DataLayer dl = new DataLayer();
@@ -543,8 +531,8 @@ public class DataLayer {
 		try {
 			oracle_connection = OracleFactory.createConnection();
 
-			PreparedStatement prepared_statement =
-					oracle_connection.prepareStatement(QUERY_SELECT_DATA_REQUESTS_BY_CREATOR_COUNT);
+			PreparedStatement prepared_statement = oracle_connection
+					.prepareStatement(QUERY_SELECT_DATA_REQUESTS_BY_CREATOR_COUNT);
 			prepared_statement.setString(1, creator);
 
 			result_set = prepared_statement.executeQuery();
@@ -641,8 +629,8 @@ public class DataLayer {
 		try {
 			oracle_connection = OracleFactory.createConnection();
 
-			PreparedStatement prepared_statement =
-					oracle_connection.prepareStatement(QUERY_SELECT_DATA_REQUESTS_BY_STATUS_COUNT);
+			PreparedStatement prepared_statement = oracle_connection
+					.prepareStatement(QUERY_SELECT_DATA_REQUESTS_BY_STATUS_COUNT);
 			prepared_statement.setString(1, status);
 
 			result_set = prepared_statement.executeQuery();
@@ -740,8 +728,8 @@ public class DataLayer {
 		try {
 			oracle_connection = OracleFactory.createConnection();
 
-			PreparedStatement prepared_statement =
-					oracle_connection.prepareStatement(QUERY_SELECT_DATA_REQUESTS_BY_ASSOCIATION_COUNT);
+			PreparedStatement prepared_statement = oracle_connection
+					.prepareStatement(QUERY_SELECT_DATA_REQUESTS_BY_ASSOCIATION_COUNT);
 			prepared_statement.setString(1, user);
 
 			result_set = prepared_statement.executeQuery();
@@ -836,8 +824,8 @@ public class DataLayer {
 		try {
 			oracle_connection = OracleFactory.createConnection();
 
-			PreparedStatement prepared_statement =
-					oracle_connection.prepareStatement(QUERY_SELECT_ALL_DATA_REQUESTS_COUNT);
+			PreparedStatement prepared_statement = oracle_connection
+					.prepareStatement(QUERY_SELECT_ALL_DATA_REQUESTS_COUNT);
 
 			result_set = prepared_statement.executeQuery();
 
@@ -1006,10 +994,11 @@ public class DataLayer {
 			}
 			if (request_variables
 					.get(ApplicationProperties.DATA_REQUEST_FIELD_ANTICIPATED_DUE_DATE.getStringValue()) != null) {
-				prepared_statement.setDate(37,
-						new java.sql.Date(((Date) request_variables
-								.get(ApplicationProperties.DATA_REQUEST_FIELD_ANTICIPATED_DUE_DATE.getStringValue()))
-										.getTime()));
+				prepared_statement
+						.setDate(37,
+								new java.sql.Date(((Date) request_variables.get(
+										ApplicationProperties.DATA_REQUEST_FIELD_ANTICIPATED_DUE_DATE.getStringValue()))
+												.getTime()));
 			} else {
 				prepared_statement.setDate(37, null);
 			}
@@ -1062,8 +1051,8 @@ public class DataLayer {
 		try {
 			oracle_connection = OracleFactory.createConnection();
 
-			PreparedStatement prepared_statement =
-					oracle_connection.prepareStatement(QUERY_SELECT_NEXT_DATA_REQUEST_ID);
+			PreparedStatement prepared_statement = oracle_connection
+					.prepareStatement(QUERY_SELECT_NEXT_DATA_REQUEST_ID);
 
 			result_set = prepared_statement.executeQuery();
 
@@ -1226,8 +1215,8 @@ public class DataLayer {
 		try {
 			oracle_connection = OracleFactory.createConnection();
 
-			PreparedStatement prepared_statement =
-					oracle_connection.prepareStatement(QUERY_SELECT_ATTACHMENT_BY_REQUEST_ID);
+			PreparedStatement prepared_statement = oracle_connection
+					.prepareStatement(QUERY_SELECT_ATTACHMENT_BY_REQUEST_ID);
 			prepared_statement.setString(1, request_id);
 
 			result_set = prepared_statement.executeQuery();
@@ -1314,8 +1303,8 @@ public class DataLayer {
 		try {
 			oracle_connection = OracleFactory.createConnection();
 
-			PreparedStatement prepared_statement =
-					oracle_connection.prepareStatement(QUERY_INSERT_ITERATION_ASSOCIATION);
+			PreparedStatement prepared_statement = oracle_connection
+					.prepareStatement(QUERY_INSERT_ITERATION_ASSOCIATION);
 
 			prepared_statement.setString(1, parent_id);
 			prepared_statement.setInt(2, iteration);
@@ -1410,8 +1399,8 @@ public class DataLayer {
 		try {
 			oracle_connection = OracleFactory.createConnection();
 
-			PreparedStatement prepared_statement =
-					oracle_connection.prepareStatement(QUERY_SELECT_DATA_REQUESTS_BY_DISPLAY_ID_COUNT);
+			PreparedStatement prepared_statement = oracle_connection
+					.prepareStatement(QUERY_SELECT_DATA_REQUESTS_BY_DISPLAY_ID_COUNT);
 			prepared_statement.setString(1, "%" + display_id + "%");
 
 			result_set = prepared_statement.executeQuery();
@@ -1649,8 +1638,8 @@ public class DataLayer {
 		try {
 			oracle_connection = OracleFactory.createConnection();
 
-			PreparedStatement prepared_statement =
-					oracle_connection.prepareStatement(QUERY_SELECT_DATA_REQUESTS_BY_KEYWORD_COUNT);
+			PreparedStatement prepared_statement = oracle_connection
+					.prepareStatement(QUERY_SELECT_DATA_REQUESTS_BY_KEYWORD_COUNT);
 			prepared_statement.setString(1, "%" + keyword + "%");
 			prepared_statement.setString(2, "%" + keyword + "%");
 
@@ -2074,7 +2063,8 @@ public class DataLayer {
 		request.setDateResolved(
 				result_set.getDate(ApplicationProperties.DATA_REQUEST_FIELD_DATE_RESOLVED.getStringValue()));
 		request.setCurrentTaskId(result_set.getString("CURRENT_TASK_ID"));
-		request.setCurrentTaskName(result_set.getString("CURRENT_TASK_NAME"));
+		request.setCurrentTaskName(result_set.getString("CURRENT_TASK_NAME") == null ? "Open as New Request"
+				: result_set.getString("CURRENT_TASK_NAME"));
 		request.setCurrentTaskFormKey(result_set.getString("CURRENT_TASK_FORM_KEY"));
 		request.setDisplayId(result_set.getInt("REQUEST_DISPLAY_ID"));
 		request.setAssignedValidator(

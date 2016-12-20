@@ -1,149 +1,113 @@
-<ui:composition xmlns:h="http://xmlns.jcp.org/jsf/html"
-    xmlns:f="http://xmlns.jcp.org/jsf/core"
-    xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
-    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
-    xmlns="http://www.w3.org/1999/xhtml">
-    
-    	<div id="header-wrapper">
-            <div class="grid">
-                <header class="col-1-1 mobile-col-1-1">
-                    <div class="col-8-12 mobile-col-1-1">
-                    	<h:outputText value="&#160;" />
-                    </div>
-                    <nav class="col-4-12 mobile-col-1-1">
-                    	<ul>
-                    		<li><a href="#">Logout</a></li>
-                    	</ul>
-                    </nav>
-                </header>
-            </div>
-        </div>
-        <div class="grid">
-            <header class="col-1-1 mobile-col-1-1">
-                <div class="col-1-1 mobile-col-1-1">
-                    <div id="fsa-logo" class="col-6-12 mobile-col-1-1">
-                    	<h:link outcome="#{userSession.homePage}">
-                        	<h:graphicImage name="images/logo.png" />
-                        </h:link>
-                    </div>
-                    <div id="site-logo" class="col-6-12 mobile-col-1-1">
-                    	<h:graphicImage name="images/drts_logo.png" />
-                    </div>
-                </div>
-            </header>
-        </div>
-        <div id="menu-wrapper">
-            <div class="grid">
-                <header class="col-1-1 mobile-col-1-1">
-                    <nav class="col-1-1 mobile-col-1-1" role="navigation">
-                            <ul id="top-menu">
-                                <li class="first menu-sec-1 #{(active == 1) ? 'active' : '' }">
-                                	<h:link outcome="#{userSession.homePage}">
-                                		<span>Home</span>
-                                	</h:link>
-                                </li>
-                                <h:panelGroup rendered="#{userSession.reporter eq false}">
-                                <li class="menu-sec-2 #{(active == 2) ? 'active' : '' }">
-                                    <a href="#">
-                                        <span>Data Requests</span>
-                                        <span class="arrow"></span>
-                                    </a>
-                                    <ul>
-                                    	<h:panelGroup rendered="#{userSession.allowedToCreateRequests}">
-	                                        <li>
-	                                        	<h:link outcome="/dataRequest/newRequest">
-	                                				<span>Create New Request</span>
-	                                			</h:link>
-	                                		</li>
-                                		</h:panelGroup>
-                                    	<h:panelGroup rendered="#{userSession.allowedToViewAllRequests}">
-	                                        <li>
-	                                        	<h:link outcome="/dataRequest/allRequests">
-	                                				<span>View All Requests</span>
-	                                			</h:link>
-	                                		</li>
-                                		</h:panelGroup>
-                                    </ul>
-                                </li>
-                                </h:panelGroup>
-                                <h:panelGroup rendered="#{userSession.reporter eq false}">
-	                                <li class="menu-sec-3 #{(active == 3) ? 'active' : '' }">
-	                                    <a href="#">
-	                                        <span>Search</span>
-	                                        <span class="arrow"></span>
-	                                    </a>
-	                                    <ul>
-	                                    	<li>
-	                                    		<h:link outcome="/search/searchRequests">
-	                                    			<span>Search Requests</span>
-	                                    		</h:link>
-	                                    	</li>
-	                                    </ul>
-	                                </li>
-                                </h:panelGroup>
-                                <li class="menu-sec-4 #{(active == 4) ? 'active' : '' }">
-                                	<h:link outcome="/reports/reports">
-                                		<span>Reports</span>
-                                		<span class="arrow"></span>
-	                               	</h:link>
-	                               	<ul>
-	                               		<li>
-	                               			<h:link outcome="/reports/requestFilter">
-	                                    		<span>Request Filter</span>
-	                                    	</h:link>
-	                               		</li>
-	                               		<li>
-	                               			<h:link outcome="/reports/openClosedReport">
-	                                    		<span>Open-Closed Requests by Day</span>
-	                                    	</h:link>
-	                                    </li>
-	                                    <li>
-	                                    	<h:link outcome="/reports/assignedSmeReport">
-	                                    		<span>Number of Requests Assigned to SME</span>
-	                                    	</h:link>
-	                                    </li>
-	                                    <li>
-	                                    	<h:link outcome="/reports/averageAgeReport">
-	                                    		<span>Average Age</span>
-	                                    	</h:link>
-	                                    </li>
-	                                    <li>
-	                                    	<h:link outcome="/reports/overdueRequestsReport">
-	                                    		<span>Overdue Requests</span>
-	                                    	</h:link>
-	                                    </li>
-	                             	</ul>
-	                             </li>
-                                <h:panelGroup rendered="#{userSession.admin}">
-	                                <li class="menu-sec-5 #{(active == 5) ? 'active' : '' }">
-	                                    <a href="#">
-	                                		<span>Administration</span>
-	                                        <span class="arrow"></span>
-	                                	</a>
-	                                	<ul>
-	                                    	<li>
-	                                    		<h:link outcome="/administration/userManagement">
-	                                    			<span>User Management</span>
-	                                    		</h:link>
-	                                    	</li>
-	                                    	<li>
-	                                    		<h:link outcome="/administration/createAccount">
-	                                    			<span>Create Account</span>
-	                                    		</h:link>
-	                                    	</li>
-	                                    	<li>
-	                                    		<h:link outcome="/administration/dataRequestWorkflow">
-	                                    			<span>Data Request Workflow</span>
-	                                    		</h:link>
-	                                    	</li>
-	                                    </ul>
-	                                </li>
-                                </h:panelGroup>
-                            </ul>
-                        </nav>
-                </header>
-            </div>
-        </div>
-        
+<ui:composition xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://xmlns.jcp.org/jsf/passthrough" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core" xmlns="http://www.w3.org/1999/xhtml">
+
+	<div id="header-wrapper">
+		<div class="grid">
+			<header class="col-1-1 mobile-col-1-1">
+				<div class="col-8-12 mobile-col-1-1">
+					<h:outputText value="&#160;" />
+				</div>
+				<nav class="col-4-12 mobile-col-1-1">
+					<ul>
+						<li><a href="#">Logout</a></li>
+					</ul>
+				</nav>
+			</header>
+		</div>
+	</div>
+	<div class="grid">
+		<header class="col-1-1 mobile-col-1-1">
+			<div class="col-1-1 mobile-col-1-1">
+				<div id="fsa-logo" class="col-6-12 mobile-col-1-1">
+					<h:link outcome="#{userSession.homePage}">
+						<h:graphicImage name="images/logo.png" />
+					</h:link>
+				</div>
+				<div id="site-logo" class="col-6-12 mobile-col-1-1">
+					<h:graphicImage name="images/drts_logo.png" />
+				</div>
+			</div>
+		</header>
+	</div>
+	<div id="menu-wrapper">
+		<h:form>
+			<div class="grid">
+				<header class="col-1-1 mobile-col-1-1">
+					<nav class="col-1-1 mobile-col-1-1" role="navigation">
+						<ul id="top-menu">
+							<li class="first menu-sec-1 #{(active == 1) ? 'active' : '' }"><h:link outcome="#{userSession.homePage}">
+									<span>Home</span>
+								</h:link></li>
+							<h:panelGroup rendered="#{userSession.reporter eq false}">
+								<li class="menu-sec-2 #{(active == 2) ? 'active' : '' }"><a href="#"> <span>Data Requests</span> <span
+										class="arrow"></span>
+								</a>
+									<ul>
+										<h:panelGroup rendered="#{userSession.allowedToCreateRequests}">
+											<li><h:commandLink action="#{userSession.createNewRequest}">
+													<span>Create New Request</span>
+												</h:commandLink></li>
+										</h:panelGroup>
+										<h:panelGroup rendered="#{userSession.allowedToViewAllRequests}">
+											<li><h:link outcome="/dataRequest/allRequests">
+													<span>View All Requests</span>
+												</h:link></li>
+										</h:panelGroup>
+									</ul></li>
+							</h:panelGroup>
+							<h:panelGroup rendered="#{userSession.reporter eq false}">
+								<li class="menu-sec-3 #{(active == 3) ? 'active' : '' }"><a href="#"> <span>Search</span> <span
+										class="arrow"></span>
+								</a>
+									<ul>
+										<li><h:link outcome="/search/searchRequests">
+												<span>Search Requests</span>
+											</h:link></li>
+									</ul></li>
+							</h:panelGroup>
+							<li class="menu-sec-4 #{(active == 4) ? 'active' : '' }"><h:link outcome="/reports/reports">
+									<span>Reports</span>
+									<span class="arrow"></span>
+								</h:link>
+								<ul>
+									<li><h:link outcome="/reports/requestFilter">
+											<span>Request Filter</span>
+										</h:link></li>
+									<li><h:link outcome="/reports/openClosedReport">
+											<span>Open-Closed Requests by Day</span>
+										</h:link></li>
+									<li><h:link outcome="/reports/assignedSmeReport">
+											<span>Number of Requests Assigned to SME</span>
+										</h:link></li>
+									<li><h:link outcome="/reports/averageAgeReport">
+											<span>Average Age</span>
+										</h:link></li>
+									<li><h:link outcome="/reports/overdueRequestsReport">
+											<span>Overdue Requests</span>
+										</h:link></li>
+								</ul></li>
+							<h:panelGroup rendered="#{userSession.admin}">
+								<li class="menu-sec-5 #{(active == 5) ? 'active' : '' }"><a href="#"> <span>Administration</span> <span
+										class="arrow"></span>
+								</a>
+									<ul>
+										<li><h:link outcome="/administration/userManagement">
+												<span>User Management</span>
+											</h:link></li>
+										<li><h:link outcome="/administration/createAccount">
+												<span>Create Account</span>
+											</h:link></li>
+										<li><h:link outcome="/administration/dataRequestWorkflow">
+												<span>Data Request Workflow</span>
+											</h:link></li>
+									</ul></li>
+							</h:panelGroup>
+						</ul>
+					</nav>
+				</header>
+			</div>
+		</h:form>
+	</div>
+
 </ui:composition>

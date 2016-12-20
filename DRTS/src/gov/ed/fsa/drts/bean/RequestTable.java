@@ -52,6 +52,10 @@ public class RequestTable extends PageUtil implements Serializable {
 	}
 
 	public String goToTask(DataRequest dataRequest) {
+		if (dataRequest.getCurrentTaskFormKey() == null) {
+			return goToOpenNew(dataRequest);
+		}
+
 		FacesContext.getCurrentInstance().getExternalContext().getFlash().put("drtsDataRequest", dataRequest);
 		FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("dataRequest", null);
 

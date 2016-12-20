@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="AimsDrtsService"
+	targetNamespace="http://drts.fsa.ed.gov/AimsDrtsService"
+	xmlns:tns="http://drts.fsa.ed.gov/AimsDrtsService" xmlns:n1="http://drts.fsa.ed.gov/AimsDrts"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+
+	<wsdl:types>
+		<xsd:schema targetNamespace="http://drts.fsa.ed.gov/AimsDrtsService"
+			elementFormDefault="qualified">
+			<xsd:import namespace="http://drts.fsa.ed.gov/AimsDrts"
+				schemaLocation="aimsDrts.xsd" />
+		</xsd:schema>
+	</wsdl:types>
+
+	<wsdl:message name="CreateUser">
+		<wsdl:part name="CreateUserRequest" element="n1:CreateUserRequest" />
+	</wsdl:message>
+	<wsdl:message name="CreateUserResponse">
+		<wsdl:part name="CreateUserResponse" element="n1:CreateUserResponse" />
+	</wsdl:message>
+
+	<wsdl:message name="DeleteUser">
+		<wsdl:part name="DeleteUserRequest" element="n1:DeleteUserRequest" />
+	</wsdl:message>
+	<wsdl:message name="AddUserResponse">
+		<wsdl:part name="DeleteUserResponse" element="n1:DeleteUserResponse" />
+	</wsdl:message>
+
+	<wsdl:portType name="AimsDrtsService">
+
+		<wsdl:operation name="CreateUser">
+			<wsdl:input message="tns:CreateUserRequest" />
+			<wsdl:output message="tns:CreateUserResponse" />
+		</wsdl:operation>
+
+		<wsdl:operation name="DeleteUser">
+			<wsdl:input message="tns:DeleteUserRequest" />
+			<wsdl:output message="tns:DeleteUserResponse" />
+		</wsdl:operation>
+
+	</wsdl:portType>
+
+	<wsdl:binding name="AimsDrtsServiceSOAP" type="tns:AimsDrtsService">
+		<soap:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+
+		<wsdl:operation name="UpdateNSLDS">
+			<soap:operation
+				soapAction="http://aims.fsa.ed.gov/AimsDrtsService/UpdateNSLDS" />
+			<wsdl:input>
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+
+	</wsdl:binding>
+
+	<wsdl:service name="AimsDrtsService">
+		<wsdl:port binding="tns:AimsDrtsServiceSOAP" name="AimsDrtsServiceSOAP">
+			<soap:address location="https://localhost/drts/AimsDrtssService" />
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>

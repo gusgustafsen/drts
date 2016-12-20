@@ -6,6 +6,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
 
 import org.activiti.engine.identity.User;
 import org.apache.log4j.Logger;
@@ -198,5 +199,10 @@ public class UserSession implements Serializable {
 		}
 
 		return subject.isPermitted(SecurityPermissions.ACCOUNTS_EDIT.getStringValue());
+	}
+
+	public String createNewRequest() {
+		FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("dataRequest", null);
+		return "/dataRequest/newRequest";
 	}
 }

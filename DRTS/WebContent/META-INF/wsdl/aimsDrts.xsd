@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://drts.fsa.ed.gov/AimsDrtsService"
+	xmlns="http://drts.fsa.ed.gov/AimsDrtsService" elementFormDefault="qualified">
+
+
+
+	<xsd:element name="CreateAccountRequest" type="CreateAccountRequestType"/>
+	<xsd:element name="CreateAccountResponse" type="CreateAccountResponseType"/>
+
+
+	<!-- AIMS Create Account -->
+
+	<xsd:complexType name="CreateAccountRequestType">
+		<xsd:sequence>
+			<xsd:element name="UserId" nillable="false" type="UserIdType"/>
+			<xsd:element name="FirstName" type="FirstNameType" />
+			<xsd:element name="LastName" type="LastNameType" />
+			<xsd:element name="EmailAddress" type="EmailAddressType" />
+			<xsd:element name="Group" type="GroupType"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="CreateAccountResponseType">
+		<xsd:complexContent>
+			<xsd:extension base="CommonResponseType"/>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:element name="DeleteAccountRequest" type="DeleteAccountRequestType"/>
+	<xsd:element name="DeleteAccountResponse" type="DeleteAccountResponseType"/>
+
+
+	<!-- AIMS Delete Account -->
+
+	<xsd:complexType name="DeleteAccountRequestType">
+		<xsd:sequence>
+			<xsd:element name="UserId" nillable="false" type="UserIdType"/>
+			<xsd:element name="FirstName" type="FirstNameType" />
+			<xsd:element name="LastName" type="LastNameType" />
+			<xsd:element name="EmailAddress" type="EmailAddressType" />
+			<xsd:element name="Group" type="GroupType"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="DeleteAccountResponseType">
+		<xsd:complexContent>
+			<xsd:extension base="CommonResponseType"/>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+
+
+	<xsd:complexType name="CommonResponseType">
+		<xsd:sequence>
+			<xsd:element name="StatusCode" type="StatusCodeType"/>
+			<xsd:element name="ReasonCode" type="ReasonCodeType" minOccurs="0"/>
+			<xsd:element name="ReasonCodeDescription" type="ReasonCodeDescriptionType" minOccurs="0"
+			/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+
+	<!-- simpleType Definitions -->
+
+	<xsd:simpleType name="UserIdType">
+		<xsd:restriction base="xsd:string">
+			<xsd:minLength value="1"/>
+			<xsd:maxLength value="125"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:simpleType name="FirstNameType">
+		<xsd:restriction base="xsd:string">
+			<xsd:minLength value="1"/>
+			<xsd:maxLength value="128"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:simpleType name="LastNameType">
+		<xsd:restriction base="xsd:string">
+			<xsd:minLength value="1"/>
+			<xsd:maxLength value="128"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:simpleType name="GroupType">
+		<xsd:restriction base="xsd:string">
+			<xsd:minLength value="1"/>
+			<xsd:maxLength value="128"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:simpleType name="EmailAddressType">
+		<xsd:restriction base="xsd:string">
+			<xsd:minLength value="1"/>
+			<xsd:maxLength value="128"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:simpleType name="ReasonCodeDescriptionType">
+		<xsd:restriction base="xsd:string">
+			<xsd:maxLength value="500"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:simpleType name="ReasonCodeType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="FAILURE_USERID_NOT_FOUND"/>
+			<xsd:enumeration value="GENERAL_ERROR"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:simpleType name="StatusCodeType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="SUCCESS"/>
+			<xsd:enumeration value="FAIL"/>
+			<xsd:enumeration value="ERROR"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+
+</xsd:schema>
