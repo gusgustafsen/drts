@@ -1,15 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-	targetNamespace="http://drts.fsa.ed.gov/AimsDrtsService"
-	xmlns="http://drts.fsa.ed.gov/AimsDrtsService" elementFormDefault="qualified">
-
+	targetNamespace="http://drts.fsa.ed.gov/AimsDrts"
+	xmlns="http://drts.fsa.ed.gov/AimsDrts" elementFormDefault="qualified">
 
 
 	<xsd:element name="CreateAccountRequest" type="CreateAccountRequestType"/>
 	<xsd:element name="CreateAccountResponse" type="CreateAccountResponseType"/>
-
-
-	<!-- AIMS Create Account -->
 
 	<xsd:complexType name="CreateAccountRequestType">
 		<xsd:sequence>
@@ -31,15 +27,9 @@
 	<xsd:element name="DeleteAccountResponse" type="DeleteAccountResponseType"/>
 
 
-	<!-- AIMS Delete Account -->
-
 	<xsd:complexType name="DeleteAccountRequestType">
 		<xsd:sequence>
 			<xsd:element name="UserId" nillable="false" type="UserIdType"/>
-			<xsd:element name="FirstName" type="FirstNameType" />
-			<xsd:element name="LastName" type="LastNameType" />
-			<xsd:element name="EmailAddress" type="EmailAddressType" />
-			<xsd:element name="Group" type="GroupType"/>
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -48,8 +38,6 @@
 			<xsd:extension base="CommonResponseType"/>
 		</xsd:complexContent>
 	</xsd:complexType>
-
-
 
 	<xsd:complexType name="CommonResponseType">
 		<xsd:sequence>

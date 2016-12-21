@@ -13,30 +13,30 @@
 		</xsd:schema>
 	</wsdl:types>
 
-	<wsdl:message name="CreateUser">
-		<wsdl:part name="CreateUserRequest" element="n1:CreateUserRequest" />
+	<wsdl:message name="CreateAccountRequest">
+		<wsdl:part name="CreateAccountRequest" element="n1:CreateAccountRequest" />
 	</wsdl:message>
-	<wsdl:message name="CreateUserResponse">
-		<wsdl:part name="CreateUserResponse" element="n1:CreateUserResponse" />
+	<wsdl:message name="CreateAccountResponse">
+		<wsdl:part name="CreateAccountResponse" element="n1:CreateAccountResponse" />
 	</wsdl:message>
 
-	<wsdl:message name="DeleteUser">
-		<wsdl:part name="DeleteUserRequest" element="n1:DeleteUserRequest" />
+	<wsdl:message name="DeleteAccountRequest">
+		<wsdl:part name="DeleteAccountRequest" element="n1:DeleteAccountRequest" />
 	</wsdl:message>
-	<wsdl:message name="AddUserResponse">
-		<wsdl:part name="DeleteUserResponse" element="n1:DeleteUserResponse" />
+	<wsdl:message name="DeleteAccountResponse">
+		<wsdl:part name="DeleteAccountResponse" element="n1:DeleteAccountResponse" />
 	</wsdl:message>
 
 	<wsdl:portType name="AimsDrtsService">
 
-		<wsdl:operation name="CreateUser">
-			<wsdl:input message="tns:CreateUserRequest" />
-			<wsdl:output message="tns:CreateUserResponse" />
+		<wsdl:operation name="CreateAccount">
+			<wsdl:input message="tns:CreateAccountRequest" />
+			<wsdl:output message="tns:CreateAccountResponse" />
 		</wsdl:operation>
 
-		<wsdl:operation name="DeleteUser">
-			<wsdl:input message="tns:DeleteUserRequest" />
-			<wsdl:output message="tns:DeleteUserResponse" />
+		<wsdl:operation name="DeleteAccount">
+			<wsdl:input message="tns:DeleteAccountRequest" />
+			<wsdl:output message="tns:DeleteAccountResponse" />
 		</wsdl:operation>
 
 	</wsdl:portType>
@@ -45,9 +45,20 @@
 		<soap:binding style="document"
 			transport="http://schemas.xmlsoap.org/soap/http" />
 
-		<wsdl:operation name="UpdateNSLDS">
+		<wsdl:operation name="CreateAccount">
 			<soap:operation
-				soapAction="http://aims.fsa.ed.gov/AimsDrtsService/UpdateNSLDS" />
+				soapAction="http://aims.fsa.ed.gov/AimsDrtsService/CreateAccount" />
+			<wsdl:input>
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+
+		<wsdl:operation name="DeleteAccount">
+			<soap:operation
+				soapAction="http://aims.fsa.ed.gov/AimsDrtsService/DeleteAccount" />
 			<wsdl:input>
 				<soap:body use="literal" />
 			</wsdl:input>
