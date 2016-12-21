@@ -1,0 +1,130 @@
+<!-- Use this file to deploy some handlers/chains and services      -->
+<!-- Two ways to do this:                                           -->
+<!--   java org.apache.axis.client.AdminClient deploy.wsdd          -->
+<!--      after the axis server is running                          -->
+<!-- or                                                             -->
+<!--   java org.apache.axis.utils.Admin client|server deploy.wsdd   -->
+<!--      from the same directory that the Axis engine runs         -->
+
+<deployment
+    xmlns="http://xml.apache.org/axis/wsdd/"
+    xmlns:java="http://xml.apache.org/axis/wsdd/providers/java">
+
+  <!-- Services from AimsDrtsService WSDL service -->
+
+  <service name="AimsDrtsServiceSOAP" provider="java:RPC" style="document" use="literal">
+      <parameter name="wsdlTargetNamespace" value="http://drts.fsa.ed.gov/AimsDrtsService"/>
+      <parameter name="wsdlServiceElement" value="AimsDrtsService"/>
+      <parameter name="schemaQualified" value="http://drts.fsa.ed.gov/AimsDrts,http://drts.fsa.ed.gov/AimsDrtsService"/>
+      <parameter name="wsdlServicePort" value="AimsDrtsServiceSOAP"/>
+      <parameter name="className" value="gov.ed.fsa.drts.AimsDrtsService.AimsDrtsServiceSOAPSkeleton"/>
+      <parameter name="wsdlPortType" value="AimsDrtsService"/>
+      <parameter name="typeMappingVersion" value="1.2"/>
+      <parameter name="allowedMethods" value="*"/>
+
+      <typeMapping
+        xmlns:ns="http://drts.fsa.ed.gov/AimsDrts"
+        qname="ns:CommonResponseType"
+        type="java:gov.ed.fsa.drts.AimsDrts.CommonResponseType"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://drts.fsa.ed.gov/AimsDrts"
+        qname="ns:LastNameType"
+        type="java:java.lang.String"
+        serializer="org.apache.axis.encoding.ser.SimpleSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.SimpleDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://drts.fsa.ed.gov/AimsDrts"
+        qname="ns:CreateAccountResponseType"
+        type="java:gov.ed.fsa.drts.AimsDrts.CreateAccountResponseType"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://drts.fsa.ed.gov/AimsDrts"
+        qname="ns:ReasonCodeType"
+        type="java:gov.ed.fsa.drts.AimsDrts.ReasonCodeType"
+        serializer="org.apache.axis.encoding.ser.EnumSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.EnumDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://drts.fsa.ed.gov/AimsDrts"
+        qname="ns:FirstNameType"
+        type="java:java.lang.String"
+        serializer="org.apache.axis.encoding.ser.SimpleSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.SimpleDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://drts.fsa.ed.gov/AimsDrts"
+        qname="ns:ReasonCodeDescriptionType"
+        type="java:java.lang.String"
+        serializer="org.apache.axis.encoding.ser.SimpleSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.SimpleDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://drts.fsa.ed.gov/AimsDrts"
+        qname="ns:EmailAddressType"
+        type="java:java.lang.String"
+        serializer="org.apache.axis.encoding.ser.SimpleSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.SimpleDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://drts.fsa.ed.gov/AimsDrts"
+        qname="ns:UserIdType"
+        type="java:java.lang.String"
+        serializer="org.apache.axis.encoding.ser.SimpleSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.SimpleDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://drts.fsa.ed.gov/AimsDrts"
+        qname="ns:StatusCodeType"
+        type="java:gov.ed.fsa.drts.AimsDrts.StatusCodeType"
+        serializer="org.apache.axis.encoding.ser.EnumSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.EnumDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://drts.fsa.ed.gov/AimsDrts"
+        qname="ns:CreateAccountRequestType"
+        type="java:gov.ed.fsa.drts.AimsDrts.CreateAccountRequestType"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://drts.fsa.ed.gov/AimsDrts"
+        qname="ns:DeleteAccountResponseType"
+        type="java:gov.ed.fsa.drts.AimsDrts.DeleteAccountResponseType"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://drts.fsa.ed.gov/AimsDrts"
+        qname="ns:GroupType"
+        type="java:java.lang.String"
+        serializer="org.apache.axis.encoding.ser.SimpleSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.SimpleDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://drts.fsa.ed.gov/AimsDrts"
+        qname="ns:DeleteAccountRequestType"
+        type="java:gov.ed.fsa.drts.AimsDrts.DeleteAccountRequestType"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+  </service>
+</deployment>
