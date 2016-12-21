@@ -518,7 +518,7 @@ public class DataRequestBean extends PageUtil implements Serializable {
 		}
 		FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("requestTable", null);
 
-		return (redirectPage == null ? userSession.getHomePage() : redirectPage) + "?faces-redirect=true";
+		return redirectPage == null ? userSession.getHomePageRedirect() : (redirectPage + "?faces-redirect=true");
 	}
 
 	/**

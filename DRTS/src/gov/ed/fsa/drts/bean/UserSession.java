@@ -50,6 +50,7 @@ public class UserSession implements Serializable {
 	}
 
 	public String getHomePageRedirect() {
+		FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("requestTable", null);
 		return getHomePage() + "?faces-redirect=true";
 	}
 
