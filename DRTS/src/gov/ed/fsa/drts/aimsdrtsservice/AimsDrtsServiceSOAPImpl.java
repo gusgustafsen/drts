@@ -3,6 +3,9 @@ package gov.ed.fsa.drts.aimsdrtsservice;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.activiti.engine.IdentityService;
+import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.ProcessEngines;
 import org.apache.log4j.Logger;
 
 import gov.ed.fsa.drts.aimsdrts.CreateAccountRequestType;
@@ -62,7 +65,19 @@ public class AimsDrtsServiceSOAPImpl {
 
 	public DeleteAccountResponseType deleteAccount(DeleteAccountRequestType deleteAccountRequest) {
 		DeleteAccountResponseType response = new DeleteAccountResponseType();
-		response.setStatusCode(StatusCodeType.SUCCESS);
+
+		ProcessEngine process_engine = ProcessEngines.getDefaultProcessEngine();
+		IdentityService identity_service = process_engine.getIdentityService();
+		try {
+			identity_service.deleteUser(deleteAccountRequest.getUserId());
+			response.setStatusCode(StatusCodeType.SUCCESS);
+		} catch (RuntimeException e) {
+			response.setStatusCode(StatusCodeType.FAIL);
+			response.setReasonCode(ReasonCodeType.GENERAL_ERROR);
+			response.setReasonCodeDescription(e.toString());
+			logger.error("Error deleting user " + deleteAccountRequest.getUserId(), e);
+		}
+
 		return response;
 	}
 
