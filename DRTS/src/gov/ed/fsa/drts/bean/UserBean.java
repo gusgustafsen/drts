@@ -79,6 +79,24 @@ public class UserBean extends PageUtil implements Serializable {
 	 */
 	private String selected_group;
 
+	private boolean isFaces = true;
+
+	public UserBean() {
+		// default constructor
+	}
+
+	public UserBean(String id, String first_name, String last_name, String email, String selected_group) {
+		super();
+		this.id = id;
+		this.first_name = first_name;
+		this.last_name = last_name;
+		this.email = email;
+		this.selected_group = selected_group;
+		this.isFaces = false;
+
+		init();
+	}
+
 	/**
 	 * Bean constructor.
 	 */
@@ -87,14 +105,17 @@ public class UserBean extends PageUtil implements Serializable {
 		this.process_engine = ProcessEngines.getDefaultProcessEngine();
 		this.identity_service = this.process_engine.getIdentityService();
 
-		this.current_user = (User) FacesContext.getCurrentInstance().getExternalContext().getFlash().get("drtsUser");
+		if (isFaces) {
+			this.current_user = (User) FacesContext.getCurrentInstance().getExternalContext().getFlash()
+					.get("drtsUser");
 
-		if (this.current_user != null) {
-			logger.debug("Received: " + this.current_user.getId() + " from the AdministartorBean.");
+			if (this.current_user != null) {
+				logger.debug("Received: " + this.current_user.getId() + " from the AdministartorBean.");
 
-			loadData();
-		} else {
-			logger.error("Did not receive a user object from the AdministartorBean.");
+				loadData();
+			} else {
+				logger.error("Did not receive a user object from the AdministartorBean.");
+			}
 		}
 	}
 
@@ -128,7 +149,8 @@ public class UserBean extends PageUtil implements Serializable {
 	/**
 	 * Method that saves the current user.
 	 * 
-	 * @param new_user true if a new user is being created, false otherwise
+	 * @param new_user
+	 *            true if a new user is being created, false otherwise
 	 * 
 	 * @return Takes the administrator back to the User Management page.
 	 */
@@ -165,8 +187,9 @@ public class UserBean extends PageUtil implements Serializable {
 			}
 		}
 
-		// TODO check log for warnings
-		FacesContext.getCurrentInstance().getExternalContext().getFlash().put("drtsUser", null);
+		if (isFaces) {
+			FacesContext.getCurrentInstance().getExternalContext().getFlash().put("drtsUser", null);
+		}
 
 		return "/administration/userManagement.htm?faces-redirect=true";
 	}
@@ -214,7 +237,7 @@ public class UserBean extends PageUtil implements Serializable {
 	 */
 
 	public String getId() {
-		return(this.current_user == null ? this.id : this.current_user.getId());
+		return (this.current_user == null ? this.id : this.current_user.getId());
 	}
 
 	public void setId(String id) {
