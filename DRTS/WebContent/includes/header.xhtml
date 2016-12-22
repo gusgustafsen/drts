@@ -49,7 +49,7 @@
 													<span>Create New Request</span>
 												</h:commandLink></li>
 										</h:panelGroup>
-										<h:panelGroup rendered="#{userSession.allowedToViewAllRequests}">
+										<h:panelGroup rendered="false and #{userSession.allowedToViewAllRequests}">
 											<li><h:link outcome="/dataRequest/allRequests">
 													<span>View All Requests</span>
 												</h:link></li>
@@ -87,7 +87,7 @@
 											<span>Overdue Requests</span>
 										</h:link></li>
 								</ul></li>
-							<h:panelGroup rendered="#{userSession.admin}">
+							<h:panelGroup rendered="false and #{userSession.admin}">
 								<li class="menu-sec-5 #{(active == 5) ? 'active' : '' }"><a href="#"> <span>Administration</span> <span
 										class="arrow"></span>
 								</a>
