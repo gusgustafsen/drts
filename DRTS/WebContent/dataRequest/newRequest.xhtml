@@ -71,6 +71,12 @@
 											<f:converter converterId="defaultDateTimeConverter" />
 										</h:outputText>
 
+										<h:outputLabel for="source" value="Source" />
+										<h:selectOneMenu id="source" value="#{dataRequest.source}">
+											<f:selectItems value="#{dataRequest.sources}" />
+										</h:selectOneMenu>
+
+
 										<label>Original Request Date</label>
 										<h:inputText styleClass="datepicker"
 											value="#{dataRequest.originalRequestDate}">

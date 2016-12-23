@@ -58,8 +58,10 @@ public class DataLayer {
 			+ ApplicationProperties.DATA_REQUEST_FIELD_CLARIFICATIONS_ASSUMPTIONS.getStringValue() + ", "
 			+ ApplicationProperties.DATA_REQUEST_FIELD_GOLDEN_QUERY_LIBRARY.getStringValue() + ", "
 			+ ApplicationProperties.DATA_REQUEST_FIELD_BUSINESS_REQUIREMENTS.getStringValue() + ", "
-			+ ApplicationProperties.DATA_REQUEST_FIELD_TIER.getStringValue() + ") "
-			+ "VALUES (?, SYSDATE, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+			+ ApplicationProperties.DATA_REQUEST_FIELD_TIER.getStringValue() + ", "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_TRACKING_SUFFIX.getStringValue() + ") "
+			+ "VALUES (?, SYSDATE, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
+			+ "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 	private static final String QUERY_SELECT_DATA_REQUESTS_BY_GROUP_OR_ASSIGNEE = "SELECT * FROM(SELECT T2.*, rownum AS ROW_NUM FROM(SELECT T.* FROM(SELECT * FROM "
 			+ ApplicationProperties.DATA_REQUEST_VIEW.getStringValue() + ") T " + "WHERE "
@@ -272,7 +274,6 @@ public class DataLayer {
 			next_id = getNextDataRequestID();
 
 			PreparedStatement prepared_statement = oracle_connection.prepareStatement(QUERY_INSERT_DATA_REQUEST);
-
 			prepared_statement.setString(1,
 					(String) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_ID.getStringValue()));
 			prepared_statement.setString(2, process_instance_id);
@@ -342,6 +343,8 @@ public class DataLayer {
 					.get(ApplicationProperties.DATA_REQUEST_FIELD_BUSINESS_REQUIREMENTS.getStringValue()));
 			prepared_statement.setInt(29,
 					(Integer) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_TIER.getStringValue()));
+			prepared_statement.setString(30, (String) request_variables
+					.get(ApplicationProperties.DATA_REQUEST_FIELD_TRACKING_SUFFIX.getStringValue()));
 
 			sql_result = prepared_statement.executeUpdate();
 
@@ -2111,6 +2114,8 @@ public class DataLayer {
 		request.setSmeGroup(result_set.getString(ApplicationProperties.DATA_REQUEST_FIELD_SME_GROUP.getStringValue()));
 		request.setValidationSmeGroup(
 				result_set.getString(ApplicationProperties.DATA_REQUEST_FIELD_VALIDATION_SME_GROUP.getStringValue()));
+		request.setTrackingSuffix(
+				result_set.getString(ApplicationProperties.DATA_REQUEST_FIELD_TRACKING_SUFFIX.getStringValue()));
 
 		return request;
 	}

@@ -342,6 +342,8 @@ public enum ApplicationProperties {
 
 	DATA_REQUEST_FIELD_VALIDATION_SME_GROUP(true, false),
 
+	DATA_REQUEST_FIELD_TRACKING_SUFFIX(true, false),
+
 	DATA_REQUEST_WORKFLOW_REQUEST_REJECTED_BY_ADMIN(true, false),
 
 	DATA_REQUEST_WORKFLOW_REQUEST_REJECTED_BY_SME(true, false),
@@ -383,6 +385,8 @@ public enum ApplicationProperties {
 	DATA_REQUEST_STATUS_DISCARDED(true, false),
 
 	DATA_REQUEST_TYPES(true, true),
+
+	DATA_REQUEST_SOURCES(true, true),
 
 	DATA_REQUEST_SYSTEMS(true, true),
 
@@ -474,8 +478,8 @@ public enum ApplicationProperties {
 				final String value = (String) entry.getValue();
 
 				if (key.startsWith(SYSTEM_PROPERTIES_PREFIX) && !key.equals(SYSTEM_PROPERTIES_PREFIX)) {
-					final String key_to_use =
-							key.substring(SYSTEM_PROPERTIES_PREFIX.length()).toLowerCase().replace('.', '_');
+					final String key_to_use = key.substring(SYSTEM_PROPERTIES_PREFIX.length()).toLowerCase()
+							.replace('.', '_');
 					properties.setProperty(key_to_use, value);
 				}
 			}

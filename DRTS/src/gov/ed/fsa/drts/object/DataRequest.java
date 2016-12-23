@@ -61,6 +61,7 @@ public class DataRequest {
 	private String sme_group = null;
 	private String validation_sme_group = null;
 	private String dataRequestCopy = null;
+	private String trackingSuffix = null;
 
 	private int display_id = 1;
 
@@ -304,7 +305,7 @@ public class DataRequest {
 
 		int year = cal.get(Calendar.YEAR);
 
-		result += (year % 100) + "-" + this.display_id + "-D";
+		result += (year % 100) + "-" + this.display_id + "-" + (trackingSuffix == null ? "D" : "F");
 
 		return result;
 	}
@@ -535,5 +536,13 @@ public class DataRequest {
 
 	public void setDataRequestCopy(String dataRequestCopy) {
 		this.dataRequestCopy = dataRequestCopy;
+	}
+
+	public String getTrackingSuffix() {
+		return trackingSuffix;
+	}
+
+	public void setTrackingSuffix(String trackingSuffix) {
+		this.trackingSuffix = trackingSuffix;
 	}
 }
