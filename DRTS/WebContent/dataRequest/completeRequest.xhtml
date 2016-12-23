@@ -61,14 +61,14 @@
 										<li><a href="#comments">Comments</a></li>
 									</ul>
 									<div id="general">
-										<h:outputLabel value="ID" />
-										<h:outputText styleClass="form-text" value="#{dataRequest.displayId}" />
+										<h:outputLabel for="id" value="ID" />
+										<h:outputText id="id" styleClass="form-text" value="#{dataRequest.displayId}" />
 
-										<h:outputLabel value="Iteration" />
-										<h:outputText styleClass="form-text" value="#{dataRequest.iteration}" />
+										<h:outputLabel for="iteration" value="Iteration" />
+										<h:outputText id="iteration" styleClass="form-text" value="#{dataRequest.iteration}" />
 
-										<h:outputLabel value="Status" />
-										<h:outputText styleClass="form-text" value="#{dataRequest.status}" />
+										<h:outputLabel for="status" value="Status" />
+										<h:outputText id="status" styleClass="form-text" value="#{dataRequest.status}" />
 
 										<label>Creation Date</label>
 										<h:outputText styleClass="form-text" value="#{dataRequest.createdDateTime}">
@@ -80,28 +80,28 @@
 											<f:converter converterId="defaultDateConverter" />
 										</h:inputText>
 
-										<h:outputLabel value="Type" />
-										<h:selectOneMenu value="#{dataRequest.type}">
+										<h:outputLabel for="type" value="Type" />
+										<h:selectOneMenu id="type" value="#{dataRequest.type}">
 											<f:selectItems value="#{dataRequest.types}" />
 										</h:selectOneMenu>
 
-										<h:outputLabel value="System" />
-										<h:selectOneMenu value="#{dataRequest.system}">
+										<h:outputLabel for="system" value="System" />
+										<h:selectOneMenu id="system" value="#{dataRequest.system}">
 											<f:selectItems value="#{dataRequest.systems}" />
 										</h:selectOneMenu>
 
-										<h:outputLabel value="Requested Due Date" />
-										<h:inputText styleClass="datepicker" value="#{dataRequest.dueDate}">
+										<h:outputLabel for="requestedDueDate" value="Requested Due Date" />
+										<h:inputText id="requestedDueDate" styleClass="datepicker" value="#{dataRequest.dueDate}">
 											<f:converter converterId="defaultDateConverter" />
 										</h:inputText>
 
-										<h:outputLabel value="Tier" />
-										<h:selectOneMenu value="#{dataRequest.tier}">
+										<h:outputLabel for="tier" value="Tier" />
+										<h:selectOneMenu id="tier" value="#{dataRequest.tier}">
 											<f:selectItems value="#{dataRequest.tiers}" />
 										</h:selectOneMenu>
 
-										<h:outputLabel value="Delay Reason" />
-										<h:selectOneMenu value="#{dataRequest.delayReason}">
+										<h:outputLabel for="delayReason" value="Delay Reason" />
+										<h:selectOneMenu id="delayReason" value="#{dataRequest.delayReason}">
 											<f:selectItems value="#{dataRequest.delayReasons}" />
 										</h:selectOneMenu>
 
@@ -120,91 +120,99 @@
 											<f:converter converterId="defaultDateConverter" />
 										</h:inputText>
 
-										<h:outputLabel value="Report Type" />
-										<h:selectOneMenu value="#{dataRequest.reportType}">
+										<h:outputLabel for="reportType" value="Report Type" />
+										<h:selectOneMenu id="reportType" value="#{dataRequest.reportType}">
 											<f:selectItems value="#{dataRequest.reportTypes}" />
 										</h:selectOneMenu>
 
-										<h:outputLabel value="Urgency Flag" />
-										<h:selectBooleanCheckbox value="#{dataRequest.urgent}" />
+										<h:outputLabel for="urgencyFlag" value="Urgency Flag" />
+										<h:selectBooleanCheckbox id="urgencyFlag" value="#{dataRequest.urgent}" />
 
-										<h:outputLabel value="PII Flag" />
-										<h:selectBooleanCheckbox value="#{dataRequest.pii}" />
+										<h:outputLabel for="piiFlag" value="PII Flag" />
+										<h:selectBooleanCheckbox id="piiFlag" value="#{dataRequest.pii}" />
 
-										<h:outputLabel value="Query/Report Name" />
-										<h:inputText value="#{dataRequest.queryReportName}" />
+										<h:outputLabel for="queryReportName" value="Query/Report Name" />
+										<h:inputText id="queryReportName" value="#{dataRequest.queryReportName}" />
 
-										<h:outputLabel value="Related Requests" />
-										<h:inputTextarea value="#{dataRequest.relatedRequests}" />
+										<h:outputLabel for="relatedRequests" value="Related Requests" />
+										<h:inputTextarea id="relatedRequests" value="#{dataRequest.relatedRequests}" />
 
-										<h:outputLabel value="Topic/Keywords" />
-										<h:inputTextarea value="#{dataRequest.topicKeywords}" />
+										<h:outputLabel for="topicKeywords" value="Topic/Keywords" />
+										<h:inputTextarea id="topicKeywords" value="#{dataRequest.topicKeywords}" />
 
-										<h:outputLabel value="Description" />
-										<h:inputTextarea value="#{dataRequest.description}" />
+										<h:outputLabel for="description" value="Description" />
+										<h:inputTextarea id="description" value="#{dataRequest.description}" />
 
-										<h:outputLabel value="Purpose" />
-										<h:inputTextarea value="#{dataRequest.purpose}" />
+										<h:outputLabel for="purpose" value="Purpose" />
+										<h:inputTextarea id="purpose" value="#{dataRequest.purpose}" />
 
-										<h:outputLabel value="Special Considerations/Issues" />
-										<h:inputTextarea value="#{dataRequest.specialConsiderationsIssues}" />
+										<h:outputLabel for="issues" value="Special Considerations/Issues" />
+										<h:inputTextarea id="issues" value="#{dataRequest.specialConsiderationsIssues}" />
 
-										<h:outputLabel value="Clarifications/Assumptions" />
-										<h:inputTextarea value="#{dataRequest.clarificationsAssumptions}" />
+										<h:outputLabel for="assumptions" value="Clarifications/Assumptions" />
+										<h:inputTextarea id="assumptions" value="#{dataRequest.clarificationsAssumptions}" />
 
-										<h:outputLabel value="Golden Query Library" />
-										<h:inputTextarea value="#{dataRequest.goldenQueryLibrary}" />
+										<h:outputLabel for="goldenQueryLibrary" value="Golden Query Library" />
+										<h:inputTextarea id="goldenQueryLibrary" value="#{dataRequest.goldenQueryLibrary}" />
 
-										<h:outputLabel value="Business Requirements" />
-										<h:inputTextarea value="#{dataRequest.businessRequirements}" />
+										<h:outputLabel for="businessRequirements" value="Business Requirements" />
+										<h:inputTextarea id="businessRequirements" value="#{dataRequest.businessRequirements}" />
 
-										<h:outputLabel value="Detailed Steps" />
-										<h:inputTextarea value="#{dataRequest.detailedSteps}" />
+										<h:outputLabel for="detailedSteps" value="Detailed Steps" />
+										<h:inputTextarea id="detailedSteps" value="#{dataRequest.detailedSteps}" />
 									</div>
 									<div id="requestor">
 										<p>Information, below, is about the person who is requesting the data.</p>
 
-										<h:outputLabel value="Requestor" />
-										<h:outputText styleClass="form-text" value="#{dataRequest.requestorName}" />
+										
+										<h:outputLabel for="requestor" value="Requestor" />
+										<h:inputText id="requestor"
+											value="#{dataRequest.requestorName}" />
 
-										<h:outputLabel value="Requestor Organization" />
-										<h:outputText styleClass="form-text" value="#{dataRequest.requestorOrganization}" />
+										<h:outputLabel for="requestorOrganization"
+											value="Requestor Organization" />
+										<h:inputText id="requestorOrganization"
+											value="#{dataRequest.requestorOrganization}" />
 
-										<h:outputLabel value="Requestor Phone" />
-										<h:outputText styleClass="form-text" value="#{dataRequest.requestorPhone}" />
+										<h:outputLabel for="requestorPhone" value="Requestor Phone" />
+										<h:inputText id="requestorPhone"
+											value="#{dataRequest.requestorPhone}" />
 
-										<h:outputLabel value="Requestor Email" />
-										<h:outputText styleClass="form-text" value="#{dataRequest.requestorEmail}" />
+										<h:outputLabel for="requestorEmail" value="Requestor Email" />
+										<h:inputText id="requestorEmail"
+											value="#{dataRequest.requestorEmail}" />
 									</div>
 									<div id="receiver">
 										<p>Information, below, is about the person who will receive the requested data.</p>
 
-										<h:outputLabel value="Receiver" />
-										<h:outputText styleClass="form-text" value="#{dataRequest.receiverName}" />
+										
+										<h:outputLabel for="receiver" value="Receiver" />
+										<h:inputText id="receiver" value="#{dataRequest.receiverName}" />
 
-										<h:outputLabel value="Receiver Email" />
-										<h:outputText styleClass="form-text" value="#{dataRequest.receiverEmail}" />
+										<h:outputLabel for="receiverEmail" value="Receiver Email" />
+										<h:inputText id="receiverEmail"
+											value="#{dataRequest.receiverEmail}" />
 									</div>
 									<h:panelGroup rendered="#{userSession.admin}">
 										<div id="assignment">
-											<h:outputLabel value="SME To Resolve The Request" />
-											<h:selectOneMenu value="#{dataRequest.assignedSme}">
+											<h:outputLabel for="sme" value="SME To Resolve The Request" />
+											<h:selectOneMenu id="sme" value="#{dataRequest.assignedSme}">
 												<f:selectItems value="#{dataRequest.smes}" />
 											</h:selectOneMenu>
 										</div>
 									</h:panelGroup>
 									<h:panelGroup rendered="#{userSession.admin}">
 										<div id="validation">
-											<h:outputLabel value="SME To Validate The Request" />
-											<h:selectOneMenu value="#{dataRequest.assignedValidator}">
+											<h:outputLabel for="smeValidator" value="SME To Validate The Request" />
+											<h:selectOneMenu id="smeValidator" value="#{dataRequest.assignedValidator}">
 												<f:selectItems value="#{dataRequest.smes}" />
 											</h:selectOneMenu>
 
-											<h:outputLabel value="Validation" />
-											<h:inputTextarea value="#{dataRequest.validationDescription}" />
+											<h:outputLabel for="validation" value="Validation" />
+											<h:inputTextarea id="validation" value="#{dataRequest.validationDescription}" />
 
-											<h:outputLabel value="Validation Result" />
-											<h:inputTextarea value="#{dataRequest.validationResult}" />
+											<h:outputLabel for="validationResult" value="Validation Result" />
+											<h:inputTextarea id="validationResult" value="#{dataRequest.validationResult}" />
 										</div>
 									</h:panelGroup>
 									<div id="attachments">
@@ -228,14 +236,14 @@
 										</h:panelGroup>
 									</div>
 									<div id="comments">
-										<h:outputLabel value="Add Comments" />
-										<h:inputTextarea value="#{dataRequest.newComments}" />
+										<h:outputLabel for="comments" value="Add Comments" />
+										<h:inputTextarea id="comments" value="#{dataRequest.newComments}" />
 
-										<h:outputLabel value="Comments" />
+										<h:outputLabel for="comments2" value="Comments" />
 										<h:panelGroup rendered="#{empty dataRequest.comments}">
 											<p>There are no comments.</p>
 										</h:panelGroup>
-										<h:outputText value="#{dataRequest.comments}" escape="false" />
+										<h:outputText ="comments2" value="#{dataRequest.comments}" escape="false" />
 									</div>
 								</div>
 

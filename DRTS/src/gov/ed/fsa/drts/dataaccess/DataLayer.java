@@ -1676,7 +1676,6 @@ public class DataLayer {
 		return count;
 	}
 
-	// TODO redo/optimize
 	public List<DataRequest> report1(String display_id, String keyword, LinkedHashMap<String, String> search_parameters,
 			String requested_due_date_from, String requested_due_date_to, String resolved_date_from,
 			String resolved_date_to, String updated_date_from, String updated_date_to, int first_row, int rows_per_page,
