@@ -9,62 +9,52 @@ import java.util.TimeZone;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
-import javax.faces.convert.DateTimeConverter;
 import javax.faces.convert.ConverterException;
+import javax.faces.convert.DateTimeConverter;
 import javax.faces.convert.FacesConverter;
 
 import org.apache.log4j.Logger;
 
-@FacesConverter(value="defaultDateTimeConverter")
+@FacesConverter(value = "defaultDateTimeConverter")
 public class DefaultDateTimeConverter extends DateTimeConverter {
 
 	private List<String> date_formats = ApplicationProperties.DATE_TIME_FORMATS.getListValue();
-	
+
 	private static final Logger logger = Logger.getLogger(DefaultDateTimeConverter.class);
-	
-	public DefaultDateTimeConverter()
-	{
+
+	public DefaultDateTimeConverter() {
 		setDateStyle("full");
-        setType("both");
-        setTimeZone(TimeZone.getTimeZone("America/New_York"));
-    }
-	
+		setType("both");
+		setTimeZone(TimeZone.getTimeZone("America/New_York"));
+	}
+
 	@Override
-    public Object getAsObject(FacesContext context, UIComponent component, String value) 
-    	throws ConverterException
-	{
-        Date date = null;
-        
-        for(String pattern : date_formats)
-        {
-            SimpleDateFormat sdf = new SimpleDateFormat(pattern);
-            sdf.setLenient(false);
-            
-            logger.info("trying pattern: " + pattern);
-            
-            try
-            {
-                date = sdf.parse(value);
-                break;
-            }
-            catch(ParseException ignore)
-            {
-                // ignore
-            }
-        }
+	public Object getAsObject(FacesContext context, UIComponent component, String value) throws ConverterException {
+		Date date = null;
 
-        if (date == null)
-        {
-            throw new ConverterException(new FacesMessage("Invalid date format, must match either of " + date_formats));
-        }
+		for (String pattern : date_formats) {
+			SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+			sdf.setLenient(false);
 
-        return date;
-    }
+			logger.info("trying pattern: " + pattern);
 
-    @Override
-    public String getAsString(FacesContext context, UIComponent component, Object value) 
-    	throws ConverterException
-    {
-        return new SimpleDateFormat(date_formats.get(0)).format((Date) value);
-    }
+			try {
+				date = sdf.parse(value);
+				break;
+			} catch (ParseException ignore) {
+				// ignore
+			}
+		}
+
+		if (date == null) {
+			throw new ConverterException(new FacesMessage("Invalid date format, must match either of " + date_formats));
+		}
+
+		return date;
+	}
+
+	@Override
+	public String getAsString(FacesContext context, UIComponent component, Object value) throws ConverterException {
+		return value == null ? null : new SimpleDateFormat(date_formats.get(0)).format((Date) value);
+	}
 }
