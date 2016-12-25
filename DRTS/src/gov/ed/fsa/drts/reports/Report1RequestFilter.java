@@ -116,8 +116,6 @@ public class Report1RequestFilter extends PageUtil implements Serializable {
 				ApplicationProperties.DATA_REQUEST_STATUS_ASSIGNED_TO_VALIDATOR.getStringValue());
 		request_statuses.put(ApplicationProperties.DATA_REQUEST_STATUS_CLOSED.getStringValue(),
 				ApplicationProperties.DATA_REQUEST_STATUS_CLOSED.getStringValue());
-		request_statuses.put(ApplicationProperties.DATA_REQUEST_STATUS_DRAFTED.getStringValue(),
-				ApplicationProperties.DATA_REQUEST_STATUS_DRAFTED.getStringValue());
 		request_statuses.put(ApplicationProperties.DATA_REQUEST_STATUS_PENDING.getStringValue(),
 				ApplicationProperties.DATA_REQUEST_STATUS_PENDING.getStringValue());
 		request_statuses.put(ApplicationProperties.DATA_REQUEST_STATUS_PENDING_REQUESTOR_APPROVAL.getStringValue(),
