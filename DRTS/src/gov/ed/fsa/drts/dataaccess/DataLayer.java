@@ -288,9 +288,19 @@ public class DataLayer {
 
 	private static final String QUERY_REPORT_3_ASSIGNED_SME = "SELECT * FROM SME_ASSIGNED_REPORT";
 
+	private static final String QUERY_REPORT_3_ASSIGNED_SME_CREATED_BY = "select (CASE WHEN as1 IS NULL THEN as2 ELSE as1 END) as SME, coalesce(SMECNT,0) as SMECNT, coalesce(VALSMECNT,0) as VALSMECNT from ( "
+			+ "(select assignee as1, count(request_number) as VALSMECNT from drts_history where assignee = validation_sme and created_by = ? group by assignee) A "
+			+ "full outer join "
+			+ "(select assignee as2, count(request_number) as SMECNT from drts_history where assignee = sme and created_by = ? group by assignee) B "
+			+ "on as1 = as2)";
+
 	private static final String QUERY_REPORT_4_AVERAGE_AGE = "SELECT (SYSDATE - ?) AS report_date, num_open_requests, COALESCE(total_age, 0) AS total_age, ROUND(((COALESCE(total_age, 0)) / (CASE num_open_requests WHEN 0 THEN 1 ELSE num_open_requests END)), 0) AS avg_age "
 			+ "FROM(SELECT COUNT(request_number) AS num_open_requests, SUM(TRUNC(SYSDATE - ?) - TRUNC(drt_request_date)) AS total_age "
 			+ "FROM DRTS_HISTORY WHERE drt_request_date < (SYSDATE - ?) AND ((closed_date IS NULL) OR (closed_date > (SYSDATE - ?))))";
+
+	private static final String QUERY_REPORT_4_AVERAGE_AGE_CREATED_BY = "SELECT (SYSDATE - ?) AS report_date, num_open_requests, COALESCE(total_age, 0) AS total_age, ROUND(((COALESCE(total_age, 0)) / (CASE num_open_requests WHEN 0 THEN 1 ELSE num_open_requests END)), 0) AS avg_age "
+			+ "FROM(SELECT COUNT(request_number) AS num_open_requests, SUM(TRUNC(SYSDATE - ?) - TRUNC(drt_request_date)) AS total_age "
+			+ "FROM DRTS_HISTORY WHERE created_by = ? AND drt_request_date < (SYSDATE - ?) AND ((closed_date IS NULL) OR (closed_date > (SYSDATE - ?))))";
 
 	private static final String QUERY_REPORT_5_OVERDUE = "SELECT * FROM(SELECT T2.*, rownum AS ROW_NUM FROM(SELECT T.* FROM(SELECT * FROM "
 			+ ApplicationProperties.DATA_REQUEST_VIEW.getStringValue() + ") T " + "WHERE "
@@ -2534,6 +2544,58 @@ public class DataLayer {
 		return null;
 	}
 
+	public List<Report3AssignedSMEBean> getAssignedSmeReport(String createdBy) throws Exception {
+		List<Report3AssignedSMEBean> rows = new ArrayList<Report3AssignedSMEBean>();
+		Report3AssignedSMEBean row = null;
+		Connection oracle_connection = null;
+		ResultSet result_set = null;
+
+		try {
+			oracle_connection = OracleFactory.createConnection();
+			PreparedStatement preparedStatement = oracle_connection
+					.prepareStatement(QUERY_REPORT_3_ASSIGNED_SME_CREATED_BY);
+
+			preparedStatement.setString(1, createdBy);
+			preparedStatement.setString(2, createdBy);
+
+			result_set = preparedStatement.executeQuery();
+
+			while (result_set.next()) {
+				row = new Report3AssignedSMEBean();
+				row.setName(result_set.getString("SME"));
+				row.setSmeCount(result_set.getInt("SMECNT"));
+				row.setValidatorCount(result_set.getInt("VALSMECNT"));
+
+				rows.add(row);
+			}
+		} catch (SQLException sqle) {
+			logger.error("A SQL exception occured in getAssignedSmeReport().", sqle);
+			throw sqle;
+		} catch (Exception e) {
+			logger.error("An exception occured in getAssignedSmeReport().", e);
+			throw e;
+		} finally {
+			try {
+				if (oracle_connection != null) {
+					if (result_set != null) {
+						result_set.close();
+					}
+
+					oracle_connection.close();
+				}
+			} catch (SQLException sqle) {
+				logger.error("A SQL exception occured while trying to close the connection in getAssignedSmeReport().",
+						sqle);
+			}
+		}
+
+		if (rows.size() > 0) {
+			return rows;
+		}
+
+		return null;
+	}
+
 	public Report4AverageAgeBean getAverageAgeReport(int day_offset) throws Exception {
 		Connection oracle_connection = null;
 		ResultSet result_set = null;
@@ -2548,6 +2610,55 @@ public class DataLayer {
 			prepared_statement.setInt(2, day_offset);
 			prepared_statement.setInt(3, day_offset);
 			prepared_statement.setInt(4, day_offset);
+
+			result_set = prepared_statement.executeQuery();
+
+			if (result_set.next()) {
+				row = new Report4AverageAgeBean();
+				row.setReportDate(result_set.getDate("REPORT_DATE"));
+				row.setRequestNumber(result_set.getInt("NUM_OPEN_REQUESTS"));
+				row.setTotalAge(result_set.getInt("TOTAL_AGE"));
+				row.setAverageAge(result_set.getInt("AVG_AGE"));
+			}
+		} catch (SQLException sqle) {
+			logger.error("A SQL exception occured in getAverageAgeReport().", sqle);
+			throw sqle;
+		} catch (Exception e) {
+			logger.error("An exception occured in getAverageAgeReport().", e);
+			throw e;
+		} finally {
+			try {
+				if (oracle_connection != null) {
+					if (result_set != null) {
+						result_set.close();
+					}
+
+					oracle_connection.close();
+				}
+			} catch (SQLException sqle) {
+				logger.error("A SQL exception occured while trying to close the connection in getAverageAgeReport().",
+						sqle);
+			}
+		}
+
+		return row;
+	}
+
+	public Report4AverageAgeBean getAverageAgeReport(int day_offset, String createdBy) throws Exception {
+		Connection oracle_connection = null;
+		ResultSet result_set = null;
+		Report4AverageAgeBean row = null;
+
+		try {
+			oracle_connection = OracleFactory.createConnection();
+
+			PreparedStatement prepared_statement = oracle_connection.prepareStatement(QUERY_REPORT_4_AVERAGE_AGE);
+
+			prepared_statement.setString(1, createdBy);
+			prepared_statement.setInt(2, day_offset);
+			prepared_statement.setInt(3, day_offset);
+			prepared_statement.setInt(4, day_offset);
+			prepared_statement.setInt(5, day_offset);
 
 			result_set = prepared_statement.executeQuery();
 
