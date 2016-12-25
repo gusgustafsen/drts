@@ -63,7 +63,6 @@ public class DRTSRealm extends AuthorizingRealm {
 					permissions_set.add(new WildcardPermission(permission));
 				}
 
-				logger.debug("bmfind group=" + group + ", permissions=" + permissions_set);
 				group_permissions.put(group, permissions_set);
 			}
 		}

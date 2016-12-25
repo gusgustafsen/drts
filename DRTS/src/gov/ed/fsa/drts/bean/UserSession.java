@@ -16,7 +16,7 @@ import gov.ed.fsa.drts.security.SecurityPermissions;
 import gov.ed.fsa.drts.util.ApplicationProperties;
 import gov.ed.fsa.drts.util.Utils;
 
-@ManagedBean(name = "userSession")
+@ManagedBean(name = "userSession", eager = true)
 @SessionScoped
 public class UserSession implements Serializable {
 
@@ -114,6 +114,14 @@ public class UserSession implements Serializable {
 		return subject.isPermitted(SecurityPermissions.REQUESTS_ASSIGN.getStringValue());
 	}
 
+	public boolean isAllowedToEditMyRequests() {
+		if (subject == null) {
+			return false;
+		}
+
+		return subject.isPermitted(SecurityPermissions.REQUESTS_EDIT_MINE.getStringValue());
+	}
+
 	public boolean isAllowedToEditAllRequests() {
 		if (subject == null) {
 			return false;
@@ -128,6 +136,14 @@ public class UserSession implements Serializable {
 		}
 
 		return subject.isPermitted(SecurityPermissions.REQUESTS_DELETE.getStringValue());
+	}
+
+	public boolean isAllowedToViewMyRequests() {
+		if (subject == null) {
+			return false;
+		}
+
+		return subject.isPermitted(SecurityPermissions.REPORTS_VIEW_MINE.getStringValue());
 	}
 
 	public boolean isAllowedToViewAllRequests() {
@@ -162,6 +178,14 @@ public class UserSession implements Serializable {
 		return subject.isPermitted(SecurityPermissions.REQUESTS_HOLD.getStringValue());
 	}
 
+	public boolean isAllowedToSearchMyRequests() {
+		if (subject == null) {
+			return false;
+		}
+
+		return subject.isPermitted(SecurityPermissions.SEARCH_REQUESTS_MINE.getStringValue());
+	}
+
 	public boolean isAllowedToSearchAllRequests() {
 		if (subject == null) {
 			return false;
@@ -170,12 +194,28 @@ public class UserSession implements Serializable {
 		return subject.isPermitted(SecurityPermissions.SEARCH_REQUESTS_ALL.getStringValue());
 	}
 
+	public boolean isAllowedToSearchMyAttachments() {
+		if (subject == null) {
+			return false;
+		}
+
+		return subject.isPermitted(SecurityPermissions.SEARCH_ATTACHMENTS_MINE.getStringValue());
+	}
+
 	public boolean isAllowedToSearchAllAttachments() {
 		if (subject == null) {
 			return false;
 		}
 
 		return subject.isPermitted(SecurityPermissions.SEARCH_ATTACHMENTS_ALL.getStringValue());
+	}
+
+	public boolean isAllowedToRunReportsWithMyData() {
+		if (subject == null) {
+			return false;
+		}
+
+		return subject.isPermitted(SecurityPermissions.REPORTS_VIEW_MINE.getStringValue());
 	}
 
 	public boolean isAllowedToRunReportsWithAllData() {
@@ -191,8 +231,7 @@ public class UserSession implements Serializable {
 			return false;
 		}
 
-		boolean result = subject.isPermitted(SecurityPermissions.REPORTS_EXPORT.getStringValue());
-		return result;
+		return subject.isPermitted(SecurityPermissions.REPORTS_EXPORT.getStringValue());
 	}
 
 	public boolean isAllowedToCreateAccounts() {

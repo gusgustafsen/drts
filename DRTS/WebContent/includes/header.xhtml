@@ -56,7 +56,7 @@
 										</h:panelGroup>
 									</ul></li>
 							</h:panelGroup>
-							<h:panelGroup rendered="#{userSession.reporter eq false}">
+							<h:panelGroup rendered="#{userSession.allowedToSearchMyRequests or userSession.allowedToSearchAllRequests}">
 								<li class="menu-sec-3 #{(active == 3) ? 'active' : '' }"><a href="#"> <span>Search</span> <span
 										class="arrow"></span>
 								</a>

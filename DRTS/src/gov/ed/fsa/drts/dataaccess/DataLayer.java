@@ -200,9 +200,28 @@ public class DataLayer {
 			+ "ORDER BY %s %s) T2) T3 WHERE ROW_NUM > ?  AND ROW_NUM <= ?";
 
 	private static final String QUERY_SELECT_DATA_REQUESTS_BY_DISPLAY_ID_COUNT = "SELECT COUNT(*) FROM "
-			+ ApplicationProperties.DATA_REQUEST_TABLE.getStringValue() + " WHERE SYS_OP_C2C(TO_CHAR(\""
+			+ ApplicationProperties.DATA_REQUEST_VIEW.getStringValue() + ") T " + "WHERE (SYS_OP_C2C(TO_CHAR(\""
 			+ ApplicationProperties.DATA_REQUEST_FIELD_CREATED_DATE_TIME.getStringValue()
-			+ "\",'YYYY')||'-'||TO_CHAR(\"REQUEST_DISPLAY_ID\")||'-')||'D' LIKE ?";
+			+ "\",'YYYY')||'-'||TO_CHAR(\"REQUEST_DISPLAY_ID\")||'-')||'D' like ? " + " OR SYS_OP_C2C(TO_CHAR(\""
+			+ ApplicationProperties.DATA_REQUEST_FIELD_CREATED_DATE_TIME.getStringValue()
+			+ "\",'YYYY')||'-'||TO_CHAR(\"REQUEST_DISPLAY_ID\")||'-')||'F' like ?) ";
+
+	private static final String QUERY_SELECT_DATA_REQUESTS_BY_DISPLAY_ID_CREATED_BY = "SELECT * FROM(SELECT T2.*, rownum AS ROW_NUM FROM(SELECT T.* FROM(SELECT * FROM "
+			+ ApplicationProperties.DATA_REQUEST_VIEW.getStringValue() + ") T " + "WHERE (SYS_OP_C2C(TO_CHAR(\""
+			+ ApplicationProperties.DATA_REQUEST_FIELD_CREATED_DATE_TIME.getStringValue()
+			+ "\",'YYYY')||'-'||TO_CHAR(\"REQUEST_DISPLAY_ID\")||'-')||'D' like ? " + " OR SYS_OP_C2C(TO_CHAR(\""
+			+ ApplicationProperties.DATA_REQUEST_FIELD_CREATED_DATE_TIME.getStringValue()
+			+ "\",'YYYY')||'-'||TO_CHAR(\"REQUEST_DISPLAY_ID\")||'-')||'F' like ?) " + "AND "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_CREATED_BY.getStringValue() + " = ? "
+			+ "ORDER BY %s %s) T2) T3 WHERE ROW_NUM > ?  AND ROW_NUM <= ?";
+
+	private static final String QUERY_SELECT_DATA_REQUESTS_BY_DISPLAY_ID_CREATED_BY_COUNT = "SELECT COUNT(*) FROM "
+			+ ApplicationProperties.DATA_REQUEST_VIEW.getStringValue() + " T " + "WHERE (SYS_OP_C2C(TO_CHAR(\""
+			+ ApplicationProperties.DATA_REQUEST_FIELD_CREATED_DATE_TIME.getStringValue()
+			+ "\",'YYYY')||'-'||TO_CHAR(\"REQUEST_DISPLAY_ID\")||'-')||'D' like ? " + " OR SYS_OP_C2C(TO_CHAR(\""
+			+ ApplicationProperties.DATA_REQUEST_FIELD_CREATED_DATE_TIME.getStringValue()
+			+ "\",'YYYY')||'-'||TO_CHAR(\"REQUEST_DISPLAY_ID\")||'-')||'F' like ?) " + "AND "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_CREATED_BY.getStringValue() + " = ?";
 
 	private static final String QUERY_SELECT_DATA_REQUESTS_BY_FIELDS = "SELECT * FROM(SELECT T2.*, rownum AS ROW_NUM FROM(SELECT T.* FROM(SELECT * FROM "
 			+ ApplicationProperties.DATA_REQUEST_VIEW.getStringValue() + ") T "
@@ -214,13 +233,26 @@ public class DataLayer {
 	private static final String QUERY_SELECT_DATA_REQUESTS_BY_KEYWORD = "SELECT * FROM(SELECT T2.*, rownum AS ROW_NUM FROM(SELECT T.* FROM(SELECT * FROM "
 			+ ApplicationProperties.DATA_REQUEST_VIEW.getStringValue() + ") T " + "WHERE "
 			+ ApplicationProperties.DATA_REQUEST_FIELD_DESCRIPTION.getStringValue() + " LIKE ? OR "
-			+ ApplicationProperties.DATA_REQUEST_FIELD_PURPOSE.getStringValue() + " LIKE ? ORDER BY %s %s) T2) T3 "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_PURPOSE.getStringValue() + " LIKE ? " + "ORDER BY %s %s) T2) T3 "
 			+ "WHERE ROW_NUM > ?  AND ROW_NUM <= ?";
 
 	private static final String QUERY_SELECT_DATA_REQUESTS_BY_KEYWORD_COUNT = "SELECT COUNT(*) FROM "
 			+ ApplicationProperties.DATA_REQUEST_TABLE.getStringValue() + " WHERE "
 			+ ApplicationProperties.DATA_REQUEST_FIELD_DESCRIPTION.getStringValue() + " LIKE ? OR "
 			+ ApplicationProperties.DATA_REQUEST_FIELD_PURPOSE.getStringValue() + " LIKE ?";
+
+	private static final String QUERY_SELECT_DATA_REQUESTS_BY_KEYWORD_CREATED_BY = "SELECT * FROM(SELECT T2.*, rownum AS ROW_NUM FROM(SELECT T.* FROM(SELECT * FROM "
+			+ ApplicationProperties.DATA_REQUEST_VIEW.getStringValue() + ") T " + "WHERE ("
+			+ ApplicationProperties.DATA_REQUEST_FIELD_DESCRIPTION.getStringValue() + " LIKE ? OR "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_PURPOSE.getStringValue() + " LIKE ?) " + "AND "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_CREATED_BY.getStringValue() + " = ? " + "ORDER BY %s %s) T2) T3 "
+			+ "WHERE ROW_NUM > ?  AND ROW_NUM <= ?";
+
+	private static final String QUERY_SELECT_DATA_REQUESTS_BY_KEYWORD_CREATED_BY_COUNT = "SELECT COUNT(*) FROM "
+			+ ApplicationProperties.DATA_REQUEST_TABLE.getStringValue() + " WHERE ("
+			+ ApplicationProperties.DATA_REQUEST_FIELD_DESCRIPTION.getStringValue() + " LIKE ? OR "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_PURPOSE.getStringValue() + " LIKE ?) " + "AND "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_CREATED_BY.getStringValue() + " = ?";
 
 	private static final String QUERY_REPORT_1 = "SELECT * FROM(SELECT T2.*, rownum AS ROW_NUM FROM(SELECT T.* FROM(SELECT * FROM "
 			+ ApplicationProperties.DATA_REQUEST_VIEW.getStringValue() + ") T "
@@ -1442,6 +1474,109 @@ public class DataLayer {
 		return count;
 	}
 
+	public List<DataRequest> getDataRequestsByDisplayId(String display_id, String createdBy, int first_row,
+			int rows_per_page, String sort_field, boolean sort_ascending) throws Exception {
+		List<DataRequest> data_requests = new ArrayList<DataRequest>();
+		DataRequest request = null;
+		Connection oracle_connection = null;
+		ResultSet result_set = null;
+		String sort_direction = null;
+		String formatted_query = null;
+
+		try {
+			logger.debug("bmfind query=" + QUERY_SELECT_DATA_REQUESTS_BY_DISPLAY_ID_CREATED_BY);
+			sort_direction = sort_ascending ? "ASC" : "DESC";
+			formatted_query = String.format(QUERY_SELECT_DATA_REQUESTS_BY_DISPLAY_ID_CREATED_BY, sort_field,
+					sort_direction);
+
+			oracle_connection = OracleFactory.createConnection();
+
+			PreparedStatement prepared_statement = oracle_connection.prepareStatement(formatted_query);
+			prepared_statement.setString(1, "%" + display_id + "%");
+			prepared_statement.setString(2, "%" + display_id + "%");
+			prepared_statement.setString(3, createdBy);
+			prepared_statement.setInt(4, first_row);
+			prepared_statement.setInt(5, rows_per_page);
+
+			result_set = prepared_statement.executeQuery();
+
+			while (result_set.next()) {
+				request = mapRequest(result_set);
+
+				data_requests.add(request);
+			}
+		} catch (SQLException sqle) {
+			logger.error("A SQL exception occured in getDataRequestsByDisplayId().", sqle);
+			throw sqle;
+		} catch (Exception e) {
+			logger.error("An exception occured in getDataRequestsByDisplayId().", e);
+			throw e;
+		} finally {
+			try {
+				if (oracle_connection != null) {
+					if (result_set != null) {
+						result_set.close();
+					}
+
+					oracle_connection.close();
+				}
+			} catch (SQLException sqle) {
+				logger.error(
+						"A SQL exception occured while trying to close the connection in getDataRequestsByDisplayId().",
+						sqle);
+			}
+		}
+
+		if (data_requests.size() > 0) {
+			return data_requests;
+		}
+
+		return null;
+	}
+
+	public int getDataRequestsByDisplayIdCount(String display_id, String createdBy) throws Exception {
+		int count = 0;
+		Connection oracle_connection = null;
+		ResultSet result_set = null;
+
+		try {
+			oracle_connection = OracleFactory.createConnection();
+			PreparedStatement prepared_statement = oracle_connection
+					.prepareStatement(QUERY_SELECT_DATA_REQUESTS_BY_DISPLAY_ID_CREATED_BY_COUNT);
+			prepared_statement.setString(1, "%" + display_id + "%");
+			prepared_statement.setString(2, "%" + display_id + "%");
+			prepared_statement.setString(3, createdBy);
+
+			result_set = prepared_statement.executeQuery();
+
+			if (result_set.next()) {
+				count = result_set.getInt(1);
+			}
+		} catch (SQLException sqle) {
+			logger.error("A SQL exception occured in getDataRequestsByDisplayIdCount().", sqle);
+			throw sqle;
+		} catch (Exception e) {
+			logger.error("An exception occured in getDataRequestsByDisplayIdCount().", e);
+			throw e;
+		} finally {
+			try {
+				if (oracle_connection != null) {
+					if (result_set != null) {
+						result_set.close();
+					}
+
+					oracle_connection.close();
+				}
+			} catch (SQLException sqle) {
+				logger.error(
+						"A SQL exception occured while trying to close the connection in getDataRequestsByDisplayIdCount().",
+						sqle);
+			}
+		}
+
+		return count;
+	}
+
 	public List<DataRequest> getDataRequestsByFields(LinkedHashMap<String, String> search_parameters, String date_from,
 			String date_to, int first_row, int rows_per_page, String sort_field, boolean sort_ascending)
 			throws Exception {
@@ -1651,6 +1786,109 @@ public class DataLayer {
 					.prepareStatement(QUERY_SELECT_DATA_REQUESTS_BY_KEYWORD_COUNT);
 			prepared_statement.setString(1, "%" + keyword + "%");
 			prepared_statement.setString(2, "%" + keyword + "%");
+
+			result_set = prepared_statement.executeQuery();
+
+			if (result_set.next()) {
+				count = result_set.getInt(1);
+			}
+		} catch (SQLException sqle) {
+			logger.error("A SQL exception occured in getDataRequestsByStatusCount().", sqle);
+			throw sqle;
+		} catch (Exception e) {
+			logger.error("An exception occured in getDataRequestsByStatusCount().", e);
+			throw e;
+		} finally {
+			try {
+				if (oracle_connection != null) {
+					if (result_set != null) {
+						result_set.close();
+					}
+
+					oracle_connection.close();
+				}
+			} catch (SQLException sqle) {
+				logger.error(
+						"A SQL exception occured while trying to close the connection in getDataRequestsByStatusCount().",
+						sqle);
+			}
+		}
+
+		return count;
+	}
+
+	public List<DataRequest> getDataRequestsByKeyword(String keyword, String createdBy, int first_row,
+			int rows_per_page, String sort_field, boolean sort_ascending) throws Exception {
+		List<DataRequest> data_requests = new ArrayList<DataRequest>();
+		DataRequest request = null;
+		Connection oracle_connection = null;
+		ResultSet result_set = null;
+		String sort_direction = null;
+		String formatted_query = null;
+
+		try {
+			sort_direction = sort_ascending ? "ASC" : "DESC";
+			formatted_query = String.format(QUERY_SELECT_DATA_REQUESTS_BY_KEYWORD_CREATED_BY, sort_field,
+					sort_direction);
+
+			oracle_connection = OracleFactory.createConnection();
+
+			PreparedStatement prepared_statement = oracle_connection.prepareStatement(formatted_query);
+			prepared_statement.setString(1, "%" + keyword + "%");
+			prepared_statement.setString(2, "%" + keyword + "%");
+			prepared_statement.setString(3, createdBy);
+			prepared_statement.setInt(4, first_row);
+			prepared_statement.setInt(5, rows_per_page);
+
+			result_set = prepared_statement.executeQuery();
+
+			while (result_set.next()) {
+				request = mapRequest(result_set);
+
+				data_requests.add(request);
+			}
+		} catch (SQLException sqle) {
+			logger.error("A SQL exception occured in getDataRequestsByKeyword().", sqle);
+			throw sqle;
+		} catch (Exception e) {
+			logger.error("An exception occured in getDataRequestsByKeyword().", e);
+			throw e;
+		} finally {
+			try {
+				if (oracle_connection != null) {
+					if (result_set != null) {
+						result_set.close();
+					}
+
+					oracle_connection.close();
+				}
+			} catch (SQLException sqle) {
+				logger.error(
+						"A SQL exception occured while trying to close the connection in getDataRequestsByKeyword().",
+						sqle);
+			}
+		}
+
+		if (data_requests.size() > 0) {
+			return data_requests;
+		}
+
+		return null;
+	}
+
+	public int getDataRequestsByKeywordCount(String keyword, String createdBy) throws Exception {
+		int count = 0;
+		Connection oracle_connection = null;
+		ResultSet result_set = null;
+
+		try {
+			oracle_connection = OracleFactory.createConnection();
+
+			PreparedStatement prepared_statement = oracle_connection
+					.prepareStatement(QUERY_SELECT_DATA_REQUESTS_BY_KEYWORD_CREATED_BY_COUNT);
+			prepared_statement.setString(1, "%" + keyword + "%");
+			prepared_statement.setString(2, "%" + keyword + "%");
+			prepared_statement.setString(3, createdBy);
 
 			result_set = prepared_statement.executeQuery();
 
