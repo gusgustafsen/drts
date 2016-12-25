@@ -273,6 +273,19 @@ public class DataLayer {
 
 	private static final String QUERY_REPORT_2_OPEN_CLOSED = "SELECT * FROM OPEN_CLOSED_REQUESTS";
 
+	private static final String QUERY_REPORT_2_OPEN_CLOSED_CREATED_BY = "SELECT "
+			+ "(CASE WHEN DRT_REQUEST_DATE IS NULL THEN CLOSED_DATE ELSE DRT_REQUEST_DATE END) AS DATE_DAY, "
+			+ " COALESCE(CNT1, 0) AS OPENED_REQS, " + "COALESCE(CNT2, 0) AS CLOSED_REQS " + "FROM " + "(SELECT  "
+			+ "TO_DATE(TO_CHAR(DRT_REQUEST_DATE, 'DD-MM-YYYY'), 'DD-MM-YYYY') AS DRT_REQUEST_DATE, "
+			+ "COUNT(REQUEST_NUMBER) CNT1 " + "FROM DRTS_HISTORY  "
+			+ "WHERE DRT_REQUEST_DATE > sysdate-30 and created_by = ? "
+			+ "GROUP BY TO_DATE(TO_CHAR(DRT_REQUEST_DATE, 'DD-MM-YYYY'), 'DD-MM-YYYY')) A " + "FULL OUTER JOIN  "
+			+ "(SELECT  " + "TO_DATE(TO_CHAR(CLOSED_DATE, 'DD-MM-YYYY'), 'DD-MM-YYYY') AS CLOSED_DATE, "
+			+ "COUNT(REQUEST_NUMBER) CNT2  " + "FROM DRTS_HISTORY  "
+			+ "WHERE CLOSED_DATE > sysdate-30 and created_by = ? "
+			+ "GROUP BY TO_DATE(TO_CHAR(CLOSED_DATE, 'DD-MM-YYYY'), 'DD-MM-YYYY')) B "
+			+ "ON DRT_REQUEST_DATE = CLOSED_DATE";
+
 	private static final String QUERY_REPORT_3_ASSIGNED_SME = "SELECT * FROM SME_ASSIGNED_REPORT";
 
 	private static final String QUERY_REPORT_4_AVERAGE_AGE = "SELECT (SYSDATE - ?) AS report_date, num_open_requests, COALESCE(total_age, 0) AS total_age, ROUND(((COALESCE(total_age, 0)) / (CASE num_open_requests WHEN 0 THEN 1 ELSE num_open_requests END)), 0) AS avg_age "
@@ -2380,6 +2393,59 @@ public class DataLayer {
 		try {
 			oracle_connection = OracleFactory.createConnection();
 			PreparedStatement preparedStatement = oracle_connection.prepareStatement(QUERY_REPORT_2_OPEN_CLOSED);
+
+			result_set = preparedStatement.executeQuery();
+
+			while (result_set.next()) {
+				row = new Report2OpenClosedBean();
+				row.setReportDate(result_set.getDate("DATE_DAY"));
+				row.setOpenedRequests(result_set.getInt("OPENED_REQS"));
+				row.setClosedRequests(result_set.getInt("CLOSED_REQS"));
+
+				rows.add(row);
+			}
+		} catch (SQLException sqle) {
+			logger.error("A SQL exception occured in getOpenClosedReqReport().", sqle);
+			throw sqle;
+		} catch (Exception e) {
+			logger.error("An exception occured in getOpenClosedReqReport().", e);
+			throw e;
+		} finally {
+			try {
+				if (oracle_connection != null) {
+					if (result_set != null) {
+						result_set.close();
+					}
+
+					oracle_connection.close();
+				}
+			} catch (SQLException sqle) {
+				logger.error(
+						"A SQL exception occured while trying to close the connection in getOpenClosedReqReport().",
+						sqle);
+			}
+		}
+
+		if (rows.size() > 0) {
+			return rows;
+		}
+
+		return null;
+	}
+
+	public List<Report2OpenClosedBean> getOpenClosedReqReport(String createdBy) throws Exception {
+		List<Report2OpenClosedBean> rows = new ArrayList<Report2OpenClosedBean>();
+		Report2OpenClosedBean row = null;
+		Connection oracle_connection = null;
+		ResultSet result_set = null;
+
+		try {
+			oracle_connection = OracleFactory.createConnection();
+			PreparedStatement preparedStatement = oracle_connection
+					.prepareStatement(QUERY_REPORT_2_OPEN_CLOSED_CREATED_BY);
+
+			preparedStatement.setString(1, createdBy);
+			preparedStatement.setString(2, createdBy);
 
 			result_set = preparedStatement.executeQuery();
 
