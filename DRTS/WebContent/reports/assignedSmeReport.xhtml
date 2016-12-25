@@ -77,7 +77,7 @@
 									</pf:dataTable>
 									
 									<div class="form-control col-1-1 mobile-col-1-1">
-										<h:commandButton styleClass="button" value="Export Table to PDF" rendered="#{userSession.allowedToExportReports eq true}">
+										<h:commandButton styleClass="button" value="Export Table to PDF" rendered="#{userSession.allowedToExportReports}">
 											<pe:exporter type="pdf" tableTitle="Requests Assigned to SMEs Report" target="report_3_table" fileName="assigned_sme_report" subTable="false" orientation="Landscape"/>
 										</h:commandButton>
 									</div>

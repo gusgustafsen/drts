@@ -1245,6 +1245,10 @@ public class DataRequestBean extends PageUtil implements Serializable {
 	}
 
 	public List<Attachment> getAttachments() {
+		if (this.request_attachments == null) {
+			this.request_attachments = new ArrayList<>();
+		}
+
 		return this.request_attachments;
 	}
 

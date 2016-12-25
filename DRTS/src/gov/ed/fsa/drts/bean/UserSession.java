@@ -191,7 +191,8 @@ public class UserSession implements Serializable {
 			return false;
 		}
 
-		return subject.isPermitted(SecurityPermissions.REPORTS_EXPORT.getStringValue());
+		boolean result = subject.isPermitted(SecurityPermissions.REPORTS_EXPORT.getStringValue());
+		return result;
 	}
 
 	public boolean isAllowedToCreateAccounts() {

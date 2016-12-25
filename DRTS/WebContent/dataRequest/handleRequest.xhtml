@@ -261,18 +261,18 @@
 
 										<h:panelGroup
 											rendered="#{not userSession.allowedToAssignRequests}">
-											<h:outputLabel for="smeValidation"
+											<h:outputLabel for="smeValidation2"
 												value="SME To Validate The Request" />
-											<h:outputText id="smeValidation" style="padding-left: 5%"
+											<h:outputText id="smeValidation2" style="padding-left: 5%"
 												value="#{dataRequest.assignedValidator}" />
 
-											<h:outputLabel for="validation" value="Validation" />
-											<h:outputText id="validation" style="padding-left: 5%"
+											<h:outputLabel for="validation2" value="Validation" />
+											<h:outputText id="validation2" style="padding-left: 5%"
 												value="#{dataRequest.validationDescription}" />
 
-											<h:outputLabel for="validationResult"
+											<h:outputLabel for="validationResult2"
 												value="Validation Result" />
-											<h:outputText id="validationResult" style="padding-left: 5%"
+											<h:outputText id="validationResult2" style="padding-left: 5%"
 												value="#{dataRequest.validationResult}" />
 										</h:panelGroup>
 
@@ -325,8 +325,8 @@
 									action="#{dataRequest.updateRequest(4)}" />
 								<h:commandButton styleClass="button" value="Put On Hold"
 									action="#{dataRequest.updateRequest(17)}"
-									rendered="#{dataRequest.statusOnHold eq false}" />
-								<h:commandButton styleClass="button" value="Reject"
+									rendered="#{userSession.admin and not dataRequest.statusOnHold}" />
+								<h:commandButton styleClass="button" value="Reject" rendered="#{userSession.admin}"
 									action="#{dataRequest.updateRequest(5)}" />
 								<h:commandButton styleClass="button" value="Cancel"
 									action="#{userSession.getHomePageRedirect}" />
