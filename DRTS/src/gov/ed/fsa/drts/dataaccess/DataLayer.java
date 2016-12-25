@@ -200,7 +200,7 @@ public class DataLayer {
 			+ "ORDER BY %s %s) T2) T3 WHERE ROW_NUM > ?  AND ROW_NUM <= ?";
 
 	private static final String QUERY_SELECT_DATA_REQUESTS_BY_DISPLAY_ID_COUNT = "SELECT COUNT(*) FROM "
-			+ ApplicationProperties.DATA_REQUEST_VIEW.getStringValue() + ") T " + "WHERE (SYS_OP_C2C(TO_CHAR(\""
+			+ ApplicationProperties.DATA_REQUEST_VIEW.getStringValue() + " T " + "WHERE (SYS_OP_C2C(TO_CHAR(\""
 			+ ApplicationProperties.DATA_REQUEST_FIELD_CREATED_DATE_TIME.getStringValue()
 			+ "\",'YYYY')||'-'||TO_CHAR(\"REQUEST_DISPLAY_ID\")||'-')||'D' like ? " + " OR SYS_OP_C2C(TO_CHAR(\""
 			+ ApplicationProperties.DATA_REQUEST_FIELD_CREATED_DATE_TIME.getStringValue()
