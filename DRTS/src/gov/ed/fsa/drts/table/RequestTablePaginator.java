@@ -59,10 +59,21 @@ public class RequestTablePaginator extends TablePaginator {
 				break;
 
 			case 4:
-				if (this.user_session.isAdmin() == true || this.user_session.isDrt()) {
+				if (this.user_session.isAdmin() || this.user_session.isDrt()) {
 					this.all_data_requests = DataLayer.getInstance().getAllDataRequests(this.first_row,
 							(this.first_row + this.rows_per_page), this.sort_field, false);
 					this.total_rows = DataLayer.getInstance().getAllDataRequestsCount();
+					if (this.user_session.isDrt()) {
+						for (DataRequest dataRequest : this.all_data_requests) {
+							if (!dataRequest.getCurrentTaskName()
+									.equals(ApplicationProperties.DATA_REQUEST_REOPEN.getStringValue())) {
+								dataRequest
+										.setCurrentTaskName(ApplicationProperties.DATA_REQUEST_EDIT.getStringValue());
+								dataRequest.setCurrentTaskFormKey(
+										ApplicationProperties.DATA_REQUEST_EDIT_URL.getStringValue());
+							}
+						}
+					}
 				} else if (this.user_session.isRequestor() == true) {
 					this.all_data_requests = DataLayer.getInstance().getDataRequestsByCreator(
 							this.user_session.getUser().getId(), this.first_row, (this.first_row + this.rows_per_page),

@@ -2068,7 +2068,8 @@ public class DataLayer {
 		request.setDateResolved(
 				result_set.getDate(ApplicationProperties.DATA_REQUEST_FIELD_DATE_RESOLVED.getStringValue()));
 		request.setCurrentTaskId(result_set.getString("CURRENT_TASK_ID"));
-		request.setCurrentTaskName(result_set.getString("CURRENT_TASK_NAME") == null ? "Open as New Request"
+		request.setCurrentTaskName(result_set.getString("CURRENT_TASK_NAME") == null
+				? ApplicationProperties.DATA_REQUEST_REOPEN.getStringValue()
 				: result_set.getString("CURRENT_TASK_NAME"));
 		request.setCurrentTaskFormKey(result_set.getString("CURRENT_TASK_FORM_KEY"));
 		request.setDisplayId(result_set.getInt("REQUEST_DISPLAY_ID"));

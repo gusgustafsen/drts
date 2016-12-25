@@ -1,7 +1,7 @@
 package gov.ed.fsa.drts.security;
 
 public enum SecurityPermissions {
-	
+
 	REQUESTS_CREATE("requests:create"),
 
 	REQUESTS_EDIT_ALL("requests:edit:all"),
@@ -11,6 +11,8 @@ public enum SecurityPermissions {
 	REQUESTS_VIEW_ALL("requests:view:all"),
 
 	REQUESTS_RESOLVE("requests:resolve"),
+
+	REQUESTS_ASSIGN("requests:assign:all"),
 
 	REQUESTS_CLOSE("requests:close"),
 
@@ -30,13 +32,11 @@ public enum SecurityPermissions {
 
 	private String value;
 
-	private SecurityPermissions(String value)
-	{
+	private SecurityPermissions(String value) {
 		this.value = value;
 	}
 
-	public String getStringValue()
-	{
+	public String getStringValue() {
 		return value;
 	}
 }

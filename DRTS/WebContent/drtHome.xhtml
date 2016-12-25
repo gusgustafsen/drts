@@ -39,14 +39,15 @@
 
 							<p>Welcome to the DRTS application.</p>
 
-							<p>Below you will find a list of data requests that are currently in the "Pending" state.</p>
+							<p>Below you will find a list of all data requests.</p>
 
 							<h2>Data Requests</h2>
 
-							<h:panelGroup rendered="#{not empty requestTable.table3.dataRequests}">
 
-								<pf:dataTable id="tbl1" var="dataRequest" value="#{requestTable.table3.dataRequests}" paginator="true"
-									paginatorAlwaysVisible="false" sortMode="single" rows="10" class="drtsTable" sortBy="#{dataRequest.dueDate}">
+							<h:panelGroup rendered="#{not empty requestTable.table4.dataRequests}">
+								<pf:dataTable id="tbl1" var="dataRequest" value="#{requestTable.table4.dataRequests}" paginator="true"
+									paginatorAlwaysVisible="false" sortMode="single" rows="10" styleClass="drtsTable"
+									sortBy="#{dataRequest.createdDateTime}" sortOrder="descending">
 									<pf:column headerText="ID" sortBy="#{dataRequest.displayId}">
 										<h:outputText value="#{dataRequest.displayId}" />
 									</pf:column>
@@ -60,26 +61,25 @@
 										<h:outputText value="#{dataRequest.status}" />
 									</pf:column>
 									<pf:column headerText="Created On" sortBy="#{dataRequest.createdDateTime}">
-										<h:outputText value="#{dataRequest.createdDateTime}" />
+										<h:outputText value="#{dataRequest.createdDateTime}">
+											<f:converter converterId="defaultDateConverter" />
+										</h:outputText>
 									</pf:column>
 									<pf:column headerText="Rrequested Due Date" sortBy="#{dataRequest.dueDate}">
-										<h:outputText value="#{dataRequest.dueDate}" />
+										<h:outputText value="#{dataRequest.dueDate}">
+											<f:converter converterId="defaultDateConverter" />
+										</h:outputText>
+									</pf:column>
+									<pf:column headerText="Action" sortBy="#{dataRequest.currentTaskName}">
+										<h:commandLink action="#{requestTable.goToTask(dataRequest)}" value="#{dataRequest.currentTaskName}" />
 									</pf:column>
 								</pf:dataTable>
 
-								<div class="form-control col-1-1 mobile-col-1-1">
-									<h:commandButton styleClass="button" value="Export Table to PDF"
-										rendered="#{userSession.allowedToExportReports eq true}">
-										<pe:exporter type="pdf" tableTitle="Available Tasks" target="tbl1" fileName="available_tasks" subTable="false"
-											orientation="Landscape" />
-									</h:commandButton>
-								</div>
 							</h:panelGroup>
 
-							<h:panelGroup rendered="#{empty requestTable.table3.dataRequests}">
-								<p>You have not created any requests.</p>
+							<h:panelGroup rendered="#{empty requestTable.table1.dataRequests}">
+								<p>There are no requests.</p>
 							</h:panelGroup>
-
 						</h:form>
 
 					</section>

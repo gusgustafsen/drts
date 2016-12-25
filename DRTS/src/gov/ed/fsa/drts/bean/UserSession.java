@@ -106,6 +106,14 @@ public class UserSession implements Serializable {
 		return subject.isPermitted(SecurityPermissions.REQUESTS_CREATE.getStringValue());
 	}
 
+	public boolean isAllowedToAssignRequests() {
+		if (subject == null) {
+			return false;
+		}
+
+		return subject.isPermitted(SecurityPermissions.REQUESTS_ASSIGN.getStringValue());
+	}
+
 	public boolean isAllowedToEditAllRequests() {
 		if (subject == null) {
 			return false;

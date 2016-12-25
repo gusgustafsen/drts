@@ -398,6 +398,12 @@ public enum ApplicationProperties {
 
 	DATA_REQUEST_TIERS(true, true),
 
+	DATA_REQUEST_REOPEN(true, false),
+
+	DATA_REQUEST_EDIT(true, false),
+
+	DATA_REQUEST_EDIT_URL(true, false),
+
 	ATTACHMENT_FIELD_ID(true, false),
 
 	ATTACHMENT_FIELD_REQUEST_ID(true, false),
