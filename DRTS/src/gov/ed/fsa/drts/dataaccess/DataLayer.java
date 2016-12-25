@@ -1690,9 +1690,16 @@ public class DataLayer {
 		}
 
 		if (Utils.isStringEmpty(display_id) == false) {
+			sb.append("(");
 			sb.append("SYS_OP_C2C(TO_CHAR(\""
 					+ ApplicationProperties.DATA_REQUEST_FIELD_CREATED_DATE_TIME.getStringValue()
-					+ "\",'YYYY')||'-'||TO_CHAR(\"REQUEST_DISPLAY_ID\")||'-')||'D' LIKE ? AND ");
+					+ "\",'YYYY')||'-'||TO_CHAR(\"REQUEST_DISPLAY_ID\")||'-')||'D' LIKE ? ");
+			sb.append("OR ");
+			sb.append("SYS_OP_C2C(TO_CHAR(\""
+					+ ApplicationProperties.DATA_REQUEST_FIELD_CREATED_DATE_TIME.getStringValue()
+					+ "\",'YYYY')||'-'||TO_CHAR(\"REQUEST_DISPLAY_ID\")||'-')||'F' LIKE ? ");
+			sb.append(") ");
+			sb.append("AND ");
 		}
 
 		if (Utils.isStringEmpty(keyword) == false) {
@@ -1748,6 +1755,8 @@ public class DataLayer {
 
 			if (Utils.isStringEmpty(display_id) == false) {
 				System.out.println("set count: " + count + ", to: " + display_id);
+				prepared_statement.setString(count, "%" + display_id + "%");
+				count++;
 				prepared_statement.setString(count, "%" + display_id + "%");
 				count++;
 			}
