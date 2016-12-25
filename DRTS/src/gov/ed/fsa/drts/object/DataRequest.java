@@ -305,7 +305,7 @@ public class DataRequest {
 
 		int year = cal.get(Calendar.YEAR);
 
-		result += (year % 100) + "-" + this.display_id + "-" + (trackingSuffix == null ? "D" : "F");
+		result += (year % 100) + "-" + this.display_id + "-" + (trackingSuffix == null ? "D" : trackingSuffix);
 
 		return result;
 	}
