@@ -192,9 +192,11 @@ public class DataLayer {
 			+ ApplicationProperties.ITERATION_FIELD_CHILD_ID.getStringValue() + ") VALUES (?, ?, ?)";
 
 	private static final String QUERY_SELECT_DATA_REQUESTS_BY_DISPLAY_ID = "SELECT * FROM(SELECT T2.*, rownum AS ROW_NUM FROM(SELECT T.* FROM(SELECT * FROM "
-			+ ApplicationProperties.DATA_REQUEST_VIEW.getStringValue() + ") T " + "WHERE SYS_OP_C2C(TO_CHAR(\""
+			+ ApplicationProperties.DATA_REQUEST_VIEW.getStringValue() + ") T " + "WHERE (SYS_OP_C2C(TO_CHAR(\""
 			+ ApplicationProperties.DATA_REQUEST_FIELD_CREATED_DATE_TIME.getStringValue()
-			+ "\",'YYYY')||'-'||TO_CHAR(\"REQUEST_DISPLAY_ID\")||'-')||'D' like ? "
+			+ "\",'YYYY')||'-'||TO_CHAR(\"REQUEST_DISPLAY_ID\")||'-')||'D' like ? " + " OR SYS_OP_C2C(TO_CHAR(\""
+			+ ApplicationProperties.DATA_REQUEST_FIELD_CREATED_DATE_TIME.getStringValue()
+			+ "\",'YYYY')||'-'||TO_CHAR(\"REQUEST_DISPLAY_ID\")||'-')||'F' like ?) "
 			+ "ORDER BY %s %s) T2) T3 WHERE ROW_NUM > ?  AND ROW_NUM <= ?";
 
 	private static final String QUERY_SELECT_DATA_REQUESTS_BY_DISPLAY_ID_COUNT = "SELECT COUNT(*) FROM "
@@ -1358,8 +1360,9 @@ public class DataLayer {
 
 			PreparedStatement prepared_statement = oracle_connection.prepareStatement(formatted_query);
 			prepared_statement.setString(1, "%" + display_id + "%");
-			prepared_statement.setInt(2, first_row);
-			prepared_statement.setInt(3, rows_per_page);
+			prepared_statement.setString(2, "%" + display_id + "%");
+			prepared_statement.setInt(3, first_row);
+			prepared_statement.setInt(4, rows_per_page);
 
 			result_set = prepared_statement.executeQuery();
 
