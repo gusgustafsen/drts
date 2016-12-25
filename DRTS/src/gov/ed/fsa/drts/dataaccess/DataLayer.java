@@ -308,6 +308,13 @@ public class DataLayer {
 			+ ApplicationProperties.DATA_REQUEST_FIELD_DUE_DATE.getStringValue() + " < SYSDATE ORDER BY %s %s) T2) T3 "
 			+ "WHERE ROW_NUM > ?  AND ROW_NUM <= ?";
 
+	private static final String QUERY_REPORT_5_OVERDUE_CREATED_BY = "SELECT * FROM(SELECT T2.*, rownum AS ROW_NUM FROM(SELECT T.* FROM(SELECT * FROM "
+			+ ApplicationProperties.DATA_REQUEST_VIEW.getStringValue() + ") T " + "WHERE "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_STATUS.getStringValue() + " NOT IN (?, ?) AND "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_DUE_DATE.getStringValue() + " < SYSDATE " + "AND "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_CREATED_BY.getStringValue() + " = ? " + "ORDER BY %s %s) T2) T3 "
+			+ "WHERE ROW_NUM > ?  AND ROW_NUM <= ?";
+
 	private static final String QUERY_REPORT_5_OVERDUE_COUNT = "SELECT COUNT(*) FROM "
 			+ ApplicationProperties.DATA_REQUEST_VIEW.getStringValue() + " WHERE "
 			+ ApplicationProperties.DATA_REQUEST_FIELD_STATUS.getStringValue() + " NOT IN (?, ?) AND "
@@ -2715,6 +2722,65 @@ public class DataLayer {
 					ApplicationProperties.DATA_REQUEST_STATUS_REJECTED_BY_ADMIN.getStringValue());
 			prepared_statement.setInt(3, first_row);
 			prepared_statement.setInt(4, rows_per_page);
+
+			result_set = prepared_statement.executeQuery();
+
+			while (result_set.next()) {
+				request = mapRequest(result_set);
+
+				data_requests.add(request);
+			}
+		} catch (SQLException sqle) {
+			logger.error("A SQL exception occured in getOverdueReport().", sqle);
+			throw sqle;
+		} catch (Exception e) {
+			logger.error("An exception occured in getOverdueReport().", e);
+			throw e;
+		} finally {
+			try {
+				if (oracle_connection != null) {
+					if (result_set != null) {
+						result_set.close();
+					}
+
+					oracle_connection.close();
+				}
+			} catch (SQLException sqle) {
+				logger.error("A SQL exception occured while trying to close the connection in getOverdueReport().",
+						sqle);
+			}
+		}
+
+		if (data_requests.size() > 0) {
+			return data_requests;
+		}
+
+		return null;
+	}
+
+	public List<DataRequest> getOverdueReport(int first_row, int rows_per_page, String sort_field,
+			boolean sort_ascending, String createdBy) throws Exception {
+		List<DataRequest> data_requests = new ArrayList<DataRequest>();
+		Connection oracle_connection = null;
+		ResultSet result_set = null;
+		DataRequest request = null;
+		String sort_direction = null;
+		String formatted_query = null;
+
+		try {
+			sort_direction = sort_ascending ? "ASC" : "DESC";
+			formatted_query = String.format(QUERY_REPORT_5_OVERDUE_CREATED_BY, sort_field, sort_direction);
+
+			oracle_connection = OracleFactory.createConnection();
+
+			PreparedStatement prepared_statement = oracle_connection.prepareStatement(formatted_query);
+
+			prepared_statement.setString(1, ApplicationProperties.DATA_REQUEST_STATUS_CLOSED.getStringValue());
+			prepared_statement.setString(2,
+					ApplicationProperties.DATA_REQUEST_STATUS_REJECTED_BY_ADMIN.getStringValue());
+			prepared_statement.setString(3, createdBy);
+			prepared_statement.setInt(4, first_row);
+			prepared_statement.setInt(5, rows_per_page);
 
 			result_set = prepared_statement.executeQuery();
 
