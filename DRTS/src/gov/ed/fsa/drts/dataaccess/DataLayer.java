@@ -1473,6 +1473,7 @@ public class DataLayer {
 			PreparedStatement prepared_statement = oracle_connection
 					.prepareStatement(QUERY_SELECT_DATA_REQUESTS_BY_DISPLAY_ID_COUNT);
 			prepared_statement.setString(1, "%" + display_id + "%");
+			prepared_statement.setString(2, "%" + display_id + "%");
 
 			result_set = prepared_statement.executeQuery();
 
