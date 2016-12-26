@@ -184,6 +184,15 @@
 									<div id="assignment">
 										<h:outputLabel value="SME To Resolve The Request" />
 										<h:outputText styleClass="form-text" value="#{dataRequest.assignedSme}" />
+										<h:panelGroup
+											rendered="#{not empty dataRequest.dateAssignedToSme}">
+											<h:outputLabel for="smeAssignedDate"
+												value="Date Assigned to SME" />
+											<h:outputText id="smeAssignedDate" styleClass="form-text"
+												value="#{dataRequest.dateAssignedToSme}">
+												<f:converter converterId="defaultDateConverter" />
+											</h:outputText>
+										</h:panelGroup>
 									</div>
 									<div id="validation">
 										<h:outputLabel value="SME To Validate The Request" />
@@ -194,6 +203,16 @@
 
 										<h:outputLabel value="Validation Result" />
 										<h:inputTextarea value="#{dataRequest.validationResult}" />
+
+										<h:panelGroup
+											rendered="#{not empty dataRequest.dateAssignedToValidator}">
+											<h:outputLabel for="validatorAssignedDate"
+												value="Date Assigned to Validator" />
+											<h:outputText id="validatorAssignedDate" styleClass="form-text"
+												value="#{dataRequest.dateAssignedToValidator}">
+												<f:converter converterId="defaultDateConverter" />
+											</h:outputText>
+										</h:panelGroup>
 									</div>
 									<div id="attachments">
 										<label>Attached Files</label>
