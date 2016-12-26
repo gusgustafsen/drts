@@ -18,6 +18,12 @@ import org.apache.log4j.Logger;
 public enum Messages {
 	TRY_AGAIN,
 
+	EMAIL_SENT,
+
+	EMAIL_SEND_ERROR,
+
+	EMAIL_ADDRESS_MISSING,
+
 	TIMEOUT;
 
 	/** Log4j logger */

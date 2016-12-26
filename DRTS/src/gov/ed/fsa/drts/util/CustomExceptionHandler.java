@@ -19,6 +19,7 @@ import org.apache.log4j.Logger;
 import gov.ed.fsa.drts.bean.Messages;
 import gov.ed.fsa.drts.bean.PageMsg;
 import gov.ed.fsa.drts.bean.PageMsgSeverity;
+import gov.ed.fsa.drts.bean.UserSession;
 
 public class CustomExceptionHandler extends ExceptionHandlerWrapper {
 	private static final Logger logger = Logger.getLogger(CustomExceptionHandler.class);
@@ -40,6 +41,9 @@ public class CustomExceptionHandler extends ExceptionHandlerWrapper {
 
 		final PageMsg pageMsg = FacesContext.getCurrentInstance().getApplication()
 				.evaluateExpressionGet(FacesContext.getCurrentInstance(), "#{PageMsg}", PageMsg.class);
+
+		final UserSession userSession = FacesContext.getCurrentInstance().getApplication()
+				.evaluateExpressionGet(FacesContext.getCurrentInstance(), "#{userSession}", UserSession.class);
 
 		while (i.hasNext()) {
 			ExceptionQueuedEvent event = i.next();
@@ -67,7 +71,7 @@ public class CustomExceptionHandler extends ExceptionHandlerWrapper {
 				final String url = request.getRequestURL().toString();
 
 				try {
-					nav.performNavigation("/index?faces-redirect=true");
+					nav.performNavigation(userSession.getHomePageRedirect());
 				} catch (IllegalStateException ex) {
 					logger.error("Attempt to perform navigation after internal error", ex);
 				}

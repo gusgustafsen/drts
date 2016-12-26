@@ -316,6 +316,8 @@
 									action="#{dataRequest.updateRequest(13)}" />
 								<h:commandButton styleClass="button" value="Reject"
 									action="#{dataRequest.updateRequest(18)}" />
+								<h:commandButton styleClass="button" value="Email Request"
+									action="#{dataRequest.goToEmail('validateRequest.htm')}" />
 								<h:commandButton styleClass="button" value="Cancel"
 									action="#{userSession.getHomePageRedirect}" />
 							</div>

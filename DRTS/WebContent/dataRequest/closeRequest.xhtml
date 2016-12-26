@@ -303,6 +303,8 @@
 								</h:panelGroup>
 								<h:commandButton styleClass="button" value="Close"
 									action="#{dataRequest.updateRequest(16)}" />
+								<h:commandButton styleClass="button" value="Email Request"
+									action="#{dataRequest.goToEmail('closeRequest.htm')}" />
 								<h:commandButton styleClass="button" value="Cancel"
 									action="#{userSession.getHomePageRedirect}" />
 							</div>

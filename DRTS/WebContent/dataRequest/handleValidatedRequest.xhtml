@@ -236,6 +236,8 @@
 								<h:commandButton styleClass="button" value="Pending Requestor Approval"
 									action="#{dataRequest.updateRequest(14)}" />
 								<h:commandButton styleClass="button" value="Close" action="#{dataRequest.updateRequest(15)}" />
+								<h:commandButton styleClass="button" value="Email Request"
+									action="#{dataRequest.goToEmail('handleValidatedRequest.htm')}" />
 								<h:commandButton styleClass="button" value="Cancel" action="#{userSession.getHomePageRedirect}" />
 
 							</div>

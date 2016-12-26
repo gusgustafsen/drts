@@ -347,6 +347,8 @@
 									rendered="#{userSession.admin and not dataRequest.statusOnHold}" />
 								<h:commandButton styleClass="button" value="Reject" rendered="#{userSession.admin}"
 									action="#{dataRequest.updateRequest(5)}" />
+								<h:commandButton styleClass="button" value="Email Request"
+									action="#{dataRequest.goToEmail('handleRequest.htm')}" />
 								<h:commandButton styleClass="button" value="Cancel"
 									action="#{userSession.getHomePageRedirect}" />
 							</div>

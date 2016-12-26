@@ -25,8 +25,13 @@ import org.activiti.engine.identity.User;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.apache.log4j.Logger;
 
+import gov.ed.fsa.drts.bean.Messages;
+import gov.ed.fsa.drts.bean.PageMsg;
+import gov.ed.fsa.drts.bean.PageMsgSeverity;
 import gov.ed.fsa.drts.bean.PageUtil;
 import gov.ed.fsa.drts.dataaccess.DataLayer;
+import gov.ed.fsa.drts.email.EmailRequest;
+import gov.ed.fsa.drts.exception.DrtsException;
 import gov.ed.fsa.drts.object.Attachment;
 import gov.ed.fsa.drts.object.AuditField;
 import gov.ed.fsa.drts.object.DataRequest;
@@ -84,6 +89,10 @@ public class DataRequestBean extends PageUtil implements Serializable {
 	private String original_system = null;
 
 	private String source = null;
+
+	private String emailTo = null;
+
+	private String returnPage = null;
 
 	/**
 	 * A map of tokens that have to be replaced with request values in the
@@ -1454,5 +1463,50 @@ public class DataRequestBean extends PageUtil implements Serializable {
 		this.source = source;
 
 		this.current_data_request.setTrackingSuffix(source.equalsIgnoreCase("communications") ? "D" : "F");
+	}
+
+	public String goToEmail(String returnPage) {
+		this.returnPage = returnPage;
+
+		return "sendEmail.htm?faces-redirect=true";
+	}
+
+	public String returnToPage() {
+		return returnPage + "?faces-redirect=true";
+	}
+
+	public String sendEmail() {
+		final PageMsg pageMsg = FacesContext.getCurrentInstance().getApplication()
+				.evaluateExpressionGet(FacesContext.getCurrentInstance(), "#{PageMsg}", PageMsg.class);
+
+		if (Utils.isStringEmpty(emailTo)) {
+			pageMsg.createMsg(Messages.EMAIL_ADDRESS_MISSING, PageMsgSeverity.ERROR);
+			return null;
+		}
+
+		try {
+			new EmailRequest().send(this);
+			pageMsg.createMsg(Messages.EMAIL_SENT, PageMsgSeverity.SUCCESS);
+		} catch (DrtsException e) {
+			pageMsg.createMsg(Messages.EMAIL_ADDRESS_MISSING, PageMsgSeverity.ERROR);
+		}
+
+		return returnToPage();
+	}
+
+	public String getEmailTo() {
+		return emailTo;
+	}
+
+	public void setEmailTo(String emailTo) {
+		this.emailTo = emailTo;
+	}
+
+	public String getReturnPage() {
+		return returnPage;
+	}
+
+	public void setReturnPage(String returnPage) {
+		this.returnPage = returnPage;
 	}
 }

@@ -1,6 +1,9 @@
-<ui:composition xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:p="http://xmlns.jcp.org/jsf/passthrough" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core" xmlns="http://www.w3.org/1999/xhtml">
+<ui:composition xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+	xmlns="http://www.w3.org/1999/xhtml">
 
 	<div id="header-wrapper">
 		<div class="grid">
@@ -36,29 +39,34 @@
 				<header class="col-1-1 mobile-col-1-1">
 					<nav class="col-1-1 mobile-col-1-1" role="navigation">
 						<ul id="top-menu">
-							<li class="first menu-sec-1 #{(active == 1) ? 'active' : '' }"><h:link outcome="#{userSession.homePage}">
+							<li class="first menu-sec-1 #{(active == 1) ? 'active' : '' }"><h:link
+									outcome="#{userSession.homePage}">
 									<span>Home</span>
 								</h:link></li>
 							<h:panelGroup rendered="#{userSession.reporter eq false}">
-								<li class="menu-sec-2 #{(active == 2) ? 'active' : '' }"><a href="#"> <span>Data Requests</span> <span
-										class="arrow"></span>
+								<li class="menu-sec-2 #{(active == 2) ? 'active' : '' }"><a
+									href="#"> <span>Data Requests</span> <span class="arrow"></span>
 								</a>
 									<ul>
-										<h:panelGroup rendered="#{userSession.allowedToCreateRequests}">
-											<li><h:commandLink action="#{userSession.createNewRequest}">
+										<h:panelGroup
+											rendered="#{userSession.allowedToCreateRequests}">
+											<li><h:commandLink
+													action="#{userSession.createNewRequest}">
 													<span>Create New Request</span>
 												</h:commandLink></li>
 										</h:panelGroup>
-										<h:panelGroup rendered="false and #{userSession.allowedToViewAllRequests}">
+										<h:panelGroup
+											rendered="false and #{userSession.allowedToViewAllRequests}">
 											<li><h:link outcome="/dataRequest/allRequests">
 													<span>View All Requests</span>
 												</h:link></li>
 										</h:panelGroup>
 									</ul></li>
 							</h:panelGroup>
-							<h:panelGroup rendered="#{userSession.allowedToSearchMyRequests or userSession.allowedToSearchAllRequests}">
-								<li class="menu-sec-3 #{(active == 3) ? 'active' : '' }"><a href="#"> <span>Search</span> <span
-										class="arrow"></span>
+							<h:panelGroup
+								rendered="#{userSession.allowedToSearchMyRequests or userSession.allowedToSearchAllRequests}">
+								<li class="menu-sec-3 #{(active == 3) ? 'active' : '' }"><a
+									href="#"> <span>Search</span> <span class="arrow"></span>
 								</a>
 									<ul>
 										<li><h:link outcome="/search/searchRequests">
@@ -66,7 +74,8 @@
 											</h:link></li>
 									</ul></li>
 							</h:panelGroup>
-							<li class="menu-sec-4 #{(active == 4) ? 'active' : '' }"><h:link outcome="/reports/reports">
+							<li class="menu-sec-4 #{(active == 4) ? 'active' : '' }"><h:link
+									outcome="/reports/reports">
 									<span>Reports</span>
 									<span class="arrow"></span>
 								</h:link>
@@ -88,8 +97,8 @@
 										</h:link></li>
 								</ul></li>
 							<h:panelGroup rendered="false and #{userSession.admin}">
-								<li class="menu-sec-5 #{(active == 5) ? 'active' : '' }"><a href="#"> <span>Administration</span> <span
-										class="arrow"></span>
+								<li class="menu-sec-5 #{(active == 5) ? 'active' : '' }"><a
+									href="#"> <span>Administration</span> <span class="arrow"></span>
 								</a>
 									<ul>
 										<li><h:link outcome="/administration/userManagement">
@@ -109,5 +118,7 @@
 			</div>
 		</h:form>
 	</div>
+	<ui:include src="#{root}includes/messages.xhtml" />
+
 
 </ui:composition>
