@@ -986,10 +986,11 @@ public class DataLayer {
 			} else {
 				prepared_statement.setDate(19, null);
 			}
-			if (request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_DATE_CLOSED.getStringValue()) != null) {
+			if (request_variables
+					.get(ApplicationProperties.DATA_REQUEST_FIELD_DATE_RESOLVED.getStringValue()) != null) {
 				prepared_statement.setDate(20,
 						new java.sql.Date(((Date) request_variables
-								.get(ApplicationProperties.DATA_REQUEST_FIELD_DATE_CLOSED.getStringValue()))
+								.get(ApplicationProperties.DATA_REQUEST_FIELD_DATE_RESOLVED.getStringValue()))
 										.getTime()));
 			} else {
 				prepared_statement.setDate(20, null);

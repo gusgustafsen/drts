@@ -71,6 +71,11 @@
 											<f:converter converterId="defaultDateTimeConverter" />
 										</h:outputText>
 
+										<label>Resolved Date</label>
+										<h:outputText styleClass="form-text" value="#{dataRequest.dateResolved}">
+											<f:converter converterId="defaultDateTimeConverter" />
+										</h:outputText>
+
 										<label>Original Request Date</label>
 										<h:inputText styleClass="datepicker" value="#{dataRequest.originalRequestDate}">
 											<f:converter converterId="defaultDateConverter" />

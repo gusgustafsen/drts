@@ -184,7 +184,6 @@ public class DataRequestBean extends PageUtil implements Serializable {
 
 		logger.info("Performing request action #" + action_type);
 
-		// TODO change to ENUM if possible
 		switch (action_type) {
 		// user created a new request as drafted
 		case 1:

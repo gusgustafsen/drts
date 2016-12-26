@@ -238,6 +238,15 @@
 											<h:outputText id="smeResolveRO" style="padding-left: 5%"
 												value="#{dataRequest.assignedSme}" />
 										</h:panelGroup>
+										<h:panelGroup
+											rendered="#{not empty dataRequest.dateAssignedToSme}">
+											<h:outputLabel for="smeAssignedDate"
+												value="Date Assigned to SME" />
+											<h:outputText id="smeAssignedDate" styleClass="form-text"
+												value="#{dataRequest.dateAssignedToSme}">
+												<f:converter converterId="defaultDateConverter" />
+											</h:outputText>
+										</h:panelGroup>
 									</div>
 									<div id="validation">
 										<h:panelGroup
@@ -263,17 +272,27 @@
 											rendered="#{not userSession.allowedToAssignRequests}">
 											<h:outputLabel for="smeValidation2"
 												value="SME To Validate The Request" />
-											<h:outputText id="smeValidation2" style="padding-left: 5%"
+											<h:outputText id="smeValidation2" styleClass="form-text"
 												value="#{dataRequest.assignedValidator}" />
 
 											<h:outputLabel for="validation2" value="Validation" />
-											<h:outputText id="validation2" style="padding-left: 5%"
+											<h:outputText id="validation2" styleClass="form-text"
 												value="#{dataRequest.validationDescription}" />
 
 											<h:outputLabel for="validationResult2"
 												value="Validation Result" />
-											<h:outputText id="validationResult2" style="padding-left: 5%"
+											<h:outputText id="validationResult2" styleClass="form-text"
 												value="#{dataRequest.validationResult}" />
+										</h:panelGroup>
+
+										<h:panelGroup
+											rendered="#{not empty dataRequest.dateAssignedToValidator}">
+											<h:outputLabel for="validatorAssignedDate"
+												value="Date Assigned to Validator" />
+											<h:outputText id="validatorAssignedDate" styleClass="form-text"
+												value="#{dataRequest.dateAssignedToSme}">
+												<f:converter converterId="defaultDateConverter" />
+											</h:outputText>
 										</h:panelGroup>
 
 									</div>
