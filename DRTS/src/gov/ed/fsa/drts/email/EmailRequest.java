@@ -2,6 +2,7 @@ package gov.ed.fsa.drts.email;
 
 import java.util.Properties;
 
+import javax.activation.DataHandler;
 import javax.mail.BodyPart;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -14,10 +15,12 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMessage.RecipientType;
 import javax.mail.internet.MimeMultipart;
+import javax.mail.util.ByteArrayDataSource;
 
 import org.apache.log4j.Logger;
 
 import gov.ed.fsa.drts.exception.DrtsException;
+import gov.ed.fsa.drts.object.Attachment;
 import gov.ed.fsa.drts.process.dataRequest.DataRequestBean;
 import gov.ed.fsa.drts.util.ApplicationProperties;
 
@@ -82,6 +85,34 @@ public class EmailRequest {
 			String error = "Adding message body to multipart mime when emailing request";
 			logger.error(message, e);
 			throw new DrtsException(error, e);
+		}
+
+		for (Attachment attachment : dataRequest.getAttachments()) {
+			BodyPart attachmentBodyPart = new MimeBodyPart();
+			try {
+				attachmentBodyPart.setFileName(attachment.getName());
+			} catch (MessagingException e) {
+				String error = "Setting attachment file name for " + attachment.getName();
+				logger.error(message, e);
+				throw new DrtsException(error, e);
+			}
+
+			try {
+				attachmentBodyPart.setDataHandler(
+						new DataHandler(new ByteArrayDataSource(attachment.getContent(), "text/plain")));
+			} catch (MessagingException e) {
+				String error = "Setting attachment content for " + attachment.getName();
+				logger.error(message, e);
+				throw new DrtsException(error, e);
+			}
+
+			try {
+				multipart.addBodyPart(attachmentBodyPart);
+			} catch (MessagingException e) {
+				String error = "Adding attachment to multipart mime when emailing request";
+				logger.error(message, e);
+				throw new DrtsException(error, e);
+			}
 		}
 
 		try {
