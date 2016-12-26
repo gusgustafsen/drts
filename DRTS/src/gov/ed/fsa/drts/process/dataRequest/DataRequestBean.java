@@ -22,7 +22,6 @@ import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.identity.User;
-import org.activiti.engine.runtime.ProcessInstance;
 import org.apache.log4j.Logger;
 
 import gov.ed.fsa.drts.bean.Messages;
@@ -466,8 +465,6 @@ public class DataRequestBean extends PageUtil implements Serializable {
 					this.current_data_request.getDescription(), this.userSession.getUser().getId()));
 		}
 
-		System.out.println("original sme: " + this.original_sme);
-		System.out.println("current sme: " + this.current_data_request.getAssignedSme());
 		if (Utils.areStringsEqual(this.original_sme, this.assigned_sme) == false) {
 			System.out.println("assigned sme was changed.");
 			updated_fields.add(new AuditField(this.current_data_request.getId(),
@@ -498,7 +495,6 @@ public class DataRequestBean extends PageUtil implements Serializable {
 
 		// user action resulted in a completion of a workflow task
 		if (complete_task == true) {
-			logger.info("Completing task, and updating the request");
 
 			this.task_service.complete(this.current_data_request.getCurrentTaskId(), this.request_variables);
 
@@ -518,11 +514,8 @@ public class DataRequestBean extends PageUtil implements Serializable {
 						this.current_data_request.getIteration(), this.current_data_request.getId());
 			}
 
-			ProcessInstance started_process_instance = this.runtime_service.startProcessInstanceByKey(
-					ApplicationProperties.PROCESS_ID_DATA_REQUEST.getStringValue(), this.request_variables);
-
-			DataLayer.getInstance().insertDataRequest(started_process_instance.getId(), this.request_variables,
-					candidate_group, assignee);
+			DataLayer.getInstance().insertDataRequest(current_data_request, this.request_variables, candidate_group,
+					assignee);
 		}
 		// user action resulted only in an updated to a request
 		else {

@@ -8,10 +8,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.ProcessEngines;
+import org.activiti.engine.RuntimeService;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
@@ -326,7 +331,7 @@ public class DataLayer {
 		return dl;
 	}
 
-	public void insertDataRequest(String process_instance_id, Map<String, Object> request_variables,
+	public void insertDataRequest(DataRequest dataRequest, Map<String, Object> request_variables,
 			String candidate_group, String assignee) throws Exception {
 		Connection oracle_connection = null;
 		int sql_result = 0;
@@ -337,10 +342,27 @@ public class DataLayer {
 
 			next_id = getNextDataRequestID();
 
+			// Note: we have to call activiti first, to get the process id to
+			// insert into the drt history table.
+			// But we have to generate the request id first, so the emails from
+			// activiti have the right request id.
+			dataRequest.setDisplayId(next_id);
+
+			Map<String, String> email_replace_tokens = new HashMap<>();
+			email_replace_tokens.put("REQUEST_DISPLAY_ID", dataRequest.getDisplayId());
+			request_variables.put(ApplicationProperties.EMAIL_LABEL_NOTIFY_ADMIN_DRT_SUBJECT.getStringValue(),
+					Utils.replaceAll(ApplicationProperties.EMAIL_NOTIFY_ADMIN_DRT_SUBJECT.getStringValue(),
+							email_replace_tokens));
+
+			ProcessEngine process_engine = ProcessEngines.getDefaultProcessEngine();
+			RuntimeService runtime_service = process_engine.getRuntimeService();
+			ProcessInstance started_process_instance = runtime_service.startProcessInstanceByKey(
+					ApplicationProperties.PROCESS_ID_DATA_REQUEST.getStringValue(), request_variables);
+
 			PreparedStatement prepared_statement = oracle_connection.prepareStatement(QUERY_INSERT_DATA_REQUEST);
 			prepared_statement.setString(1,
 					(String) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_ID.getStringValue()));
-			prepared_statement.setString(2, process_instance_id);
+			prepared_statement.setString(2, started_process_instance.getId());
 			prepared_statement.setString(3, candidate_group);
 			prepared_statement.setString(4, assignee);
 			prepared_statement.setString(5,
