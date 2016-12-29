@@ -1285,7 +1285,7 @@ public class DataLayer {
 			PreparedStatement prepared_statement = oracle_connection.prepareStatement(QUERY_INSERT_ATTACHMENT);
 
 			prepared_statement.setString(1, file_id);
-			prepared_statement.setString(2, current_request_id);
+			prepared_statement.setString(2, current_request_id.trim());
 			prepared_statement.setString(3, file_name);
 			prepared_statement.setString(4, content_type);
 			prepared_statement.setLong(5, file_size);
