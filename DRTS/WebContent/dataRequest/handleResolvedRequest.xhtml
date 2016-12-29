@@ -41,9 +41,6 @@
 
 						<h:form id="request-form" styleClass="col-1-1 mobile-col-1-1">
 
-							<p>The request below has been resolved by a SME. You can assign the request to a SME for validation, put it
-								on hold, close it or put it in the "Pending Requestor Approval" state.</p>
-
 							<div class="form-wrapper col-1-1 mobile-col-1-1">
 
 								<div id="drtsTabs">
@@ -200,22 +197,48 @@
 										</h:panelGroup>
 									</div>
 									<div id="validation">
-										<h:outputLabel value="SME To Validate The Request" />
-										<h:selectOneMenu value="#{dataRequest.assignedValidator}">
-											<f:selectItems value="#{dataRequest.smes}" />
-										</h:selectOneMenu>
+										<h:panelGroup
+											rendered="#{userSession.allowedToAssignRequests}">
+											<h:outputLabel for="smeValidation"
+												value="SME To Validate The Request" />
+											<h:selectOneMenu id="smeValidation"
+												value="#{dataRequest.assignedValidator}">
+												<f:selectItems value="#{dataRequest.smes}" />
+											</h:selectOneMenu>
 
-										<h:outputLabel value="Validation" />
-										<h:inputTextarea value="#{dataRequest.validationDescription}" />
+											<h:outputLabel for="validation" value="Validation" />
+											<h:inputTextarea id="validation"
+												value="#{dataRequest.validationDescription}" />
 
-										<h:outputLabel value="Validation Result" />
-										<h:inputTextarea value="#{dataRequest.validationResult}" />
+											<h:outputLabel for="validationResult"
+												value="Validation Result" />
+											<h:inputTextarea id="validationResult"
+												value="#{dataRequest.validationResult}" />
+										</h:panelGroup>
+
+										<h:panelGroup
+											rendered="#{not userSession.allowedToAssignRequests}">
+											<h:outputLabel for="smeValidation2"
+												value="SME To Validate The Request" />
+											<h:outputText id="smeValidation2" styleClass="form-text"
+												value="#{dataRequest.assignedValidator}" />
+
+											<h:outputLabel for="validation2" value="Validation" />
+											<h:outputText id="validation2" styleClass="form-text"
+												value="#{dataRequest.validationDescription}" />
+
+											<h:outputLabel for="validationResult2"
+												value="Validation Result" />
+											<h:outputText id="validationResult2" styleClass="form-text"
+												value="#{dataRequest.validationResult}" />
+										</h:panelGroup>
 
 										<h:panelGroup
 											rendered="#{not empty dataRequest.dateAssignedToValidator}">
 											<h:outputLabel for="validatorAssignedDate"
 												value="Date Assigned to Validator" />
-											<h:outputText id="validatorAssignedDate" styleClass="form-text"
+											<h:outputText id="validatorAssignedDate"
+												styleClass="form-text"
 												value="#{dataRequest.dateAssignedToValidator}">
 												<f:converter converterId="defaultDateConverter" />
 											</h:outputText>
@@ -259,13 +282,14 @@
 							<div class="form-control col-1-1 mobile-col-1-1">
 								<h:commandButton styleClass="button" value="Update" action="#{dataRequest.updateRequest(9)}" />
 								<h:commandButton styleClass="button" value="Put On Hold" action="#{dataRequest.updateRequest(17)}"
-									rendered="#{dataRequest.statusOnHold eq false}" />
-								<h:commandButton styleClass="button" value="Pending Requestor Approval"
+									 rendered="#{userSession.allowedToHoldRequests and not dataRequest.statusOnHold}" />
+								<h:commandButton styleClass="button" value="Pending Requestor Approval" rendered="#{userSession.allowedToCloseRequests}"
 									action="#{dataRequest.updateRequest(10)}" />
-								<h:commandButton styleClass="button" value="Close" action="#{dataRequest.updateRequest(11)}" />
-								<h:commandButton styleClass="button" value="Email Request"
+								<h:commandButton styleClass="button" value="Close"  rendered="#{userSession.allowedToCloseRequests}" action="#{dataRequest.updateRequest(11)}" />
+								<h:commandButton styleClass="button" value="Email Request" rendered="#{userSession.allowedToEmailRequests}"
 									action="#{dataRequest.goToEmail('handleResolvedRequest.htm')}" />
-								<h:commandButton styleClass="button" value="Cancel" action="#{userSession.getHomePageRedirect}" />
+								<h:commandButton styleClass="button" value="Cancel"
+									action="#{userSession.getHomePageRedirect}" />
 							</div>
 
 						</h:form>

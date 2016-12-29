@@ -24,6 +24,8 @@ public enum Messages {
 
 	EMAIL_ADDRESS_MISSING,
 
+	OPERATION_NOT_AUTHORIZED,
+
 	TIMEOUT;
 
 	/** Log4j logger */

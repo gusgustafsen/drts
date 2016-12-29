@@ -55,7 +55,7 @@ public class FileServlet extends HttpServlet {
 					String field_name = item.getFieldName();
 					String field_value = item.getString();
 
-					if (field_name.equalsIgnoreCase("current_request_id") == true) {
+					if (field_name.equalsIgnoreCase("current_request_id")) {
 						current_request_id = field_value;
 					}
 				}

@@ -45,10 +45,6 @@
 
 						<h:form id="request-form" styleClass="col-1-1 mobile-col-1-1">
 
-							<p>Below is a data request that has been assigned to you by
-								an administrator. You can resolve the request, reject it, or
-								update the request's information.</p>
-
 							<div class="form-wrapper col-1-1 mobile-col-1-1">
 
 								<div id="drtsTabs">
@@ -313,13 +309,14 @@
 							</div>
 
 							<div class="form-control col-1-1 mobile-col-1-1">
-								<h:commandButton styleClass="button" value="Update"
+								<h:commandButton styleClass="button" value="Update" 
+									rendered="#{userSession.allowedToEditAllRequests or (userSession.allowedToEditMyRequests and dataRequest.createdBy eq userSession.user.id )}"
 									action="#{dataRequest.updateRequest(6)}" />
-								<h:commandButton styleClass="button" value="Resolve"
+								<h:commandButton styleClass="button" value="Resolve" rendered="#{userSession.allowedToResolveRequests}"
 									action="#{dataRequest.updateRequest(7)}" />
-								<h:commandButton styleClass="button" value="Reject"
+								<h:commandButton styleClass="button" value="Reject" rendered="#{userSession.allowedToResolveRequests}"
 									action="#{dataRequest.updateRequest(8)}" />
-								<h:commandButton styleClass="button" value="Email Request"
+								<h:commandButton styleClass="button" value="Email Request" rendered="#{userSession.allowedToEmailRequests}"
 									action="#{dataRequest.goToEmail('completeRequest.htm')}" />
 								<h:commandButton styleClass="button" value="Cancel"
 									action="#{userSession.getHomePageRedirect}" />

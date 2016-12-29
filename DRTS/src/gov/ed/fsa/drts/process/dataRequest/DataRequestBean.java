@@ -40,7 +40,7 @@ import gov.ed.fsa.drts.util.Utils;
 /**
  * Managed bean that controls a data request workflow.
  *
- * @author Timur Asanov | tasanov@ppsco.com
+ * @author Timur Asanov
  */
 @ManagedBean(name = "dataRequest")
 @SessionScoped
@@ -50,6 +50,9 @@ public class DataRequestBean extends PageUtil implements Serializable {
 
 	/** Log4j logger. */
 	private static final Logger logger = Logger.getLogger(DataRequestBean.class);
+
+	final PageMsg pageMsg = FacesContext.getCurrentInstance().getApplication()
+			.evaluateExpressionGet(FacesContext.getCurrentInstance(), "#{PageMsg}", PageMsg.class);
 
 	/** Activiti process engine. */
 	private transient ProcessEngine process_engine = null;
@@ -195,6 +198,11 @@ public class DataRequestBean extends PageUtil implements Serializable {
 		switch (action_type) {
 		// user created a new request as drafted
 		case 1:
+			if (!userSession.isAllowedToCreateRequests()) {
+				pageMsg.createMsg(Messages.OPERATION_NOT_AUTHORIZED, PageMsgSeverity.ERROR);
+				return null;
+			}
+
 			status = ApplicationProperties.DATA_REQUEST_STATUS_DRAFTED.getStringValue();
 			this.request_variables.put(ApplicationProperties.DATA_REQUEST_WORKFLOW_REQUEST_DRAFTED.getStringValue(), 1);
 			this.current_data_request.setCreatedDateTime(new Date());
@@ -215,6 +223,10 @@ public class DataRequestBean extends PageUtil implements Serializable {
 
 		// user created a new request and submitted
 		case 2:
+			if (!userSession.isAllowedToCreateRequests()) {
+				pageMsg.createMsg(Messages.OPERATION_NOT_AUTHORIZED, PageMsgSeverity.ERROR);
+				return null;
+			}
 			status = ApplicationProperties.DATA_REQUEST_STATUS_PENDING.getStringValue();
 			this.request_variables.put(ApplicationProperties.DATA_REQUEST_WORKFLOW_REQUEST_DRAFTED.getStringValue(), 2);
 			this.current_data_request.setCreatedDateTime(new Date());
@@ -236,6 +248,10 @@ public class DataRequestBean extends PageUtil implements Serializable {
 
 		// user submitted a drafted request
 		case 3:
+			if (!userSession.isAllowedToCreateRequests()) {
+				pageMsg.createMsg(Messages.OPERATION_NOT_AUTHORIZED, PageMsgSeverity.ERROR);
+				return null;
+			}
 			status = ApplicationProperties.DATA_REQUEST_STATUS_PENDING.getStringValue();
 			this.request_variables
 					.put(ApplicationProperties.DATA_REQUEST_WORKFLOW_REQUEST_DRAFTED_SUBMITTED.getStringValue(), 1);
@@ -245,6 +261,10 @@ public class DataRequestBean extends PageUtil implements Serializable {
 			break;
 
 		case 19:
+			if (!userSession.isAllowedToDeleteRequests()) {
+				pageMsg.createMsg(Messages.OPERATION_NOT_AUTHORIZED, PageMsgSeverity.ERROR);
+				return null;
+			}
 			status = ApplicationProperties.DATA_REQUEST_STATUS_DISCARDED.getStringValue();
 			this.request_variables
 					.put(ApplicationProperties.DATA_REQUEST_WORKFLOW_REQUEST_DRAFTED_SUBMITTED.getStringValue(), 2);
@@ -255,6 +275,11 @@ public class DataRequestBean extends PageUtil implements Serializable {
 
 		// administrator updated a new request
 		case 4:
+			if (!userSession.isAllowedToAssignRequests()) {
+				pageMsg.createMsg(Messages.OPERATION_NOT_AUTHORIZED, PageMsgSeverity.ERROR);
+				return null;
+			}
+
 			// if the assigned SME was picked, then the request will be assigned
 			// to that SME
 			if (Utils.isStringEmpty(this.assigned_sme) == false) {
@@ -274,6 +299,11 @@ public class DataRequestBean extends PageUtil implements Serializable {
 
 		// administrator rejected a request
 		case 5:
+			if (!userSession.isAllowedToCloseRequests()) {
+				pageMsg.createMsg(Messages.OPERATION_NOT_AUTHORIZED, PageMsgSeverity.ERROR);
+				return null;
+			}
+
 			status = ApplicationProperties.DATA_REQUEST_STATUS_REJECTED_BY_ADMIN.getStringValue();
 			this.request_variables
 					.put(ApplicationProperties.DATA_REQUEST_WORKFLOW_REQUEST_REJECTED_BY_ADMIN.getStringValue(), 2);
@@ -285,6 +315,11 @@ public class DataRequestBean extends PageUtil implements Serializable {
 
 		// administrator or SME updated a request
 		case 6:
+			if (!userSession.isAllowedToAssignRequests()) {
+				pageMsg.createMsg(Messages.OPERATION_NOT_AUTHORIZED, PageMsgSeverity.ERROR);
+				return null;
+			}
+
 			// if the assigned SME was changed, then the request will be
 			// reassigned to a new SME
 			if ((Utils.isStringEmpty(this.assigned_sme) == false)
@@ -302,8 +337,14 @@ public class DataRequestBean extends PageUtil implements Serializable {
 
 		// SME resolved a request
 		case 7:
+
 			// if a validator has not been picked by administrator before
 			if (Utils.isStringEmpty(this.current_data_request.getAssignedValidator()) == true) {
+				if (!userSession.isAllowedToResolveRequests()) {
+					pageMsg.createMsg(Messages.OPERATION_NOT_AUTHORIZED, PageMsgSeverity.ERROR);
+					return null;
+				}
+
 				status = ApplicationProperties.DATA_REQUEST_STATUS_RESOLVED.getStringValue();
 				this.request_variables
 						.put(ApplicationProperties.DATA_REQUEST_WORKFLOW_REQUEST_REJECTED_BY_SME.getStringValue(), 1);
@@ -314,6 +355,11 @@ public class DataRequestBean extends PageUtil implements Serializable {
 			}
 			// if a validator has already been picked by administrator
 			else {
+				if (!userSession.isAllowedToAssignRequests()) {
+					pageMsg.createMsg(Messages.OPERATION_NOT_AUTHORIZED, PageMsgSeverity.ERROR);
+					return null;
+				}
+
 				status = ApplicationProperties.DATA_REQUEST_STATUS_ASSIGNED_TO_VALIDATOR.getStringValue();
 				this.request_variables
 						.put(ApplicationProperties.DATA_REQUEST_WORKFLOW_REQUEST_REJECTED_BY_SME.getStringValue(), 4);
@@ -327,6 +373,11 @@ public class DataRequestBean extends PageUtil implements Serializable {
 
 		// SME rejected a request
 		case 8:
+			if (!userSession.isAllowedToResolveRequests()) {
+				pageMsg.createMsg(Messages.OPERATION_NOT_AUTHORIZED, PageMsgSeverity.ERROR);
+				return null;
+			}
+
 			status = ApplicationProperties.DATA_REQUEST_STATUS_REJECTED_BY_SME.getStringValue();
 			this.request_variables
 					.put(ApplicationProperties.DATA_REQUEST_WORKFLOW_REQUEST_REJECTED_BY_SME.getStringValue(), 2);
@@ -337,6 +388,11 @@ public class DataRequestBean extends PageUtil implements Serializable {
 
 		// administrator updated a resolved request
 		case 9:
+			if (!userSession.isAllowedToAssignRequests()) {
+				pageMsg.createMsg(Messages.OPERATION_NOT_AUTHORIZED, PageMsgSeverity.ERROR);
+				return null;
+			}
+
 			// if the assigned validator was picked, then the request will be
 			// assigned to that validator
 			if (Utils.isStringEmpty(this.assigned_validator) == false) {
@@ -354,6 +410,11 @@ public class DataRequestBean extends PageUtil implements Serializable {
 		// administrator changed a resolved request to the "Pending Requestor
 		// Approval" status
 		case 10:
+			if (!userSession.isAllowedToCloseRequests()) {
+				pageMsg.createMsg(Messages.OPERATION_NOT_AUTHORIZED, PageMsgSeverity.ERROR);
+				return null;
+			}
+
 			status = ApplicationProperties.DATA_REQUEST_STATUS_PENDING_REQUESTOR_APPROVAL.getStringValue();
 			this.request_variables
 					.put(ApplicationProperties.DATA_REQUEST_WORKFLOW_REQUEST_ASSIGNED_TO_VALIDATOR.getStringValue(), 2);
@@ -364,6 +425,11 @@ public class DataRequestBean extends PageUtil implements Serializable {
 
 		// administrator closed a resolved request
 		case 11:
+			if (!userSession.isAllowedToCloseRequests()) {
+				pageMsg.createMsg(Messages.OPERATION_NOT_AUTHORIZED, PageMsgSeverity.ERROR);
+				return null;
+			}
+
 			status = ApplicationProperties.DATA_REQUEST_STATUS_CLOSED.getStringValue();
 			this.request_variables
 					.put(ApplicationProperties.DATA_REQUEST_WORKFLOW_REQUEST_ASSIGNED_TO_VALIDATOR.getStringValue(), 3);
@@ -375,6 +441,11 @@ public class DataRequestBean extends PageUtil implements Serializable {
 
 		// administrator or validator updated a resolved request
 		case 12:
+			if (!userSession.isAllowedToAssignRequests()) {
+				pageMsg.createMsg(Messages.OPERATION_NOT_AUTHORIZED, PageMsgSeverity.ERROR);
+				return null;
+			}
+
 			// if the assigned validator was changed, then the request will be
 			// reassigned to a new validator
 			if ((Utils.isStringEmpty(this.assigned_validator) == false) && (this.assigned_validator
@@ -392,6 +463,11 @@ public class DataRequestBean extends PageUtil implements Serializable {
 
 		// validator validated a request
 		case 13:
+			if (!userSession.isAllowedToResolveRequests()) {
+				pageMsg.createMsg(Messages.OPERATION_NOT_AUTHORIZED, PageMsgSeverity.ERROR);
+				return null;
+			}
+
 			status = ApplicationProperties.DATA_REQUEST_STATUS_VALIDATED.getStringValue();
 			this.request_variables.put(ApplicationProperties.DATA_REQUEST_WORKFLOW_REQUEST_VALIDATED.getStringValue(),
 					1);
@@ -404,6 +480,11 @@ public class DataRequestBean extends PageUtil implements Serializable {
 		// administrator changed a validated request to the "Pending Requestor
 		// Approval" status
 		case 14:
+			if (!userSession.isAllowedToResolveRequests()) {
+				pageMsg.createMsg(Messages.OPERATION_NOT_AUTHORIZED, PageMsgSeverity.ERROR);
+				return null;
+			}
+
 			status = ApplicationProperties.DATA_REQUEST_STATUS_PENDING_REQUESTOR_APPROVAL.getStringValue();
 			this.request_variables
 					.put(ApplicationProperties.DATA_REQUEST_WORKFLOW_VALIDATED_REQUEST_CLOSED.getStringValue(), 2);
@@ -414,6 +495,11 @@ public class DataRequestBean extends PageUtil implements Serializable {
 
 		// administrator closed a validated request
 		case 15:
+			if (!userSession.isAllowedToCloseRequests()) {
+				pageMsg.createMsg(Messages.OPERATION_NOT_AUTHORIZED, PageMsgSeverity.ERROR);
+				return null;
+			}
+
 			status = ApplicationProperties.DATA_REQUEST_STATUS_CLOSED.getStringValue();
 			this.request_variables
 					.put(ApplicationProperties.DATA_REQUEST_WORKFLOW_VALIDATED_REQUEST_CLOSED.getStringValue(), 1);
@@ -426,7 +512,17 @@ public class DataRequestBean extends PageUtil implements Serializable {
 		// administrator closed a request that was in "Pending Requestor
 		// Approval" status
 		case 16:
+			if (!userSession.isAllowedToCloseRequests()) {
+				pageMsg.createMsg(Messages.OPERATION_NOT_AUTHORIZED, PageMsgSeverity.ERROR);
+				return null;
+			}
+
 			status = ApplicationProperties.DATA_REQUEST_STATUS_CLOSED.getStringValue();
+			this.request_variables
+					.put(ApplicationProperties.DATA_REQUEST_WORKFLOW_VALIDATED_REQUEST_CLOSED.getStringValue(), 1);
+			this.request_variables
+					.put(ApplicationProperties.DATA_REQUEST_WORKFLOW_REQUEST_REJECTED_BY_ADMIN.getStringValue(), 6);
+
 			this.current_data_request.setDateClosed(new Date());
 			candidate_group = null;
 			assignee = null;
@@ -435,11 +531,21 @@ public class DataRequestBean extends PageUtil implements Serializable {
 
 		// administrator put request on hold
 		case 17:
+			if (!userSession.isAllowedToHoldRequests()) {
+				pageMsg.createMsg(Messages.OPERATION_NOT_AUTHORIZED, PageMsgSeverity.ERROR);
+				return null;
+			}
+
 			status = ApplicationProperties.DATA_REQUEST_STATUS_ON_HOLD.getStringValue();
 			break;
 
 		// validator rejected a request
 		case 18:
+			if (!userSession.isAllowedToResolveRequests()) {
+				pageMsg.createMsg(Messages.OPERATION_NOT_AUTHORIZED, PageMsgSeverity.ERROR);
+				return null;
+			}
+
 			status = ApplicationProperties.DATA_REQUEST_STATUS_VALIDATION_REJECTED.getStringValue();
 			this.request_variables.put(ApplicationProperties.DATA_REQUEST_WORKFLOW_REQUEST_VALIDATED.getStringValue(),
 					3);
@@ -545,7 +651,11 @@ public class DataRequestBean extends PageUtil implements Serializable {
 		String assigned_validator_email = null;
 
 		assigned_sme_email = this.sme_users_emails.get(assigned_sme);
+
 		assigned_validator_email = this.sme_users_emails.get(assigned_validator);
+		if (!Utils.isStringEmpty(assigned_validator_email)) {
+			assigned_sme_email += "," + assigned_validator_email;
+		}
 
 		// data request variables
 		this.request_variables.put(ApplicationProperties.DATA_REQUEST_FIELD_ID.getStringValue(),
@@ -1469,8 +1579,6 @@ public class DataRequestBean extends PageUtil implements Serializable {
 	}
 
 	public String sendEmail() {
-		final PageMsg pageMsg = FacesContext.getCurrentInstance().getApplication()
-				.evaluateExpressionGet(FacesContext.getCurrentInstance(), "#{PageMsg}", PageMsg.class);
 
 		if (Utils.isStringEmpty(emailTo)) {
 			pageMsg.createMsg(Messages.EMAIL_ADDRESS_MISSING, PageMsgSeverity.ERROR);

@@ -18,6 +18,8 @@ public enum SecurityPermissions {
 
 	REQUESTS_ASSIGN("requests:assign:all"),
 
+	REQUESTS_EMAIL("requests:email"),
+
 	REQUESTS_CLOSE("requests:close"),
 
 	REQUESTS_HOLD("requests:hold"),

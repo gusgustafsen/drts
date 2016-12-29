@@ -24,7 +24,7 @@ import gov.ed.fsa.drts.util.ApplicationProperties;
 /**
  * Managed bean that works with the administration home page.
  *
- * @author Timur Asanov | tasanov@ppsco.com
+ * @author Timur Asanov
  */
 @ManagedBean(name = "adminBean")
 @ViewScoped
@@ -86,7 +86,8 @@ public class AdministratorBean extends PageUtil implements Serializable {
 	/**
 	 * Method that takes an administrator to the Edit User page.
 	 * 
-	 * @param user user to edit
+	 * @param user
+	 *            user to edit
 	 * 
 	 * @return Takes the administrator to the Edit User page.
 	 */
@@ -102,7 +103,8 @@ public class AdministratorBean extends PageUtil implements Serializable {
 	/**
 	 * Method that retrieves the group of a user.
 	 * 
-	 * @param user_id user ID of the user
+	 * @param user_id
+	 *            user ID of the user
 	 * 
 	 * @return Returns the user's group.
 	 */

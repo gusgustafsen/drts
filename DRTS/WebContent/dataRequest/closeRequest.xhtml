@@ -45,11 +45,6 @@
 
 						<h:form id="request-form" styleClass="col-1-1 mobile-col-1-1">
 
-							<p>The request below is in the "Pending Requestor Approval"
-								state. You can either put it on hold, close it or send an email
-								(with all attachments) to an external user without taking an
-								action on the request.</p>
-
 							<div class="form-wrapper col-1-1 mobile-col-1-1">
 
 								<div id="drtsTabs">
@@ -295,15 +290,10 @@
 							<div class="form-control col-1-1 mobile-col-1-1">
 								<h:commandButton styleClass="button" value="Put On Hold"
 									action="#{dataRequest.updateRequest(17)}"
-									rendered="#{dataRequest.statusOnHold eq false}" />
-								<h:panelGroup
-									rendered="#{userSession.admin and dataRequest.canSendEmail}">
-									<h:commandButton value="Send Email" styleClass="button"
-										action="#{emailBean.sendEmail(dataRequest.attachments)}" />
-								</h:panelGroup>
-								<h:commandButton styleClass="button" value="Close"
+									rendered="#{userSession.allowedToHoldRequests and not dataRequest.statusOnHold}" />
+								<h:commandButton styleClass="button" value="Close" rendered="#{userSession.allowedToCloseRequests}"
 									action="#{dataRequest.updateRequest(16)}" />
-								<h:commandButton styleClass="button" value="Email Request"
+								<h:commandButton styleClass="button" value="Email Request" rendered="#{userSession.allowedToEmailRequests}"
 									action="#{dataRequest.goToEmail('closeRequest.htm')}" />
 								<h:commandButton styleClass="button" value="Cancel"
 									action="#{userSession.getHomePageRedirect}" />

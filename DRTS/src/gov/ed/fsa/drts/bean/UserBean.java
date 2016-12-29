@@ -21,7 +21,7 @@ import gov.ed.fsa.drts.util.ApplicationProperties;
 /**
  * Managed bean that works with a user's data.
  *
- * @author Timur Asanov | tasanov@ppsco.com
+ * @author Timur Asanov
  */
 @ManagedBean(name = "userBean")
 @ViewScoped

@@ -170,6 +170,14 @@ public class UserSession implements Serializable {
 		return subject.isPermitted(SecurityPermissions.REQUESTS_CLOSE.getStringValue());
 	}
 
+	public boolean isAllowedToEmailRequests() {
+		if (subject == null) {
+			return false;
+		}
+
+		return subject.isPermitted(SecurityPermissions.REQUESTS_EMAIL.getStringValue());
+	}
+
 	public boolean isAllowedToHoldRequests() {
 		if (subject == null) {
 			return false;

@@ -46,10 +46,6 @@
 
 						<h:form id="request-form" styleClass="col-1-1 mobile-col-1-1">
 
-							<p>Below is a data request that has been assigned to you by
-								an administrator for validation. You can validate the request,
-								reject it, or update the request's information.</p>
-
 							<div class="form-wrapper col-1-1 mobile-col-1-1">
 
 								<div id="drtsTabs">
@@ -242,23 +238,42 @@
 										</div>
 									</h:panelGroup>
 									<div id="validation">
-										<h:panelGroup rendered="#{userSession.admin}">
-											<h:outputLabel for="smeValidate"
+										<h:panelGroup
+											rendered="#{userSession.allowedToAssignRequests}">
+											<h:outputLabel for="smeValidation"
 												value="SME To Validate The Request" />
-											<h:selectOneMenu id="smeValidate"
+											<h:selectOneMenu id="smeValidation"
 												value="#{dataRequest.assignedValidator}">
 												<f:selectItems value="#{dataRequest.smes}" />
 											</h:selectOneMenu>
+
+											<h:outputLabel for="validation" value="Validation" />
+											<h:inputTextarea id="validation"
+												value="#{dataRequest.validationDescription}" />
+
+											<h:outputLabel for="validationResult"
+												value="Validation Result" />
+											<h:inputTextarea id="validationResult"
+												value="#{dataRequest.validationResult}" />
 										</h:panelGroup>
 
-										<h:outputLabel for="validation" value="Validation" />
-										<h:inputTextarea id="validation"
-											value="#{dataRequest.validationDescription}" />
+										<h:panelGroup
+											rendered="#{not userSession.allowedToAssignRequests}">
+											<h:outputLabel for="smeValidation2"
+												value="SME To Validate The Request" />
+											<h:outputText id="smeValidation2" styleClass="form-text"
+												value="#{dataRequest.assignedValidator}" />
 
-										<h:outputLabel for="validationResult"
-											value="Validation Result" />
-										<h:inputTextarea id="validationResult"
-											value="#{dataRequest.validationResult}" />
+											<h:outputLabel for="validation2" value="Validation" />
+											<h:outputText id="validation2" styleClass="form-text"
+												value="#{dataRequest.validationDescription}" />
+
+											<h:outputLabel for="validationResult2"
+												value="Validation Result" />
+											<h:outputText id="validationResult2" styleClass="form-text"
+												value="#{dataRequest.validationResult}" />
+										</h:panelGroup>
+
 										<h:panelGroup
 											rendered="#{not empty dataRequest.dateAssignedToValidator}">
 											<h:outputLabel for="validatorAssignedDate"
@@ -269,7 +284,7 @@
 												<f:converter converterId="defaultDateConverter" />
 											</h:outputText>
 										</h:panelGroup>
-									</div>
+								</div>
 									<div id="attachments">
 										<label>Attached Files</label>
 										<h:panelGroup rendered="#{empty dataRequest.attachments}">
@@ -311,12 +326,16 @@
 
 							<div class="form-control col-1-1 mobile-col-1-1">
 								<h:commandButton styleClass="button" value="Update"
+									rendered="#{userSession.allowedToEditAllRequests or (userSession.allowedToEditMyRequests and dataRequest.createdBy eq userSession.user.id )}"
 									action="#{dataRequest.updateRequest(12)}" />
 								<h:commandButton styleClass="button" value="Validate"
+									rendered="#{userSession.allowedToResolveRequests}"
 									action="#{dataRequest.updateRequest(13)}" />
 								<h:commandButton styleClass="button" value="Reject"
+									rendered="#{userSession.allowedToResolveRequests}"
 									action="#{dataRequest.updateRequest(18)}" />
 								<h:commandButton styleClass="button" value="Email Request"
+									rendered="#{userSession.allowedToEmailRequests}"
 									action="#{dataRequest.goToEmail('validateRequest.htm')}" />
 								<h:commandButton styleClass="button" value="Cancel"
 									action="#{userSession.getHomePageRedirect}" />
