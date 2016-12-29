@@ -19,7 +19,7 @@ $(document).ready(function(){
 		showDone: false,
 		uploadButtonClass: "upload-button",
 		dragDropStr: "",
-		allowedTypes: "txt",
+		allowedTypes: "pdf,txt,csv,xls,xlsx,ppt,pptx,doc,docx,bmp,jpg,jpeg,png,tiff,gif",
 		dynamicFormData: function()
 		{
 			var current_request = null;

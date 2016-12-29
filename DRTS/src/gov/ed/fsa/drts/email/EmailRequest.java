@@ -20,6 +20,7 @@ import javax.mail.internet.MimeMessage.RecipientType;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
 import gov.ed.fsa.drts.exception.DrtsException;
@@ -36,7 +37,7 @@ public class EmailRequest {
 
 	private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
-	public boolean send(DataRequestBean dataRequest) throws DrtsException {
+	public void send(DataRequestBean dataRequest) throws DrtsException {
 
 		Properties props = new Properties();
 
@@ -108,8 +109,8 @@ public class EmailRequest {
 			}
 
 			try {
-				attachmentBodyPart.setDataHandler(
-						new DataHandler(new ByteArrayDataSource(attachment.getContent(), "text/plain")));
+				attachmentBodyPart.setDataHandler(new DataHandler(new ByteArrayDataSource(attachment.getContent(),
+						Utils.getMimeType(FilenameUtils.getExtension(attachment.getName())))));
 			} catch (MessagingException e) {
 				String error = "Setting attachment content for " + attachment.getName();
 				logger.error(message, e);
@@ -141,7 +142,6 @@ public class EmailRequest {
 			logger.error(message, e);
 			throw new DrtsException(error, e);
 		}
-		return true; // bmfind
 	}
 
 	private String buildContent(DataRequestBean dr) {
@@ -186,7 +186,9 @@ public class EmailRequest {
 		buildDataElement(sb, "Date Assigned to Validator", dr.getDateAssignedToValidator());
 		buildDataElement(sb, "Date Resolved", dr.getDateResolved());
 		buildDataElement(sb, "Date Closed", dr.getDateClosed());
-		buildDataElement(sb, "Comments", dr.getComments());
+
+		String comments = dr.getComments().replaceAll("<p>", "").replaceAll("</p>", "\n");
+		buildDataElement(sb, "Comments", comments);
 
 		return sb.toString();
 	}

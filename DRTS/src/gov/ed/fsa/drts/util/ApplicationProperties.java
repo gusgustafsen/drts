@@ -442,7 +442,9 @@ public enum ApplicationProperties {
 
 	USER_HEADER_OVERRIDE(true, false),
 
-	USER_HEADER_OVERRIDE_VALUE(false, false);
+	USER_HEADER_OVERRIDE_VALUE(false, false),
+
+	MIME_TYPES(true, true);
 
 	private static final String LIST_DELIMITER = "\\|";
 
