@@ -34,6 +34,14 @@ public class DataLayer {
 
 	private static final Logger logger = Logger.getLogger(DataLayer.class);
 
+	private static final String QUERY_INSERT_VIEW_COMMENTS_PERMISSION = "INSERT INTO "
+			+ ApplicationProperties.DATA_VIEW_COMMENTS_PERMISSION_TABLE.getStringValue() + " ("
+			+ ApplicationProperties.DATA_VIEW_COMMENTS_PERMISSION_FIELD_REQUEST_NUMBER.getStringValue() + ")"
+			+ "VALUES (?)";
+
+	private static final String QUERY_SELECT_VIEW_COMMENTS_PERMISSION = "SELECT COUNT(*) FROM "
+			+ ApplicationProperties.DATA_VIEW_COMMENTS_PERMISSION_TABLE.getStringValue() + " WHERE REQUEST_NUMBER=?";
+
 	private static final String QUERY_INSERT_DATA_REQUEST = "INSERT INTO "
 			+ ApplicationProperties.DATA_REQUEST_TABLE.getStringValue() + " (" + "request_number, "
 			+ ApplicationProperties.DATA_REQUEST_FIELD_CREATED_DATE_TIME.getStringValue() + ", "
@@ -435,7 +443,8 @@ public class DataLayer {
 			sql_result = prepared_statement.executeUpdate();
 
 			if (sql_result != 1) {
-				logger.error("Insert statement did not insert exactly one row. Inserted: " + sql_result);
+				logger.error("Insert statement in insertDataRequest did not insert exactly one row. Inserted: "
+						+ sql_result);
 				throw new Exception();
 			}
 		} catch (SQLException sqle) {
@@ -454,6 +463,87 @@ public class DataLayer {
 						sqle);
 			}
 		}
+	}
+
+	public void insertDataViewCommentsPermission(String requestId) throws Exception {
+		Connection oracle_connection = null;
+		int sql_result = 0;
+
+		try {
+			oracle_connection = OracleFactory.createConnection();
+
+			PreparedStatement prepared_statement = oracle_connection
+					.prepareStatement(QUERY_INSERT_VIEW_COMMENTS_PERMISSION);
+			prepared_statement.setString(1, requestId);
+
+			sql_result = prepared_statement.executeUpdate();
+
+			if (sql_result != 1) {
+				logger.error(
+						"Insert statement in insertDataViewCommentsPermission() did not insert exactly one row. Inserted: "
+								+ sql_result);
+				throw new Exception();
+			}
+		} catch (SQLException sqle) {
+			// if the request number was already in the table, we don't care
+			if (!sqle.getMessage().contains("ORA-00001")) {
+				logger.error("A SQL exception occured in insertDataViewCommentsPermission().", sqle);
+				throw sqle;
+			}
+		} catch (Exception e) {
+			logger.error("An exception occured in insertDataViewCommentsPermission().", e);
+			throw e;
+		} finally {
+			try {
+				if (oracle_connection != null) {
+					oracle_connection.close();
+				}
+			} catch (SQLException sqle) {
+				logger.error("A SQL exception occured while trying to close the connection in insertDataRequest().",
+						sqle);
+			}
+		}
+	}
+
+	public boolean isDataViewCommentsPermission(String requestId) throws SQLException {
+		int count = 0;
+		Connection oracle_connection = null;
+		ResultSet result_set = null;
+		String formatted_query = null;
+
+		try {
+
+			oracle_connection = OracleFactory.createConnection();
+
+			PreparedStatement prepared_statement = oracle_connection
+					.prepareStatement(QUERY_SELECT_VIEW_COMMENTS_PERMISSION);
+			prepared_statement.setString(1, requestId);
+
+			result_set = prepared_statement.executeQuery();
+
+			if (result_set.next()) {
+				count = result_set.getInt(1);
+			}
+		} catch (SQLException sqle) {
+			logger.error("A SQL exception occured in getDataRequestsByGroupOrAssigneeCount().", sqle);
+			throw sqle;
+		} finally {
+			try {
+				if (oracle_connection != null) {
+					if (result_set != null) {
+						result_set.close();
+					}
+
+					oracle_connection.close();
+				}
+			} catch (SQLException sqle) {
+				logger.error(
+						"A SQL exception occured while trying to close the connection in getDataRequestsByGroupOrAssigneeCount().",
+						sqle);
+			}
+		}
+
+		return count == 1;
 	}
 
 	public List<DataRequest> getDataRequestsByGroupOrAssignee(String candidate_groups, String assignee, int first_row,
@@ -480,6 +570,7 @@ public class DataLayer {
 			result_set = prepared_statement.executeQuery();
 
 			while (result_set.next()) {
+
 				request = mapRequest(result_set);
 
 				data_requests.add(request);
@@ -2329,8 +2420,10 @@ public class DataLayer {
 	}
 
 	private DataRequest mapRequest(ResultSet result_set) throws SQLException {
+		String requestNumber = result_set.getString("REQUEST_NUMBER");
 		DataRequest request = new DataRequest();
-		request.setId(result_set.getString("REQUEST_NUMBER"));
+		request.setViewPermission(isDataViewCommentsPermission(requestNumber));
+		request.setId(requestNumber);
 		request.setCandidateGroup(
 				result_set.getString(ApplicationProperties.DATA_REQUEST_FIELD_CANDIDATE_GROUP.getStringValue()));
 		request.setAssignee(result_set.getString(ApplicationProperties.DATA_REQUEST_FIELD_ASSIGNEE.getStringValue()));

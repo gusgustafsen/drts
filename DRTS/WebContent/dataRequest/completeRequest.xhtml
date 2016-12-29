@@ -58,8 +58,10 @@
 										<h:panelGroup rendered="#{userSession.admin}">
 											<li><a href="#validation">Validation</a></li>
 										</h:panelGroup>
-										<li><a href="#attachments">Attachments</a></li>
-										<li><a href="#comments">Comments</a></li>
+										<h:panelGroup rendered="#{dataRequest.commentsViewPermission}">
+											<li><a href="#attachments">Attachments</a></li>
+											<li><a href="#comments">Comments</a></li>
+										</h:panelGroup>
 									</ul>
 									<div id="general">
 										<h:outputLabel for="id" value="ID" />
@@ -262,62 +264,72 @@
 												rendered="#{not empty dataRequest.dateAssignedToValidator}">
 												<h:outputLabel for="validatorAssignedDate"
 													value="Date Assigned to Validator" />
-												<h:outputText id="validatorAssignedDate" stylClass="form-text"
+												<h:outputText id="validatorAssignedDate"
+													stylClass="form-text"
 													value="#{dataRequest.dateAssignedToValidator}">
 													<f:converter converterId="defaultDateConverter" />
 												</h:outputText>
 											</h:panelGroup>
 										</div>
 									</h:panelGroup>
-									<div id="attachments">
-										<label>Attached Files</label>
-										<h:panelGroup rendered="#{empty dataRequest.attachments}">
-											<p id="no-file">There are no attachments.</p>
-										</h:panelGroup>
-										<h:panelGroup rendered="#{not empty dataRequest.attachments}">
-											<pf:dataTable id="tbl1" var="file"
-												value="#{dataRequest.attachments}" paginator="true"
-												paginatorAlwaysVisible="false" rows="10"
-												styleClass="drtsTable">
-												<pf:column headerText="File Name">
-													<h:outputText value="#{file.name}" />
-												</pf:column>
-												<pf:column headerText="View">
-													<a href="/drts/file?file_id=#{file.id}" target="_blank">View</a>
-												</pf:column>
-												<pf:column headerText="Delete" rendered="true">
-													<h:commandLink value="Delete"
-														action="#{dataRequest.deleteAttachmentConfirm(file.id)}" />
-												</pf:column>
-											</pf:dataTable>
-										</h:panelGroup>
-									</div>
-									<div id="comments">
-										<h:outputLabel for="comments" value="Add Comments" />
-										<h:inputTextarea id="comments"
-											value="#{dataRequest.newComments}" />
+									<h:panelGroup rendered="#{dataRequest.commentsViewPermission}">
+										<div id="attachments">
+											<label>Attached Files</label>
+											<h:panelGroup rendered="#{empty dataRequest.attachments}">
+												<p id="no-file">There are no attachments.</p>
+											</h:panelGroup>
+											<h:panelGroup rendered="#{not empty dataRequest.attachments}">
+												<pf:dataTable id="tbl1" var="file"
+													value="#{dataRequest.attachments}" paginator="true"
+													paginatorAlwaysVisible="false" rows="10"
+													styleClass="drtsTable">
+													<pf:column headerText="File Name">
+														<h:outputText value="#{file.name}" />
+													</pf:column>
+													<pf:column headerText="View">
+														<a href="/drts/file?file_id=#{file.id}" target="_blank">View</a>
+													</pf:column>
+													<pf:column headerText="Delete" rendered="true">
+														<h:commandLink value="Delete"
+															action="#{dataRequest.deleteAttachmentConfirm(file.id)}" />
+													</pf:column>
+												</pf:dataTable>
+											</h:panelGroup>
+										</div>
+										<div id="comments">
+											<h:outputLabel for="comments" value="Add Comments" />
+											<h:inputTextarea id="comments"
+												value="#{dataRequest.newComments}" />
 
-										<h:outputLabel for="comments2" value="Comments" />
-										<h:panelGroup rendered="#{empty dataRequest.comments}">
-											<p>There are no comments.</p>
-										</h:panelGroup>
-										<h:outputText id="comments2" value="#{dataRequest.comments}"
-											escape="false" />
-									</div>
+											<h:outputLabel for="comments2" value="Comments" />
+											<h:panelGroup rendered="#{empty dataRequest.comments}">
+												<p>There are no comments.</p>
+											</h:panelGroup>
+											<h:outputText id="comments2" value="#{dataRequest.comments}"
+												escape="false" />
+										</div>
+									</h:panelGroup>
 								</div>
 
 							</div>
 
 							<div class="form-control col-1-1 mobile-col-1-1">
-								<h:commandButton styleClass="button" value="Update" 
+								<h:commandButton styleClass="button" value="Update"
 									rendered="#{userSession.allowedToEditAllRequests or (userSession.allowedToEditMyRequests and dataRequest.createdBy eq userSession.user.id )}"
 									action="#{dataRequest.updateRequest(6)}" />
-								<h:commandButton styleClass="button" value="Resolve" rendered="#{userSession.allowedToResolveRequests}"
+								<h:commandButton styleClass="button" value="Resolve"
+									rendered="#{userSession.allowedToResolveRequests}"
 									action="#{dataRequest.updateRequest(7)}" />
-								<h:commandButton styleClass="button" value="Reject" rendered="#{userSession.allowedToResolveRequests}"
+								<h:commandButton styleClass="button" value="Reject"
+									rendered="#{userSession.allowedToResolveRequests}"
 									action="#{dataRequest.updateRequest(8)}" />
-								<h:commandButton styleClass="button" value="Email Request" rendered="#{userSession.allowedToEmailRequests}"
+								<h:commandButton styleClass="button" value="Email Request"
+									rendered="#{userSession.allowedToEmailRequests}"
 									action="#{dataRequest.goToEmail('completeRequest.htm')}" />
+								<h:commandButton styleClass="button"
+									value="Allow User to See Comments and Attachments"
+									rendered="#{userSession.allowedToGrantViewPermission and dataRequest.userNeedViewCommentsPermission}"
+									action="#{dataRequest.updateRequest(20)}" />
 								<h:commandButton styleClass="button" value="Cancel"
 									action="#{userSession.getHomePageRedirect}" />
 							</div>

@@ -162,6 +162,14 @@ public class UserSession implements Serializable {
 		return subject.isPermitted(SecurityPermissions.REQUESTS_RESOLVE.getStringValue());
 	}
 
+	public boolean isAllowedToGrantViewPermission() {
+		if (subject == null) {
+			return false;
+		}
+
+		return subject.isPermitted(SecurityPermissions.REQUESTS_VIEW_PERMISSION.getStringValue());
+	}
+
 	public boolean isAllowedToCloseRequests() {
 		if (subject == null) {
 			return false;

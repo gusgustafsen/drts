@@ -62,6 +62,7 @@ public class DataRequest {
 	private String validation_sme_group = null;
 	private String dataRequestCopy = null;
 	private String trackingSuffix = null;
+	private boolean viewPermission = false;
 
 	private int display_id = 1;
 
@@ -544,5 +545,13 @@ public class DataRequest {
 
 	public void setTrackingSuffix(String trackingSuffix) {
 		this.trackingSuffix = trackingSuffix;
+	}
+
+	public boolean isViewPermission() {
+		return viewPermission;
+	}
+
+	public void setViewPermission(boolean viewPermission) {
+		this.viewPermission = viewPermission;
 	}
 }

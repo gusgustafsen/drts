@@ -69,9 +69,6 @@ public class DataRequestBean extends PageUtil implements Serializable {
 	/** Data request that the bean is working with. */
 	private DataRequest current_data_request = null;
 
-	// TODO incorporate upload into JSF and into the same form as request
-	// TODO files are uploaded when chose, so if user doesn't save request need
-	// to delete the uploaded file
 	/** List of attachments associated with the current request. */
 	private ArrayList<Attachment> request_attachments = null;
 
@@ -102,8 +99,6 @@ public class DataRequestBean extends PageUtil implements Serializable {
 	 */
 	private Map<String, String> email_replace_tokens = new HashMap<String, String>();
 
-	// TODO split request and workflow variables, then sent the data request to
-	// data layer instead of map
 	/** Request and workflow variables map. */
 	private Map<String, Object> request_variables = new HashMap<String, Object>();
 
@@ -260,22 +255,10 @@ public class DataRequestBean extends PageUtil implements Serializable {
 			complete_task = true;
 			break;
 
-		case 19:
-			if (!userSession.isAllowedToDeleteRequests()) {
-				pageMsg.createMsg(Messages.OPERATION_NOT_AUTHORIZED, PageMsgSeverity.ERROR);
-				return null;
-			}
-			status = ApplicationProperties.DATA_REQUEST_STATUS_DISCARDED.getStringValue();
-			this.request_variables
-					.put(ApplicationProperties.DATA_REQUEST_WORKFLOW_REQUEST_DRAFTED_SUBMITTED.getStringValue(), 2);
-			candidate_group = null;
-			assignee = null;
-			complete_task = true;
-			break;
-
 		// administrator updated a new request
 		case 4:
-			if (!userSession.isAllowedToAssignRequests()) {
+			if (!userSession.isAllowedToEditAllRequests() && (!userSession.isAllowedToEditMyRequests()
+					|| !userSession.getUser().getId().equals(this.getCreatedBy()))) {
 				pageMsg.createMsg(Messages.OPERATION_NOT_AUTHORIZED, PageMsgSeverity.ERROR);
 				return null;
 			}
@@ -552,6 +535,29 @@ public class DataRequestBean extends PageUtil implements Serializable {
 			candidate_group = ApplicationProperties.GROUP_ADMIN.getStringValue();
 			assignee = null;
 			complete_task = true;
+			break;
+
+		case 19:
+			if (!userSession.isAllowedToDeleteRequests()) {
+				pageMsg.createMsg(Messages.OPERATION_NOT_AUTHORIZED, PageMsgSeverity.ERROR);
+				return null;
+			}
+
+			status = ApplicationProperties.DATA_REQUEST_STATUS_DISCARDED.getStringValue();
+			this.request_variables
+					.put(ApplicationProperties.DATA_REQUEST_WORKFLOW_REQUEST_DRAFTED_SUBMITTED.getStringValue(), 2);
+			candidate_group = null;
+			assignee = null;
+			complete_task = true;
+			break;
+
+		case 20:
+			if (!userSession.isAllowedToGrantViewPermission()) {
+				pageMsg.createMsg(Messages.OPERATION_NOT_AUTHORIZED, PageMsgSeverity.ERROR);
+				return null;
+			}
+			this.current_data_request.setViewPermission(true);
+			DataLayer.getInstance().insertDataViewCommentsPermission(this.current_data_request.getId());
 			break;
 
 		// a request was updated, but a workflow action has not been made
@@ -1609,5 +1615,15 @@ public class DataRequestBean extends PageUtil implements Serializable {
 
 	public void setReturnPage(String returnPage) {
 		this.returnPage = returnPage;
+	}
+
+	public boolean isUserNeedViewCommentsPermission() {
+		return !this.current_data_request.isViewPermission() && Utils.isUserInGroup(
+				this.current_data_request.getDrtsRequestor(), ApplicationProperties.GROUP_REQUESTOR.getStringValue());
+	}
+
+	public boolean isCommentsViewPermission() {
+		return !Utils.isUserInGroup(userSession.getUser().getId(),
+				ApplicationProperties.GROUP_REQUESTOR.getStringValue()) || this.current_data_request.isViewPermission();
 	}
 }

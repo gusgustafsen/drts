@@ -1,9 +1,13 @@
 <!DOCTYPE html>
 
-<html xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:p="http://xmlns.jcp.org/jsf/passthrough" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core" lang="en-us" xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:pf="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions" class="no-js">
+<html xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core" lang="en-us"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:pf="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions" class="no-js">
 
 <c:set var="root"
 	value="#{request.requestURL.substring(0, request.requestURL.length() - request.requestURI.length())}#{request.contextPath}/"
@@ -50,26 +54,33 @@
 										<li><a href="#receiver">Receiver</a></li>
 										<li><a href="#assignment">Assignment</a></li>
 										<li><a href="#validation">Validation</a></li>
-										<li><a href="#attachments">Attachments</a></li>
-										<li><a href="#comments">Comments</a></li>
+										<h:panelGroup rendered="#{dataRequest.commentsViewPermission}">
+											<li><a href="#attachments">Attachments</a></li>
+											<li><a href="#comments">Comments</a></li>
+										</h:panelGroup>
 									</ul>
 									<div id="general">
 										<h:outputLabel value="ID" />
-										<h:outputText styleClass="form-text" value="#{dataRequest.displayId}" />
+										<h:outputText styleClass="form-text"
+											value="#{dataRequest.displayId}" />
 
 										<h:outputLabel value="Iteration" />
-										<h:outputText styleClass="form-text" value="#{dataRequest.iteration}" />
+										<h:outputText styleClass="form-text"
+											value="#{dataRequest.iteration}" />
 
 										<h:outputLabel value="Status" />
-										<h:outputText styleClass="form-text" value="#{dataRequest.status}" />
+										<h:outputText styleClass="form-text"
+											value="#{dataRequest.status}" />
 
 										<label>Creation Date</label>
-										<h:outputText styleClass="form-text" value="#{dataRequest.createdDateTime}">
+										<h:outputText styleClass="form-text"
+											value="#{dataRequest.createdDateTime}">
 											<f:converter converterId="defaultDateTimeConverter" />
 										</h:outputText>
 
 										<label>Original Request Date</label>
-										<h:inputText styleClass="datepicker" value="#{dataRequest.originalRequestDate}">
+										<h:inputText styleClass="datepicker"
+											value="#{dataRequest.originalRequestDate}">
 											<f:converter converterId="defaultDateConverter" />
 										</h:inputText>
 
@@ -84,7 +95,8 @@
 										</h:selectOneMenu>
 
 										<h:outputLabel value="Requested Due Date" />
-										<h:inputText styleClass="datepicker" value="#{dataRequest.dueDate}">
+										<h:inputText styleClass="datepicker"
+											value="#{dataRequest.dueDate}">
 											<f:converter converterId="defaultDateConverter" />
 										</h:inputText>
 
@@ -99,17 +111,20 @@
 										</h:selectOneMenu>
 
 										<label>Agreed Due Date</label>
-										<h:inputText styleClass="datepicker" value="#{dataRequest.agreedDueDate}">
+										<h:inputText styleClass="datepicker"
+											value="#{dataRequest.agreedDueDate}">
 											<f:converter converterId="defaultDateConverter" />
 										</h:inputText>
 
 										<label>Anticipated Due Date</label>
-										<h:inputText styleClass="datepicker" value="#{dataRequest.anticipatedDueDate}">
+										<h:inputText styleClass="datepicker"
+											value="#{dataRequest.anticipatedDueDate}">
 											<f:converter converterId="defaultDateConverter" />
 										</h:inputText>
 
 										<label>Date Run</label>
-										<h:inputText styleClass="datepicker" value="#{dataRequest.dateRun}">
+										<h:inputText styleClass="datepicker"
+											value="#{dataRequest.dateRun}">
 											<f:converter converterId="defaultDateConverter" />
 										</h:inputText>
 
@@ -140,10 +155,12 @@
 										<h:inputTextarea value="#{dataRequest.purpose}" />
 
 										<h:outputLabel value="Special Considerations/Issues" />
-										<h:inputTextarea value="#{dataRequest.specialConsiderationsIssues}" />
+										<h:inputTextarea
+											value="#{dataRequest.specialConsiderationsIssues}" />
 
 										<h:outputLabel value="Clarifications/Assumptions" />
-										<h:inputTextarea value="#{dataRequest.clarificationsAssumptions}" />
+										<h:inputTextarea
+											value="#{dataRequest.clarificationsAssumptions}" />
 
 										<h:outputLabel value="Golden Query Library" />
 										<h:inputTextarea value="#{dataRequest.goldenQueryLibrary}" />
@@ -155,32 +172,41 @@
 										<h:inputTextarea value="#{dataRequest.detailedSteps}" />
 									</div>
 									<div id="requestor">
-										<p>Information, below, is about the person who is requesting the data.</p>
+										<p>Information, below, is about the person who is
+											requesting the data.</p>
 
 										<h:outputLabel value="Requestor" />
-										<h:outputText styleClass="form-text" value="#{dataRequest.requestorName}" />
+										<h:outputText styleClass="form-text"
+											value="#{dataRequest.requestorName}" />
 
 										<h:outputLabel value="Requestor Organization" />
-										<h:outputText styleClass="form-text" value="#{dataRequest.requestorOrganization}" />
+										<h:outputText styleClass="form-text"
+											value="#{dataRequest.requestorOrganization}" />
 
 										<h:outputLabel value="Requestor Phone" />
-										<h:outputText styleClass="form-text" value="#{dataRequest.requestorPhone}" />
+										<h:outputText styleClass="form-text"
+											value="#{dataRequest.requestorPhone}" />
 
 										<h:outputLabel value="Requestor Email" />
-										<h:outputText styleClass="form-text" value="#{dataRequest.requestorEmail}" />
+										<h:outputText styleClass="form-text"
+											value="#{dataRequest.requestorEmail}" />
 									</div>
 									<div id="receiver">
-										<p>Information, below, is about the person who will receive the requested data.</p>
+										<p>Information, below, is about the person who will
+											receive the requested data.</p>
 
 										<h:outputLabel value="Receiver" />
-										<h:outputText styleClass="form-text" value="#{dataRequest.receiverName}" />
+										<h:outputText styleClass="form-text"
+											value="#{dataRequest.receiverName}" />
 
 										<h:outputLabel value="Receiver Email" />
-										<h:outputText styleClass="form-text" value="#{dataRequest.receiverEmail}" />
+										<h:outputText styleClass="form-text"
+											value="#{dataRequest.receiverEmail}" />
 									</div>
 									<div id="assignment">
 										<h:outputLabel value="SME To Resolve The Request" />
-										<h:outputText styleClass="form-text" value="#{dataRequest.assignedSme}" />
+										<h:outputText styleClass="form-text"
+											value="#{dataRequest.assignedSme}" />
 										<h:panelGroup
 											rendered="#{not empty dataRequest.dateAssignedToSme}">
 											<h:outputLabel for="smeAssignedDate"
@@ -193,7 +219,8 @@
 									</div>
 									<div id="validation">
 										<h:outputLabel value="SME To Validate The Request" />
-										<h:outputText styleClass="form-text" value="#{dataRequest.assignedValidator}" />
+										<h:outputText styleClass="form-text"
+											value="#{dataRequest.assignedValidator}" />
 
 										<h:outputLabel value="Validation" />
 										<h:inputTextarea value="#{dataRequest.validationDescription}" />
@@ -205,56 +232,75 @@
 											rendered="#{not empty dataRequest.dateAssignedToValidator}">
 											<h:outputLabel for="validatorAssignedDate"
 												value="Date Assigned to Validator" />
-											<h:outputText id="validatorAssignedDate" styleClass="form-text"
+											<h:outputText id="validatorAssignedDate"
+												styleClass="form-text"
 												value="#{dataRequest.dateAssignedToValidator}">
 												<f:converter converterId="defaultDateConverter" />
 											</h:outputText>
 										</h:panelGroup>
 									</div>
-									<div id="attachments">
-										<label>Attached Files</label>
-										<h:panelGroup rendered="#{empty dataRequest.attachments}">
-											<p id="no-file">There are no attachments.</p>
-										</h:panelGroup>
-										<h:panelGroup rendered="#{not empty dataRequest.attachments}">
-											<pf:dataTable id="tbl1" var="file" value="#{dataRequest.attachments}" paginator="true"
-												paginatorAlwaysVisible="false" rows="10" styleClass="drtsTable">
-												<pf:column headerText="File Name">
-													<h:outputText value="#{file.name}" />
-												</pf:column>
-												<pf:column headerText="View">
-													<a href="/drts/file?file_id=#{file.id}" target="_blank">View</a>
-												</pf:column>
-												<pf:column headerText="Delete" rendered="false">
-													<h:commandLink value="Delete" action="#{dataRequest.deleteAttachmentConfirm(file.id)}" />
-												</pf:column>
-											</pf:dataTable>
-										</h:panelGroup>
-									</div>
-									<div id="comments">
-										<h:outputLabel value="Add Comments" />
-										<h:inputTextarea value="#{dataRequest.newComments}" />
+									<h:panelGroup rendered="#{dataRequest.commentsViewPermission}">
+										<div id="attachments">
+											<label>Attached Files</label>
+											<h:panelGroup rendered="#{empty dataRequest.attachments}">
+												<p id="no-file">There are no attachments.</p>
+											</h:panelGroup>
+											<h:panelGroup rendered="#{not empty dataRequest.attachments}">
+												<pf:dataTable id="tbl1" var="file"
+													value="#{dataRequest.attachments}" paginator="true"
+													paginatorAlwaysVisible="false" rows="10"
+													styleClass="drtsTable">
+													<pf:column headerText="File Name">
+														<h:outputText value="#{file.name}" />
+													</pf:column>
+													<pf:column headerText="View">
+														<a href="/drts/file?file_id=#{file.id}" target="_blank">View</a>
+													</pf:column>
+													<pf:column headerText="Delete" rendered="false">
+														<h:commandLink value="Delete"
+															action="#{dataRequest.deleteAttachmentConfirm(file.id)}" />
+													</pf:column>
+												</pf:dataTable>
+											</h:panelGroup>
+										</div>
+										<div id="comments">
+											<h:outputLabel value="Add Comments" />
+											<h:inputTextarea value="#{dataRequest.newComments}" />
 
-										<h:outputLabel value="Comments" />
-										<h:panelGroup rendered="#{empty dataRequest.comments}">
-											<p>There are no comments.</p>
-										</h:panelGroup>
-										<h:outputText value="#{dataRequest.comments}" escape="false" />
-									</div>
+											<h:outputLabel value="Comments" />
+											<h:panelGroup rendered="#{empty dataRequest.comments}">
+												<p>There are no comments.</p>
+											</h:panelGroup>
+											<h:outputText value="#{dataRequest.comments}" escape="false" />
+										</div>
+									</h:panelGroup>
 								</div>
 
 							</div>
 
 							<div class="form-control col-1-1 mobile-col-1-1">
-								<h:commandButton styleClass="button" value="Update" action="#{dataRequest.updateRequest(99)}"  rendered="#{userSession.allowedToEditRequests}"/>
-								<h:commandButton styleClass="button" value="Put On Hold" action="#{dataRequest.updateRequest(17)}"
+								<h:commandButton styleClass="button" value="Update"
+									action="#{dataRequest.updateRequest(99)}"
+									rendered="#{userSession.allowedToEditRequests}" />
+								<h:commandButton styleClass="button" value="Put On Hold"
+									action="#{dataRequest.updateRequest(17)}"
 									rendered="#{userSession.allowedToHoldRequests and not dataRequest.statusOnHold}" />
-								<h:commandButton styleClass="button" value="Pending Requestor Approval" rendered="#{userSession.allowedToCloseRequests}"
+								<h:commandButton styleClass="button"
+									value="Pending Requestor Approval"
+									rendered="#{userSession.allowedToCloseRequests}"
 									action="#{dataRequest.updateRequest(14)}" />
-								<h:commandButton styleClass="button" value="Close" action="#{dataRequest.updateRequest(15)}" rendered="#{userSession.allowedToCloseRequests}" />
-								<h:commandButton styleClass="button" value="Email Request" rendered="#{userSession.allowedToEmailRequests}"
+								<h:commandButton styleClass="button" value="Close"
+									action="#{dataRequest.updateRequest(15)}"
+									rendered="#{userSession.allowedToCloseRequests}" />
+								<h:commandButton styleClass="button" value="Email Request"
+									rendered="#{userSession.allowedToEmailRequests}"
 									action="#{dataRequest.goToEmail('handleValidatedRequest.htm')}" />
-								<h:commandButton styleClass="button" value="Cancel" action="#{userSession.getHomePageRedirect}" />
+								<h:commandButton styleClass="button"
+									value="Allow User to See Comments and Attachments"
+									rendered="#{userSession.allowedToGrantViewPermission and dataRequest.userNeedViewCommentsPermission}"
+									action="#{dataRequest.updateRequest(20)}" />
+								<h:commandButton styleClass="button" value="Cancel"
+									action="#{userSession.getHomePageRedirect}" />
 
 							</div>
 

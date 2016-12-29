@@ -240,6 +240,8 @@ public enum ApplicationProperties {
 
 	DATA_AUDIT_TABLE(true, false),
 
+	DATA_VIEW_COMMENTS_PERMISSION_TABLE(true, false),
+
 	DATA_REQUEST_VIEW(true, false),
 
 	DATA_REQUEST_FIELD_ID(true, false),
@@ -343,6 +345,8 @@ public enum ApplicationProperties {
 	DATA_REQUEST_FIELD_VALIDATION_SME_GROUP(true, false),
 
 	DATA_REQUEST_FIELD_TRACKING_SUFFIX(true, false),
+
+	DATA_VIEW_COMMENTS_PERMISSION_FIELD_REQUEST_NUMBER(true, false),
 
 	DATA_REQUEST_WORKFLOW_REQUEST_REJECTED_BY_ADMIN(true, false),
 

@@ -54,8 +54,10 @@
 										<li><a href="#receiver">Receiver</a></li>
 										<li><a href="#assignment">Assignment</a></li>
 										<li><a href="#validation">Validation</a></li>
-										<li><a href="#attachments">Attachments</a></li>
-										<li><a href="#comments">Comments</a></li>
+										<h:panelGroup rendered="#{dataRequest.commentsViewPermission}">
+											<li><a href="#attachments">Attachments</a></li>
+											<li><a href="#comments">Comments</a></li>
+										</h:panelGroup>
 									</ul>
 									<div id="general">
 										<h:outputLabel value="ID" for="displayId" />
@@ -294,45 +296,47 @@
 										</h:panelGroup>
 
 									</div>
-									<div id="attachments">
-										<label>Attached Files</label>
-										<h:panelGroup rendered="#{empty dataRequest.attachments}">
-											<p id="no-file">There are no attachments.</p>
-										</h:panelGroup>
+									<h:panelGroup rendered="#{dataRequest.commentsViewPermission}">
+										<div id="attachments">
+											<label>Attached Files</label>
+											<h:panelGroup rendered="#{empty dataRequest.attachments}">
+												<p id="no-file">There are no attachments.</p>
+											</h:panelGroup>
 
-										<h:panelGroup rendered="#{not empty dataRequest.attachments}">
+											<h:panelGroup rendered="#{not empty dataRequest.attachments}">
 
-											<pf:dataTable id="tbl1" var="file"
-												value="#{dataRequest.attachments}" paginator="true"
-												paginatorAlwaysVisible="false" rows="10"
-												styleClass="drtsTable">
-												<pf:column headerText="File Name">
-													<h:outputText value="#{file.name}" />
-												</pf:column>
-												<pf:column headerText="View">
-													<a href="/drts/file?file_id=#{file.id}" target="_blank">View</a>
-												</pf:column>
-												<pf:column headerText="Delete">
-													<h:commandLink value="Delete"
-														action="#{dataRequest.deleteAttachmentConfirm(file.id)}" />
-												</pf:column>
-											</pf:dataTable>
+												<pf:dataTable id="tbl1" var="file"
+													value="#{dataRequest.attachments}" paginator="true"
+													paginatorAlwaysVisible="false" rows="10"
+													styleClass="drtsTable">
+													<pf:column headerText="File Name">
+														<h:outputText value="#{file.name}" />
+													</pf:column>
+													<pf:column headerText="View">
+														<a href="/drts/file?file_id=#{file.id}" target="_blank">View</a>
+													</pf:column>
+													<pf:column headerText="Delete">
+														<h:commandLink value="Delete"
+															action="#{dataRequest.deleteAttachmentConfirm(file.id)}" />
+													</pf:column>
+												</pf:dataTable>
 
-										</h:panelGroup>
+											</h:panelGroup>
 
-									</div>
-									<div id="comments">
-										<h:outputLabel for="comments" value="Add Comments" />
-										<h:inputTextarea id="comments"
-											value="#{dataRequest.newComments}" />
+										</div>
+										<div id="comments">
+											<h:outputLabel for="comments" value="Add Comments" />
+											<h:inputTextarea id="comments"
+												value="#{dataRequest.newComments}" />
 
-										<h:outputLabel for="noComments" value="Comments" />
-										<h:panelGroup id="noComments"
-											rendered="#{empty dataRequest.comments}">
-											<p>There are no comments.</p>
-										</h:panelGroup>
-										<h:outputText value="#{dataRequest.comments}" escape="false" />
-									</div>
+											<h:outputLabel for="noComments" value="Comments" />
+											<h:panelGroup id="noComments"
+												rendered="#{empty dataRequest.comments}">
+												<p>There are no comments.</p>
+											</h:panelGroup>
+											<h:outputText value="#{dataRequest.comments}" escape="false" />
+										</div>
+									</h:panelGroup>
 								</div>
 
 							</div>
@@ -350,6 +354,10 @@
 								<h:commandButton styleClass="button" value="Email Request"
 									rendered="#{userSession.allowedToEmailRequests}"
 									action="#{dataRequest.goToEmail('handleRequest.htm')}" />
+								<h:commandButton styleClass="button"
+									value="Allow User to See Comments and Attachments"
+									rendered="#{userSession.allowedToGrantViewPermission and dataRequest.userNeedViewCommentsPermission}"
+									action="#{dataRequest.updateRequest(20)}" />
 								<h:commandButton styleClass="button" value="Cancel"
 									action="#{userSession.getHomePageRedirect}" />
 							</div>

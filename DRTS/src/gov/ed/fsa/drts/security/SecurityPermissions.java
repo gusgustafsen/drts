@@ -8,6 +8,8 @@ public enum SecurityPermissions {
 
 	REQUESTS_EDIT_ALL("requests:edit:all"),
 
+	REQUESTS_VIEW_PERMISSION("requests:viewpermission"),
+
 	REQUESTS_DELETE("requests:delete"),
 
 	REQUESTS_VIEW_MINE("requests:view:mine"),
