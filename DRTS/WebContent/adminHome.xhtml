@@ -64,7 +64,7 @@
 											<f:converter converterId="defaultDateConverter" />
 										</h:outputText>
 									</pf:column>
-									<pf:column headerText="Rrequested Due Date" sortBy="#{dataRequest.dueDate}">
+									<pf:column headerText="Requested Due Date" sortBy="#{dataRequest.dueDate}">
 										<h:outputText value="#{dataRequest.dueDate}">
 											<f:converter converterId="defaultDateConverter" />
 										</h:outputText>
@@ -76,7 +76,7 @@
 
 							</h:panelGroup>
 
-							<h:panelGroup rendered="#{empty requestTable.table1.dataRequests}">
+							<h:panelGroup rendered="#{empty requestTable.table4.dataRequests}">
 								<p>There are no requests.</p>
 							</h:panelGroup>
 						</h:form>

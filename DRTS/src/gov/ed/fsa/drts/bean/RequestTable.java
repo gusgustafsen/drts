@@ -51,6 +51,21 @@ public class RequestTable extends PageUtil implements Serializable {
 		return this.table_paginator;
 	}
 
+	public TablePaginator getTable5() {
+		if (this.table_paginator == null) {
+			if (userSession.isAllowedToViewAllRequests()) {
+				this.table_paginator = new RequestTablePaginator(4, this.userSession);
+			}
+
+			if (userSession.isAllowedToViewMyRequests()) {
+				this.table_paginator = new RequestTablePaginator(2, this.userSession);
+			}
+
+		}
+
+		return this.table_paginator;
+	}
+
 	public String goToTask(DataRequest dataRequest) {
 		if (dataRequest.getCurrentTaskFormKey() == null) {
 			return goToOpenNew(dataRequest);

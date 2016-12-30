@@ -187,7 +187,8 @@ public class EmailRequest {
 		buildDataElement(sb, "Date Resolved", dr.getDateResolved());
 		buildDataElement(sb, "Date Closed", dr.getDateClosed());
 
-		String comments = dr.getComments().replaceAll("<p>", "").replaceAll("</p>", "\n");
+		String comments = dr.getComments() == null ? ""
+				: dr.getComments().replaceAll("<p>", "").replaceAll("</p>", "\n");
 		buildDataElement(sb, "Comments", comments);
 
 		return sb.toString();

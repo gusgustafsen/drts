@@ -143,7 +143,8 @@ public class UserSession implements Serializable {
 			return false;
 		}
 
-		return subject.isPermitted(SecurityPermissions.REPORTS_VIEW_MINE.getStringValue());
+		boolean result = subject.isPermitted(SecurityPermissions.REQUESTS_VIEW_MINE.getStringValue());
+		return result;
 	}
 
 	public boolean isAllowedToViewAllRequests() {
@@ -151,7 +152,8 @@ public class UserSession implements Serializable {
 			return false;
 		}
 
-		return subject.isPermitted(SecurityPermissions.REPORTS_VIEW_ALL.getStringValue());
+		boolean result = subject.isPermitted(SecurityPermissions.REPORTS_VIEW_ALL.getStringValue());
+		return result;
 	}
 
 	public boolean isAllowedToResolveRequests() {

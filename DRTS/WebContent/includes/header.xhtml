@@ -13,7 +13,7 @@
 				</div>
 				<nav class="col-4-12 mobile-col-1-1">
 					<ul>
-						<li><a href="#">Logout</a></li>
+						<li rendered ="false"><a href="#">Logout</a></li>
 					</ul>
 				</nav>
 			</header>
@@ -43,7 +43,7 @@
 									outcome="#{userSession.homePage}">
 									<span>Home</span>
 								</h:link></li>
-							<h:panelGroup rendered="#{userSession.reporter eq false}">
+							<h:panelGroup rendered="#{userSession.allowedToCreateRequests or userSession.allowedToViewAllRequests or userSession.allowedToViewMyRequests}">
 								<li class="menu-sec-2 #{(active == 2) ? 'active' : '' }"><a
 									href="#"> <span>Data Requests</span> <span class="arrow"></span>
 								</a>
@@ -56,7 +56,7 @@
 												</h:commandLink></li>
 										</h:panelGroup>
 										<h:panelGroup
-											rendered="false and #{userSession.allowedToViewAllRequests}">
+											rendered="#{userSession.allowedToViewAllRequests or userSession.allowedToViewMyRequests}">
 											<li><h:link outcome="/dataRequest/allRequests">
 													<span>View All Requests</span>
 												</h:link></li>
@@ -74,28 +74,31 @@
 											</h:link></li>
 									</ul></li>
 							</h:panelGroup>
-							<li class="menu-sec-4 #{(active == 4) ? 'active' : '' }"><h:link
-									outcome="/reports/reports">
-									<span>Reports</span>
-									<span class="arrow"></span>
-								</h:link>
-								<ul>
-									<li><h:link outcome="/reports/requestFilter">
-											<span>Request Filter</span>
-										</h:link></li>
-									<li><h:link outcome="/reports/openClosedReport">
-											<span>Open-Closed Requests by Day</span>
-										</h:link></li>
-									<li><h:link outcome="/reports/assignedSmeReport">
-											<span>Number of Requests Assigned to SME</span>
-										</h:link></li>
-									<li><h:link outcome="/reports/averageAgeReport">
-											<span>Average Age</span>
-										</h:link></li>
-									<li><h:link outcome="/reports/overdueRequestsReport">
-											<span>Overdue Requests</span>
-										</h:link></li>
-								</ul></li>
+							<h:panelGroup
+								rendered="#{userSession.allowedToRunReportsWithAllData or userSession.allowedToRunReportsWithMyData}">
+								<li class="menu-sec-4 #{(active == 4) ? 'active' : '' }"><h:link
+										outcome="/reports/reports">
+										<span>Reports</span>
+										<span class="arrow"></span>
+									</h:link>
+									<ul>
+										<li><h:link outcome="/reports/requestFilter">
+												<span>Request Filter</span>
+											</h:link></li>
+										<li><h:link outcome="/reports/openClosedReport">
+												<span>Open-Closed Requests by Day</span>
+											</h:link></li>
+										<li><h:link outcome="/reports/assignedSmeReport">
+												<span>Number of Requests Assigned to SME</span>
+											</h:link></li>
+										<li><h:link outcome="/reports/averageAgeReport">
+												<span>Average Age</span>
+											</h:link></li>
+										<li><h:link outcome="/reports/overdueRequestsReport">
+												<span>Overdue Requests</span>
+											</h:link></li>
+									</ul></li>
+							</h:panelGroup>
 							<h:panelGroup rendered="false and #{userSession.admin}">
 								<li class="menu-sec-5 #{(active == 5) ? 'active' : '' }"><a
 									href="#"> <span>Administration</span> <span class="arrow"></span>
