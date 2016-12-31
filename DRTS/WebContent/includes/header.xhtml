@@ -13,7 +13,9 @@
 				</div>
 				<nav class="col-4-12 mobile-col-1-1">
 					<ul>
-						<li rendered ="false"><a href="#">Logout</a></li>
+						<h:panelGroup rendered="false">
+							<li><a href="#">Logout</a></li>
+						</h:panelGroup>
 					</ul>
 				</nav>
 			</header>
@@ -43,7 +45,8 @@
 									outcome="#{userSession.homePage}">
 									<span>Home</span>
 								</h:link></li>
-							<h:panelGroup rendered="#{userSession.allowedToCreateRequests or userSession.allowedToViewAllRequests or userSession.allowedToViewMyRequests}">
+							<h:panelGroup
+								rendered="#{userSession.allowedToCreateRequests or userSession.allowedToViewAllRequests or userSession.allowedToViewMyRequests}">
 								<li class="menu-sec-2 #{(active == 2) ? 'active' : '' }"><a
 									href="#"> <span>Data Requests</span> <span class="arrow"></span>
 								</a>
