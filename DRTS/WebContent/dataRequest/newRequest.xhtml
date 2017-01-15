@@ -221,7 +221,10 @@
 						<div id="current_request_id_div" hidden="true">
 							<h:outputText value="#{dataRequest.id}" />
 						</div>
-						<div id="fileuploader">Upload</div>
+						<h:panelGroup
+							rendered="#{dataRequest.commentsViewPermission and (userSession.allowedToEditAllRequests or (userSession.allowedToEditMyRequests and dataRequest.createdBy eq userSession.user.id ))}">
+							<div id="fileuploader">Upload</div>
+						</h:panelGroup>
 
 					</section>
 				</div>
