@@ -1618,8 +1618,9 @@ public class DataRequestBean extends PageUtil implements Serializable {
 	}
 
 	public boolean isUserNeedViewCommentsPermission() {
-		return !this.current_data_request.isViewPermission() && Utils.isUserInGroup(
-				this.current_data_request.getDrtsRequestor(), ApplicationProperties.GROUP_REQUESTOR.getStringValue());
+		return !this.current_data_request.isViewPermission() && this.current_data_request.getDrtsRequestor() != null
+				&& Utils.isUserInGroup(this.current_data_request.getDrtsRequestor(),
+						ApplicationProperties.GROUP_REQUESTOR.getStringValue());
 	}
 
 	public boolean isCommentsViewPermission() {
