@@ -6,6 +6,8 @@
 	<property name="target" value="1.7" />
 	<property name="source" value="1.7" />
 	<path id="Web App Libraries.libraryclasspath">
+		<pathelement location="lib/j2ee.jar" />
+		<pathelement location="WebContent/WEB-INF/lib/axis-1.4.jar" />
 		<pathelement location="WebContent/WEB-INF/lib/activation-1.1.jar" />
 		<pathelement location="WebContent/WEB-INF/lib/activiti-bpmn-converter-5.16.1.jar" />
 		<pathelement location="WebContent/WEB-INF/lib/activiti-bpmn-model-5.16.1.jar" />
@@ -148,6 +150,10 @@
 		<war basedir="WebContent" destfile="dist/drts.war" webxml="WebContent/WEB-INF/web.xml" manifest="${manifest.file}">
 			<fileset dir="WebContent" includes="**/*" />
 		</war>
+	</target>
+
+	<target name="jar" depends="compile" description="Creates JAR file for client for DRTS/AIMS web service">
+		<jar destfile="dist/drts.jar" basedir="WebContent/WEB-INF/classes" includes="gov/ed/fsa/drts/AimsDrts/*.class,gov/ed/fsa/drts/AimsDrtsService/*.class" />
 	</target>
 
 </project>

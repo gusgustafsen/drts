@@ -1,0 +1,12 @@
+eclipse.preferences.version=1
+encoding//src/gov/ed/fsa/drts/AimsDrts/CommonResponseType.java=UTF-8
+encoding//src/gov/ed/fsa/drts/AimsDrts/CreateAccountRequestType.java=UTF-8
+encoding//src/gov/ed/fsa/drts/AimsDrts/CreateAccountResponseType.java=UTF-8
+encoding//src/gov/ed/fsa/drts/AimsDrts/DeleteAccountRequestType.java=UTF-8
+encoding//src/gov/ed/fsa/drts/AimsDrts/DeleteAccountResponseType.java=UTF-8
+encoding//src/gov/ed/fsa/drts/AimsDrts/ReasonCodeType.java=UTF-8
+encoding//src/gov/ed/fsa/drts/AimsDrts/StatusCodeType.java=UTF-8
+encoding//src/gov/ed/fsa/drts/AimsDrtsService/AimsDrtsServiceSOAPStub.java=UTF-8
+encoding//src/gov/ed/fsa/drts/AimsDrtsService/AimsDrtsService_PortType.java=UTF-8
+encoding//src/gov/ed/fsa/drts/AimsDrtsService/AimsDrtsService_Service.java=UTF-8
+encoding//src/gov/ed/fsa/drts/AimsDrtsService/AimsDrtsService_ServiceLocator.java=UTF-8
