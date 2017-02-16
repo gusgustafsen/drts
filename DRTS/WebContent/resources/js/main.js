@@ -11,7 +11,7 @@ $(document).ready(function(){
     $('form#request-form').on('submit', function() {
         setConfirmUnload(false);
     });
-	/*
+    
 	$("#fileuploader").uploadFile({
 		url: "../file",
 		multiple: true,
@@ -39,7 +39,7 @@ $(document).ready(function(){
 			location.reload();
 		}
 	});
-	*/
+
 	var active_tab = $("#current_tab").text();
 	
     $("#drtsTabs").tabs({
