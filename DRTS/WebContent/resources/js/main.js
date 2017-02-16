@@ -1,5 +1,7 @@
 $(document).ready(function(){
 	
+	console.log('bmfind - page ready');
+	
 	// Set the unload message whenever any input element get changed.
     $('#request-form :input').on('change', function() {
         setConfirmUnload(true);
