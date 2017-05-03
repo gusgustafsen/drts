@@ -8,9 +8,10 @@ import java.util.regex.Pattern;
 
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.identity.User;
 import org.apache.commons.lang3.StringUtils;
+
+import gov.ed.fsa.drts.dataaccess.OracleFactory;
 
 public class Utils {
 
@@ -68,7 +69,7 @@ public class Utils {
 	}
 
 	public static boolean isUserInGroup(String user_id, String group_name) {
-		ProcessEngine process_engine = ProcessEngines.getDefaultProcessEngine();
+		ProcessEngine process_engine = OracleFactory.getProcessEngine();
 		IdentityService identity_service = process_engine.getIdentityService();
 		User user = null;
 
