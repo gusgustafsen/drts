@@ -60,8 +60,8 @@ public class CustomExceptionHandler extends ExceptionHandlerWrapper {
 				return;
 			}
 
-			final ConfigurableNavigationHandler nav = (ConfigurableNavigationHandler) fc.getApplication()
-					.getNavigationHandler();
+			final ConfigurableNavigationHandler nav =
+					(ConfigurableNavigationHandler) fc.getApplication().getNavigationHandler();
 			// here you do what ever you want with exception
 			try {
 				// log error ?
@@ -71,7 +71,7 @@ public class CustomExceptionHandler extends ExceptionHandlerWrapper {
 				final String url = request.getRequestURL().toString();
 
 				try {
-					nav.performNavigation(userSession.getHomePageRedirect());
+					nav.performNavigation(ApplicationProperties.PAGE_ERROR_APPLICATION.getStringValue());
 				} catch (IllegalStateException ex) {
 					logger.error("Attempt to perform navigation after internal error", ex);
 				}

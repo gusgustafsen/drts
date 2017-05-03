@@ -46,7 +46,7 @@ public class UserSession implements Serializable {
 	}
 
 	public String getHomePage() {
-		return Utils.getUserHomePage(this.user.getId());
+		return Utils.getUserHomePage(this.user == null ? null : this.user.getId());
 	}
 
 	public String getHomePageRedirect() {

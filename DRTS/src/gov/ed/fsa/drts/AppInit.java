@@ -18,9 +18,11 @@ import org.apache.log4j.Logger;
 
 import gov.ed.fsa.drts.dataaccess.OracleFactory;
 
-/** Managed bean that initializes and stops the Activiti Engine when the application starts up and shuts down.
+/**
+ * Managed bean that initializes and stops the Activiti Engine when the application starts up and shuts down.
  *
- * @author Timur Asanov | tasanov@ppsco.com */
+ * @author Timur Asanov | tasanov@ppsco.com
+ */
 @ManagedBean(eager = true)
 @ApplicationScoped
 public class AppInit {
@@ -35,10 +37,6 @@ public class AppInit {
 		RepositoryService repository_service = null;
 		RuntimeService runtime_service = null;
 		IdentityService identity_service = null;
-
-		ProcessEngines.init();
-
-		logger.debug("Initialized Activiti Engine.");
 
 		process_engine = OracleFactory.getProcessEngine();
 		runtime_service = process_engine.getRuntimeService();
@@ -76,7 +74,7 @@ public class AppInit {
 		// }
 
 		/*
-		 * This code creates user(s) if they do not exist. 
+		 * This code creates user(s) if they do not exist.
 		 */
 		for (String user_id : user_ids) {
 			if (identity_service.createUserQuery().userId(user_id).count() == 0) {
@@ -95,7 +93,7 @@ public class AppInit {
 		}
 
 		/*
-		 * This code removes all groups. This can only be run if the group(s) do not have 
+		 * This code removes all groups. This can only be run if the group(s) do not have
 		 * users in them, otherwise it will throw a foreign key constraint error.
 		 */
 		// for(String group_id : security_groups)

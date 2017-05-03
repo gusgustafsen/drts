@@ -18,6 +18,10 @@ public class Utils {
 	private static Map<String, String> mimeTypes = null;
 
 	public static String getUserHomePage(String user_id) {
+		if (user_id == null) {
+			return ApplicationProperties.PAGE_ERROR_UNAUTHORIZED.getStringValue();
+		}
+
 		if (isUserInGroup(user_id, ApplicationProperties.GROUP_ADMIN.getStringValue()) == true) {
 			return ApplicationProperties.HOME_PAGE_ADMIN.getStringValue();
 		} else if (isUserInGroup(user_id, ApplicationProperties.GROUP_DRT.getStringValue()) == true) {
