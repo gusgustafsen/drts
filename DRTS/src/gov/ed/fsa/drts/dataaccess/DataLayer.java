@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.apache.commons.fileupload.FileItem;
@@ -362,7 +361,7 @@ public class DataLayer {
 					Utils.replaceAll(ApplicationProperties.EMAIL_NOTIFY_ADMIN_DRT_SUBJECT.getStringValue(),
 							email_replace_tokens));
 
-			ProcessEngine process_engine = ProcessEngines.getDefaultProcessEngine();
+			ProcessEngine process_engine = OracleFactory.getProcessEngine();
 			RuntimeService runtime_service = process_engine.getRuntimeService();
 			ProcessInstance started_process_instance = runtime_service.startProcessInstanceByKey(
 					ApplicationProperties.PROCESS_ID_DATA_REQUEST.getStringValue(), request_variables);

@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.activiti.engine.IdentityService;
-import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
 import org.apache.log4j.Logger;
@@ -24,6 +23,7 @@ import org.apache.shiro.mgt.DefaultSecurityManager;
 import org.apache.shiro.subject.Subject;
 
 import gov.ed.fsa.drts.bean.UserSession;
+import gov.ed.fsa.drts.dataaccess.OracleFactory;
 import gov.ed.fsa.drts.security.DRTSRealm;
 
 public class RequestValidator implements PhaseListener {
@@ -76,7 +76,7 @@ public class RequestValidator implements PhaseListener {
 				if (temp_user_session == null) {
 					logger.info("user session is null");
 
-					IdentityService identity_service = ProcessEngines.getDefaultProcessEngine().getIdentityService();
+					IdentityService identity_service = OracleFactory.getProcessEngine().getIdentityService();
 
 					if (identity_service != null) {
 						User activiti_user = identity_service.createUserQuery().userId(incoming_user).singleResult();

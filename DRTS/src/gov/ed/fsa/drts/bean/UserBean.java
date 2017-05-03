@@ -11,72 +11,50 @@ import javax.faces.context.FacesContext;
 
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
 import org.apache.log4j.Logger;
 
+import gov.ed.fsa.drts.dataaccess.OracleFactory;
 import gov.ed.fsa.drts.util.ApplicationProperties;
 
-/**
- * Managed bean that works with a user's data.
+/** Managed bean that works with a user's data.
  *
- * @author Timur Asanov
- */
+ * @author Timur Asanov */
 @ManagedBean(name = "userBean")
 @ViewScoped
 public class UserBean extends PageUtil implements Serializable {
 
 	private static final long serialVersionUID = 612941570092949641L;
 
-	/**
-	 * Log4j logger.
-	 */
+	/** Log4j logger. */
 	private static final Logger logger = Logger.getLogger(UserBean.class);
 
-	/**
-	 * Activiti process engine.
-	 */
+	/** Activiti process engine. */
 	private transient ProcessEngine process_engine = null;
 
-	/**
-	 * Activiti identity service.
-	 */
+	/** Activiti identity service. */
 	private transient IdentityService identity_service = null;
 
-	/**
-	 * User's ID, from the JSF form.
-	 */
+	/** User's ID, from the JSF form. */
 	private String id = null;
 
-	/**
-	 * User's first name, from the JSF form.
-	 */
+	/** User's first name, from the JSF form. */
 	private String first_name = null;
 
-	/**
-	 * User's last name, from the JSF form.
-	 */
+	/** User's last name, from the JSF form. */
 	private String last_name = null;
 
-	/**
-	 * User's email, from the JSF form.
-	 */
+	/** User's email, from the JSF form. */
 	private String email = null;
 
-	/**
-	 * User that the bean is working with.
-	 */
+	/** User that the bean is working with. */
 	private User current_user = null;
 
-	/**
-	 * User's current main group.
-	 */
+	/** User's current main group. */
 	private String user_current_group;
 
-	/**
-	 * User's currently selected group, from the JSF form.
-	 */
+	/** User's currently selected group, from the JSF form. */
 	private String selected_group;
 
 	private boolean isFaces = true;
@@ -97,12 +75,10 @@ public class UserBean extends PageUtil implements Serializable {
 		init();
 	}
 
-	/**
-	 * Bean constructor.
-	 */
+	/** Bean constructor. */
 	@PostConstruct
 	private void init() {
-		this.process_engine = ProcessEngines.getDefaultProcessEngine();
+		this.process_engine = OracleFactory.getProcessEngine();
 		this.identity_service = this.process_engine.getIdentityService();
 
 		if (isFaces) {
@@ -119,9 +95,7 @@ public class UserBean extends PageUtil implements Serializable {
 		}
 	}
 
-	/**
-	 * Method that loads the form variables from the current user's data.
-	 */
+	/** Method that loads the form variables from the current user's data. */
 	private void loadData() {
 		this.first_name = this.current_user.getFirstName();
 		this.last_name = this.current_user.getLastName();
@@ -130,9 +104,7 @@ public class UserBean extends PageUtil implements Serializable {
 		loadGroup();
 	}
 
-	/**
-	 * Method that retrieves the current user's group.
-	 */
+	/** Method that retrieves the current user's group. */
 	private void loadGroup() {
 		Group group = identity_service.createGroupQuery()
 				.groupType(ApplicationProperties.GROUP_TYPE_SECURITY.getStringValue())
@@ -146,14 +118,12 @@ public class UserBean extends PageUtil implements Serializable {
 		this.selected_group = groupName;
 	}
 
-	/**
-	 * Method that saves the current user.
+	/** Method that saves the current user.
 	 * 
 	 * @param new_user
 	 *            true if a new user is being created, false otherwise
 	 * 
-	 * @return Takes the administrator back to the User Management page.
-	 */
+	 * @return Takes the administrator back to the User Management page. */
 	public String save(boolean new_user) {
 		User updated_user = null;
 
@@ -194,11 +164,9 @@ public class UserBean extends PageUtil implements Serializable {
 		return "/administration/userManagement.htm?faces-redirect=true";
 	}
 
-	/**
-	 * Method that cancels creation of new user or update of an existing user.
+	/** Method that cancels creation of new user or update of an existing user.
 	 * 
-	 * @return Takes the administrator back to the User Management page.
-	 */
+	 * @return Takes the administrator back to the User Management page. */
 	public String cancel() {
 		// TODO check log for warnings
 		FacesContext.getCurrentInstance().getExternalContext().getFlash().put("drtsUser", null);
@@ -206,11 +174,9 @@ public class UserBean extends PageUtil implements Serializable {
 		return "/administration/userManagement.htm?faces-redirect=true";
 	}
 
-	/**
-	 * Method that retrieves all groups that exist in the system.
+	/** Method that retrieves all groups that exist in the system.
 	 * 
-	 * @return Returns a list of all groups that exist in the system.
-	 */
+	 * @return Returns a list of all groups that exist in the system. */
 	public List<String> getGroups() {
 		List<String> result = null;
 		List<Group> groups = identity_service.createGroupQuery()

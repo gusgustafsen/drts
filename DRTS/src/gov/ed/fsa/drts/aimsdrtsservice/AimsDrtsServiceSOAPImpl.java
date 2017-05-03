@@ -5,7 +5,6 @@ import java.util.Map;
 
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.ProcessEngines;
 import org.apache.log4j.Logger;
 
 import gov.ed.fsa.drts.aimsdrts.CreateAccountRequestType;
@@ -15,6 +14,7 @@ import gov.ed.fsa.drts.aimsdrts.DeleteAccountResponseType;
 import gov.ed.fsa.drts.aimsdrts.ReasonCodeType;
 import gov.ed.fsa.drts.aimsdrts.StatusCodeType;
 import gov.ed.fsa.drts.bean.UserBean;
+import gov.ed.fsa.drts.dataaccess.OracleFactory;
 
 @javax.jws.WebService(endpointInterface = "gov.ed.fsa.drts.aimsdrtsservice.AimsDrtsService", targetNamespace = "http://drts.fsa.ed.gov/AimsDrtsService", serviceName = "AimsDrtsService", portName = "AimsDrtsServiceSOAP")
 public class AimsDrtsServiceSOAPImpl {
@@ -66,7 +66,7 @@ public class AimsDrtsServiceSOAPImpl {
 	public DeleteAccountResponseType deleteAccount(DeleteAccountRequestType deleteAccountRequest) {
 		DeleteAccountResponseType response = new DeleteAccountResponseType();
 
-		ProcessEngine process_engine = ProcessEngines.getDefaultProcessEngine();
+		ProcessEngine process_engine = OracleFactory.getProcessEngine();
 		IdentityService identity_service = process_engine.getIdentityService();
 		try {
 			identity_service.deleteUser(deleteAccountRequest.getUserId());

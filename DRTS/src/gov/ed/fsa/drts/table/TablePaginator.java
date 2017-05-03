@@ -7,11 +7,11 @@ import javax.faces.component.UICommand;
 import javax.faces.event.ActionEvent;
 
 import org.activiti.engine.IdentityService;
-import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.GroupQuery;
 
 import gov.ed.fsa.drts.bean.UserSession;
+import gov.ed.fsa.drts.dataaccess.OracleFactory;
 import gov.ed.fsa.drts.object.DataRequest;
 
 public abstract class TablePaginator {
@@ -58,7 +58,7 @@ public abstract class TablePaginator {
 	}
 
 	protected String getCandidateGroups() {
-		IdentityService identity_service = ProcessEngines.getDefaultProcessEngine().getIdentityService();
+		IdentityService identity_service = OracleFactory.getProcessEngine().getIdentityService();
 
 		List<Group> user_groups = null;
 		List<String> user_group_names = null;
