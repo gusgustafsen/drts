@@ -69,7 +69,7 @@ public class RequestValidator implements PhaseListener {
 			faces_context.getExternalContext().getFlash().put("drtsDataRequest", null);
 		}
 
-		if (request_url.contains("/error") == false) {
+		if (!request_url.contains("/error") && !request_url.contains("/Aims")) {
 			if (Utils.isStringEmpty(incoming_user) == false) {
 				logger.debug("user header: " + incoming_user);
 
