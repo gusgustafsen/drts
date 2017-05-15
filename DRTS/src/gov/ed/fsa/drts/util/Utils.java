@@ -99,7 +99,7 @@ public class Utils {
 
 	public static String getMimeType(String fileExtension) {
 		if (mimeTypes == null) {
-			mimeTypes = new HashMap<>();
+			mimeTypes = new HashMap<String, String>();
 
 			List<String> mimeTypeList = ApplicationProperties.MIME_TYPES.getListValue();
 

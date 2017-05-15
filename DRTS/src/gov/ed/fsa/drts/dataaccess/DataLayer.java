@@ -355,7 +355,7 @@ public class DataLayer {
 			// activiti have the right request id.
 			dataRequest.setDisplayId(next_id);
 
-			Map<String, String> email_replace_tokens = new HashMap<>();
+			Map<String, String> email_replace_tokens = new HashMap<String, String>();
 			email_replace_tokens.put("REQUEST_DISPLAY_ID", dataRequest.getDisplayId());
 			request_variables.put(ApplicationProperties.EMAIL_LABEL_NOTIFY_ADMIN_DRT_SUBJECT.getStringValue(),
 					Utils.replaceAll(ApplicationProperties.EMAIL_NOTIFY_ADMIN_DRT_SUBJECT.getStringValue(),

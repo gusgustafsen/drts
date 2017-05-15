@@ -25,7 +25,7 @@ public class AimsDrtsServiceSOAPImpl {
 
 	static {
 
-		groupNames = new HashMap<>();
+		groupNames = new HashMap<String, String>();
 		groupNames.put("DRTS_ADMIN", "admin");
 		groupNames.put("DRTS_DRT", "drt");
 		groupNames.put("DRTS_REPORTER", "reporter");
