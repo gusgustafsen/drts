@@ -58,11 +58,13 @@ public class DataRequest {
 	private String golden_query_library = null;
 	private String business_requirements = null;
 	private int tier;
+	private String source;
 	private String sme_group = null;
 	private String validation_sme_group = null;
 	private String dataRequestCopy = null;
 	private String trackingSuffix = null;
 	private boolean viewPermission = false;
+	private boolean reopened = false;
 
 	private int display_id = 1;
 
@@ -76,8 +78,9 @@ public class DataRequest {
 		initialize(false);
 	}
 
-	public void initialize(boolean copyAttachments) throws Exception {
-		if (copyAttachments) {
+	public void initialize(boolean reopened) throws Exception {
+		this.reopened = reopened;
+		if (reopened) {
 			dataRequestCopy = this.id;
 		}
 
@@ -553,5 +556,21 @@ public class DataRequest {
 
 	public void setViewPermission(boolean viewPermission) {
 		this.viewPermission = viewPermission;
+	}
+
+	public String getSource() {
+		return source;
+	}
+
+	public void setSource(String source) {
+		this.source = source;
+	}
+
+	public boolean isReopened() {
+		return reopened;
+	}
+
+	public void setReopened(boolean reopened) {
+		this.reopened = reopened;
 	}
 }

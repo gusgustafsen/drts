@@ -1,13 +1,9 @@
 <!DOCTYPE html>
 
-<html xmlns:h="http://xmlns.jcp.org/jsf/html"
-	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
-	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core" lang="en-us"
-	xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:pf="http://primefaces.org/ui"
-	xmlns:pe="http://primefaces.org/ui/extensions" class="no-js">
+<html xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://xmlns.jcp.org/jsf/passthrough" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core" lang="en-us" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:pf="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions" class="no-js">
 
 <c:set var="root"
 	value="#{request.requestURL.substring(0, request.requestURL.length() - request.requestURI.length())}#{request.contextPath}/"
@@ -44,8 +40,7 @@
 
 						<h:form id="request-form" styleClass="col-1-1 mobile-col-1-1">
 
-							<p>Please fill out the form below, with as much information
-								as possible, to create a new data request.</p>
+							<p>Please fill out the form below, with as much information as possible, to create a new data request.</p>
 
 							<div class="form-wrapper col-1-1 mobile-col-1-1">
 
@@ -58,28 +53,26 @@
 									</ul>
 									<div id="general">
 										<h:outputLabel for="iteration" value="Iteration" />
-										<h:outputText id="iteration" styleClass="form-text"
-											value="#{dataRequest.iteration}" />
+										<h:outputText id="iteration" styleClass="form-text" value="#{dataRequest.iteration}" />
 
 										<h:outputLabel for="status" value="Status" />
-										<h:outputText id="status" styleClass="form-text"
-											value="#{dataRequest.status}" />
+										<h:outputText id="status" styleClass="form-text" value="#{dataRequest.status}" />
 
 										<label>Creation Date</label>
-										<h:outputText styleClass="form-text"
-											value="#{dataRequest.createdDateTime}">
+										<h:outputText styleClass="form-text" value="#{dataRequest.createdDateTime}">
 											<f:converter converterId="defaultDateTimeConverter" />
 										</h:outputText>
 
-										<h:outputLabel for="source" value="Source" />
-										<h:selectOneMenu id="source" value="#{dataRequest.source}">
-											<f:selectItems value="#{dataRequest.sources}" />
-										</h:selectOneMenu>
+										<h:panelGroup rendered="#{not dataRequest.reopened}">
+											<h:outputLabel for="source" value="Source" />
+											<h:selectOneMenu id="source" value="#{dataRequest.source}" required="true">
+												<f:selectItems value="#{dataRequest.sources}" />
+											</h:selectOneMenu>
+										</h:panelGroup>
 
 
 										<label>Original Request Date</label>
-										<h:inputText styleClass="datepicker"
-											value="#{dataRequest.originalRequestDate}">
+										<h:inputText styleClass="datepicker" value="#{dataRequest.originalRequestDate}">
 											<f:converter converterId="defaultDateConverter" />
 										</h:inputText>
 
@@ -93,10 +86,8 @@
 											<f:selectItems value="#{dataRequest.systems}" />
 										</h:selectOneMenu>
 
-										<h:outputLabel for="requestedDueDate"
-											value="Requested Due Date" />
-										<h:inputText id="requestedDueDate" styleClass="datepicker"
-											value="#{dataRequest.dueDate}">
+										<h:outputLabel for="requestedDueDate" value="Requested Due Date" />
+										<h:inputText id="requestedDueDate" styleClass="datepicker" value="#{dataRequest.dueDate}">
 											<f:converter converterId="defaultDateConverter" />
 										</h:inputText>
 
@@ -106,79 +97,58 @@
 										</h:selectOneMenu>
 
 										<h:outputLabel for="urgencyFlag" value="Urgency Flag" />
-										<h:selectBooleanCheckbox id="urgencyFlag"
-											value="#{dataRequest.urgent}" />
+										<h:selectBooleanCheckbox id="urgencyFlag" value="#{dataRequest.urgent}" />
 
 										<h:outputLabel for="piiFlag" value="PII Flag" />
-										<h:selectBooleanCheckbox id="piiFlag"
-											value="#{dataRequest.pii}" />
+										<h:selectBooleanCheckbox id="piiFlag" value="#{dataRequest.pii}" />
 
 										<h:outputLabel for="relatedRequests" value="Related Requests" />
-										<h:inputTextarea id="relatedRequests"
-											value="#{dataRequest.relatedRequests}" />
+										<h:inputTextarea id="relatedRequests" value="#{dataRequest.relatedRequests}" />
 
 										<h:outputLabel for="topics" value="Topic/Keywords" />
-										<h:inputTextarea id="topics"
-											value="#{dataRequest.topicKeywords}" />
+										<h:inputTextarea id="topics" value="#{dataRequest.topicKeywords}" />
 
 										<h:outputLabel for="description" value="Description" />
-										<h:inputTextarea id="description"
-											value="#{dataRequest.description}" />
+										<h:inputTextarea id="description" value="#{dataRequest.description}" />
 
 										<h:outputLabel for="purpose" value="Purpose" />
 										<h:inputTextarea id="purpose" value="#{dataRequest.purpose}" />
 
-										<h:outputLabel for="issues"
-											value="Special Considerations/Issues" />
-										<h:inputTextarea id="issues"
-											value="#{dataRequest.specialConsiderationsIssues}" />
+										<h:outputLabel for="issues" value="Special Considerations/Issues" />
+										<h:inputTextarea id="issues" value="#{dataRequest.specialConsiderationsIssues}" />
 
-										<h:outputLabel for="assumptions"
-											value="Clarifications/Assumptions" />
-										<h:inputTextarea id="assumptions"
-											value="#{dataRequest.clarificationsAssumptions}" />
+										<h:outputLabel for="assumptions" value="Clarifications/Assumptions" />
+										<h:inputTextarea id="assumptions" value="#{dataRequest.clarificationsAssumptions}" />
 
-										<h:outputLabel for="goldenQueryLibrary"
-											value="Golden Query Library" />
-										<h:inputTextarea id="goldenQueryLibrary"
-											value="#{dataRequest.goldenQueryLibrary}" />
+										<h:outputLabel for="goldenQueryLibrary" value="Golden Query Library" />
+										<h:inputTextarea id="goldenQueryLibrary" value="#{dataRequest.goldenQueryLibrary}" />
 
-										<h:outputLabel for="requirements"
-											value="Business Requirements" />
-										<h:inputTextarea id="requirements"
-											value="#{dataRequest.businessRequirements}" />
+										<h:outputLabel for="requirements" value="Business Requirements" />
+										<h:inputTextarea id="requirements" value="#{dataRequest.businessRequirements}" />
 									</div>
 									<div id="requestor">
-										<p>Please enter all information, below, about the person
-											who is requesting the data.</p>
+										<p>Please enter all information, below, about the person who is requesting the data.</p>
 
 										<h:outputLabel for="requestor" value="Requestor" />
-										<h:inputText id="requestor"
-											value="#{dataRequest.requestorName}" />
+										<h:inputText id="requestor" value="#{dataRequest.requestorName}" />
 
-										<h:outputLabel for="requestorOrganization"
-											value="Requestor Organization" />
-										<h:inputText id="requestorOrganization"
-											value="#{dataRequest.requestorOrganization}" />
+										<h:outputLabel for="requestorOrganization" value="Requestor Organization" />
+										<h:inputText id="requestorOrganization" value="#{dataRequest.requestorOrganization}" />
 
 										<h:outputLabel for="requestorPhone" value="Requestor Phone" />
-										<h:inputText id="requestorPhone"
-											value="#{dataRequest.requestorPhone}" />
+										<h:inputText id="requestorPhone" value="#{dataRequest.requestorPhone}" />
 
 										<h:outputLabel for="requestorEmail" value="Requestor Email" />
-										<h:inputText id="requestorEmail"
-											value="#{dataRequest.requestorEmail}" />
+										<h:inputText id="requestorEmail" value="#{dataRequest.requestorEmail}" />
 									</div>
 									<div id="receiver">
-										<p>Please enter all information, below, about the person
-											who will receive the requested data.</p>
+										<p>Please enter all information, below, about the person who will receive the requested data.</p>
 
 										<h:outputLabel for="receiver" value="Receiver" />
 										<h:inputText id="receiver" value="#{dataRequest.receiverName}" />
 
 										<h:outputLabel for="receiverEmail" value="Receiver Email" />
-										<h:inputText id="receiverEmail"
-											value="#{dataRequest.receiverEmail}" />
+										<h:inputText id="receiverEmail" value="#{dataRequest.receiverEmail}" />
 									</div>
 									<div id="attachments">
 										<label>Attached Files</label>
@@ -186,10 +156,8 @@
 											<p id="no-file">There are no attachments.</p>
 										</h:panelGroup>
 										<h:panelGroup rendered="#{not empty dataRequest.attachments}">
-											<pf:dataTable id="tbl1" var="file"
-												value="#{dataRequest.attachments}" paginator="true"
-												paginatorAlwaysVisible="false" rows="10"
-												styleClass="drtsTable">
+											<pf:dataTable id="tbl1" var="file" value="#{dataRequest.attachments}" paginator="true"
+												paginatorAlwaysVisible="false" rows="10" styleClass="drtsTable">
 												<pf:column headerText="File Name">
 													<h:outputText value="#{file.name}" />
 												</pf:column>
@@ -197,8 +165,7 @@
 													<a href="/drts/file?file_id=#{file.id}" target="_blank">View</a>
 												</pf:column>
 												<pf:column headerText="Delete" rendered="false">
-													<h:commandLink value="Delete"
-														action="#{dataRequest.deleteAttachmentConfirm(file.id)}" />
+													<h:commandLink value="Delete" action="#{dataRequest.deleteAttachmentConfirm(file.id)}" />
 												</pf:column>
 											</pf:dataTable>
 										</h:panelGroup>
@@ -209,10 +176,8 @@
 							</div>
 
 							<div class="form-control col-1-1 mobile-col-1-1">
-								<h:commandButton value="Create" styleClass="button"
-									action="#{dataRequest.updateRequest(2)}" />
-								<h:commandButton styleClass="button" value="Cancel"
-									action="#{userSession.getHomePageRedirect}" />
+								<h:commandButton value="Create" styleClass="button" action="#{dataRequest.updateRequest(2)}" />
+								<h:commandButton styleClass="button" value="Cancel" action="#{userSession.getHomePageRedirect}" />
 
 							</div>
 
