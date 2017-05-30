@@ -80,20 +80,20 @@ public class SearchBean extends PageUtil implements Serializable {
 		} else {
 			search_parameters = new LinkedHashMap<String, String>();
 
-			if (Utils.isStringEmpty(this.status) == false) {
+			if (!Utils.isStringEmpty(this.status)) {
 				search_parameters.put(ApplicationProperties.DATA_REQUEST_FIELD_STATUS.getStringValue(), this.status);
 			}
 
-			if (Utils.isStringEmpty(this.type) == false) {
+			if (!Utils.isStringEmpty(this.type)) {
 				search_parameters.put(ApplicationProperties.DATA_REQUEST_FIELD_TYPE.getStringValue(), this.type);
 			}
 
-			if (Utils.isStringEmpty(this.assignee) == false) {
+			if (!Utils.isStringEmpty(this.assignee)) {
 				search_parameters.put(ApplicationProperties.DATA_REQUEST_FIELD_ASSIGNEE.getStringValue(),
 						this.assignee);
 			}
 
-			if (Utils.isStringEmpty(this.requestor)) {
+			if (!Utils.isStringEmpty(this.requestor)) {
 				search_parameters.put(ApplicationProperties.DATA_REQUEST_FIELD_CREATED_BY.getStringValue(),
 						this.requestor);
 			}
@@ -247,10 +247,12 @@ public class SearchBean extends PageUtil implements Serializable {
 		return this.current_tab;
 	}
 
+	@Override
 	public UserSession getUserSession() {
 		return userSession;
 	}
 
+	@Override
 	public void setUserSession(UserSession userSession) {
 		this.userSession = userSession;
 	}
