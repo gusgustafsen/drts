@@ -57,11 +57,9 @@ public class RequestValidator implements PhaseListener {
 		String destination_url = null;
 
 		/*
-		 * Cross-Frame Scripting (XFS) vulnerability can allow an attacker to
-		 * load the vulnerable application inside an HTML iframe tag. Fixed by
-		 * setting the X-Frame-Options header to SAMEORIGIN- The page can be
-		 * framed by another page only if it belongs to the same origin as the
-		 * page being framed
+		 * Cross-Frame Scripting (XFS) vulnerability can allow an attacker to load the vulnerable application inside an
+		 * HTML iframe tag. Fixed by setting the X-Frame-Options header to SAMEORIGIN- The page can be framed by another
+		 * page only if it belongs to the same origin as the page being framed
 		 */
 		http_response.addHeader("X-FRAME-OPTIONS", "SAMEORIGIN");
 
@@ -111,29 +109,29 @@ public class RequestValidator implements PhaseListener {
 								faces_context.getExternalContext().getSessionMap()
 										.put(ApplicationProperties.USER_SESSION_HEADER.getStringValue(), user_session);
 
-								logger.info("user session created");
+								logger.info("user session created for user " + incoming_user);
 
 								if (request_url.contains("index.htm") == true) {
 									destination_url = ApplicationProperties.CONTEXT_ROOT.getStringValue()
 											+ user_session.getHomePage();
 								}
 							} else {
-								logger.error("User does not have any groups.");
+								logger.error("User " + incoming_user + " does not have any groups.");
 								destination_url = ApplicationProperties.CONTEXT_ROOT.getStringValue()
 										+ ApplicationProperties.PAGE_ERROR_UNAUTHORIZED.getStringValue();
 							}
 						} else {
-							logger.error("User was not found in Activiti.");
+							logger.error("User " + incoming_user + " was not found in Activiti.");
 							destination_url = ApplicationProperties.CONTEXT_ROOT.getStringValue()
 									+ ApplicationProperties.PAGE_ERROR_UNAUTHORIZED.getStringValue();
 						}
 					} else {
-						logger.error("Unable to create an Identity Service.");
+						logger.error("Unable to create an Identity Service. User " + incoming_user);
 						destination_url = ApplicationProperties.CONTEXT_ROOT.getStringValue()
 								+ ApplicationProperties.PAGE_ERROR_APPLICATION.getStringValue();
 					}
 				} else {
-					logger.debug("user session already exists.");
+					logger.debug("user session already exists. User" + incoming_user);
 				}
 			} else {
 				logger.error("User header is empty.");

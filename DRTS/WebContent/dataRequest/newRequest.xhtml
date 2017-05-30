@@ -39,6 +39,8 @@
 					<section class="col-1-1 mobile-col-1-1">
 
 						<h:form id="request-form" styleClass="col-1-1 mobile-col-1-1">
+								
+							<h:messages errorStyle="color:red"></h:messages>
 
 							<p>Please fill out the form below, with as much information as possible, to create a new data request.</p>
 
@@ -64,8 +66,8 @@
 										</h:outputText>
 
 										<h:panelGroup rendered="#{not dataRequest.reopened}">
-											<h:outputLabel for="source" value="Source" />
-											<h:selectOneMenu id="source" value="#{dataRequest.source}" required="true">
+											<h:outputLabel for="source" value="Source *" />
+											<h:selectOneMenu id="source" value="#{dataRequest.source}" required="true" requiredMessage="Source is required">
 												<f:selectItems value="#{dataRequest.sources}" />
 											</h:selectOneMenu>
 										</h:panelGroup>
@@ -178,7 +180,6 @@
 							<div class="form-control col-1-1 mobile-col-1-1">
 								<h:commandButton value="Create" styleClass="button" action="#{dataRequest.updateRequest(2)}" />
 								<h:commandButton styleClass="button" value="Cancel" action="#{userSession.getHomePageRedirect}" />
-
 							</div>
 
 						</h:form>
