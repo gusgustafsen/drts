@@ -71,9 +71,10 @@ public class DataLayer {
 			+ ApplicationProperties.DATA_REQUEST_FIELD_GOLDEN_QUERY_LIBRARY.getStringValue() + ", "
 			+ ApplicationProperties.DATA_REQUEST_FIELD_BUSINESS_REQUIREMENTS.getStringValue() + ", "
 			+ ApplicationProperties.DATA_REQUEST_FIELD_TIER.getStringValue() + ", "
-			+ ApplicationProperties.DATA_REQUEST_FIELD_TRACKING_SUFFIX.getStringValue() + ") "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_TRACKING_SUFFIX.getStringValue() + ", "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_LAST_UPDATED_DATE.getStringValue() + ") "
 			+ "VALUES (?, SYSDATE, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
-			+ "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+			+ "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 	private static final String QUERY_SELECT_DATA_REQUESTS_BY_GROUP_OR_ASSIGNEE = "SELECT * FROM(SELECT T2.*, rownum AS ROW_NUM FROM(SELECT T.* FROM(SELECT * FROM "
 			+ ApplicationProperties.DATA_REQUEST_VIEW.getStringValue() + ") T " + "WHERE "
@@ -439,6 +440,15 @@ public class DataLayer {
 					(Integer) request_variables.get(ApplicationProperties.DATA_REQUEST_FIELD_TIER.getStringValue()));
 			prepared_statement.setString(30, (String) request_variables
 					.get(ApplicationProperties.DATA_REQUEST_FIELD_TRACKING_SUFFIX.getStringValue()));
+			if (request_variables
+					.get(ApplicationProperties.DATA_REQUEST_FIELD_ORIGINAL_REQUEST_DATE.getStringValue()) != null) {
+				prepared_statement.setDate(31,
+						new java.sql.Date(((Date) request_variables
+								.get(ApplicationProperties.DATA_REQUEST_FIELD_ORIGINAL_REQUEST_DATE.getStringValue()))
+										.getTime()));
+			} else {
+				prepared_statement.setDate(25, null);
+			}
 
 			sql_result = prepared_statement.executeUpdate();
 
@@ -2095,21 +2105,21 @@ public class DataLayer {
 			sb.append(ApplicationProperties.DATA_REQUEST_FIELD_DUE_DATE.getStringValue()
 					+ " >= TO_TIMESTAMP(?, 'mm-dd-yyyy') AND ");
 			sb.append(ApplicationProperties.DATA_REQUEST_FIELD_DUE_DATE.getStringValue()
-					+ " <  TO_TIMESTAMP(?, 'mm-dd-yyyy') AND ");
+					+ " <=  TO_TIMESTAMP(?, 'mm-dd-yyyy') AND ");
 		}
 
 		if (resolved_date_from != null && resolved_date_to != null) {
 			sb.append(ApplicationProperties.DATA_REQUEST_FIELD_DATE_RESOLVED.getStringValue()
 					+ " >= TO_TIMESTAMP(?, 'mm-dd-yyyy') AND ");
 			sb.append(ApplicationProperties.DATA_REQUEST_FIELD_DATE_RESOLVED.getStringValue()
-					+ " <  TO_TIMESTAMP(?, 'mm-dd-yyyy') AND ");
+					+ " <=  TO_TIMESTAMP(?, 'mm-dd-yyyy') AND ");
 		}
 
 		if (updated_date_from != null && updated_date_to != null) {
 			sb.append(ApplicationProperties.DATA_REQUEST_FIELD_LAST_UPDATED_DATE.getStringValue()
 					+ " >= TO_TIMESTAMP(?, 'mm-dd-yyyy') AND ");
 			sb.append(ApplicationProperties.DATA_REQUEST_FIELD_LAST_UPDATED_DATE.getStringValue()
-					+ " <  TO_TIMESTAMP(?, 'mm-dd-yyyy') AND ");
+					+ " <=  TO_TIMESTAMP(?, 'mm-dd-yyyy') AND ");
 		}
 
 		sb.delete(sb.length() - 5, sb.length());
