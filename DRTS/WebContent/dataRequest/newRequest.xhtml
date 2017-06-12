@@ -73,28 +73,28 @@
 										</h:panelGroup>
 
 
-										<label>Original Request Date</label>
-										<h:inputText styleClass="datepicker" value="#{dataRequest.originalRequestDate}">
+										<label>Original Request Date*</label>
+										<h:inputText styleClass="datepicker" value="#{dataRequest.originalRequestDate}" required="true" requiredMessage="Original Request Date is required">
 											<f:converter converterId="defaultDateConverter" />
 										</h:inputText>
 
-										<h:outputLabel for="type" value="Type" />
-										<h:selectOneMenu id="type" value="#{dataRequest.type}">
+										<h:outputLabel for="type" value="Type*" />
+										<h:selectOneMenu id="type" value="#{dataRequest.type}" required="true" requiredMessage="Type is required">
 											<f:selectItems value="#{dataRequest.types}" />
 										</h:selectOneMenu>
 
-										<h:outputLabel for="system" value="System" />
-										<h:selectOneMenu id="system" value="#{dataRequest.system}">
+										<h:outputLabel for="system" value="System*" />
+										<h:selectOneMenu id="system" value="#{dataRequest.system}" required="true" requiredMessage="System is required">
 											<f:selectItems value="#{dataRequest.systems}" />
 										</h:selectOneMenu>
 
-										<h:outputLabel for="requestedDueDate" value="Requested Due Date" />
-										<h:inputText id="requestedDueDate" styleClass="datepicker" value="#{dataRequest.dueDate}">
+										<h:outputLabel for="requestedDueDate" value="Requested Due Date*" />
+										<h:inputText id="requestedDueDate" styleClass="datepicker" value="#{dataRequest.dueDate}" required="true" requiredMessage="Requested Due Date is required">
 											<f:converter converterId="defaultDateConverter" />
 										</h:inputText>
 
-										<h:outputLabel for="tier" value="Tier" />
-										<h:selectOneMenu id="tier" value="#{dataRequest.tier}">
+										<h:outputLabel for="tier" value="Tier*" />
+										<h:selectOneMenu id="tier" value="#{dataRequest.tier}" required="true" requiredMessage="Tier is required">
 											<f:selectItems value="#{dataRequest.tiers}" />
 										</h:selectOneMenu>
 
@@ -107,14 +107,14 @@
 										<h:outputLabel for="relatedRequests" value="Related Requests" />
 										<h:inputTextarea id="relatedRequests" value="#{dataRequest.relatedRequests}" />
 
-										<h:outputLabel for="topics" value="Topic/Keywords" />
-										<h:inputTextarea id="topics" value="#{dataRequest.topicKeywords}" />
+										<h:outputLabel for="topics" value="Topic/Keywords*" />
+										<h:inputTextarea id="topics" value="#{dataRequest.topicKeywords}" required="true" requiredMessage="Topic/Keywords is required"/>
 
-										<h:outputLabel for="description" value="Description" />
-										<h:inputTextarea id="description" value="#{dataRequest.description}" />
+										<h:outputLabel for="description" value="Description*" />
+										<h:inputTextarea id="description" value="#{dataRequest.description}" required="true" requiredMessage="Description is required"/>
 
-										<h:outputLabel for="purpose" value="Purpose" />
-										<h:inputTextarea id="purpose" value="#{dataRequest.purpose}" />
+										<h:outputLabel for="purpose" value="Purpose*" />
+										<h:inputTextarea id="purpose" value="#{dataRequest.purpose}" required="true" requiredMessage="Purpose is required"/>
 
 										<h:outputLabel for="issues" value="Special Considerations/Issues" />
 										<h:inputTextarea id="issues" value="#{dataRequest.specialConsiderationsIssues}" />
@@ -131,17 +131,17 @@
 									<div id="requestor">
 										<p>Please enter all information, below, about the person who is requesting the data.</p>
 
-										<h:outputLabel for="requestor" value="Requestor" />
-										<h:inputText id="requestor" value="#{dataRequest.requestorName}" />
+										<h:outputLabel for="requestor" value="Requestor*" />
+										<h:inputText id="requestor" value="#{dataRequest.requestorName}" required="true" requiredMessage="Requestor is required" />
 
-										<h:outputLabel for="requestorOrganization" value="Requestor Organization" />
-										<h:inputText id="requestorOrganization" value="#{dataRequest.requestorOrganization}" />
+										<h:outputLabel for="requestorOrganization" value="Requestor Organization*" />
+										<h:inputText id="requestorOrganization" value="#{dataRequest.requestorOrganization}" required="true" requiredMessage="Requestor Organization is required"/>
 
-										<h:outputLabel for="requestorPhone" value="Requestor Phone" />
-										<h:inputText id="requestorPhone" value="#{dataRequest.requestorPhone}" />
+										<h:outputLabel for="requestorPhone" value="Requestor Phone*" />
+										<h:inputText id="requestorPhone" value="#{dataRequest.requestorPhone}" required="true" requiredMessage="Requestor Phone is required"/>
 
-										<h:outputLabel for="requestorEmail" value="Requestor Email" />
-										<h:inputText id="requestorEmail" value="#{dataRequest.requestorEmail}" />
+										<h:outputLabel for="requestorEmail" value="Requestor Email*" />
+										<h:inputText id="requestorEmail" value="#{dataRequest.requestorEmail}" required="true" requiredMessage="Requestor Email is required"/>
 									</div>
 									<div id="receiver">
 										<p>Please enter all information, below, about the person who will receive the requested data.</p>
