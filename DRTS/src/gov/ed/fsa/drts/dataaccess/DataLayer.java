@@ -245,8 +245,9 @@ public class DataLayer {
 	private static final String QUERY_SELECT_DATA_REQUESTS_BY_KEYWORD = "SELECT * FROM(SELECT T2.*, rownum AS ROW_NUM FROM(SELECT T.* FROM(SELECT * FROM "
 			+ ApplicationProperties.DATA_REQUEST_VIEW.getStringValue() + ") T " + "WHERE "
 			+ ApplicationProperties.DATA_REQUEST_FIELD_DESCRIPTION.getStringValue() + " LIKE ? OR "
-			+ ApplicationProperties.DATA_REQUEST_FIELD_PURPOSE.getStringValue() + " LIKE ? " + "ORDER BY %s %s) T2) T3 "
-			+ "WHERE ROW_NUM > ?  AND ROW_NUM <= ?";
+			+ ApplicationProperties.DATA_REQUEST_FIELD_TOPIC_KEYWORDS.getStringValue() + " LIKE ? OR "
+			+ ApplicationProperties.DATA_REQUEST_FIELD_PURPOSE.getStringValue() + " LIKE ? "
+			+ "ORDER BY %s %s) T2) T3 ";
 
 	private static final String QUERY_SELECT_DATA_REQUESTS_BY_KEYWORD_COUNT = "SELECT COUNT(*) FROM "
 			+ ApplicationProperties.DATA_REQUEST_TABLE.getStringValue() + " WHERE "
@@ -1879,8 +1880,7 @@ public class DataLayer {
 			PreparedStatement prepared_statement = oracle_connection.prepareStatement(formatted_query);
 			prepared_statement.setString(1, "%" + keyword + "%");
 			prepared_statement.setString(2, "%" + keyword + "%");
-			prepared_statement.setInt(3, first_row);
-			prepared_statement.setInt(4, rows_per_page);
+			prepared_statement.setString(3, "%" + keyword + "%");
 
 			result_set = prepared_statement.executeQuery();
 
