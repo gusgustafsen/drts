@@ -1186,11 +1186,10 @@ public class DataLayer {
 			}
 			if (request_variables
 					.get(ApplicationProperties.DATA_REQUEST_FIELD_ANTICIPATED_DUE_DATE.getStringValue()) != null) {
-				prepared_statement
-						.setDate(37,
-								new java.sql.Date(((Date) request_variables.get(
-										ApplicationProperties.DATA_REQUEST_FIELD_ANTICIPATED_DUE_DATE.getStringValue()))
-												.getTime()));
+				prepared_statement.setDate(37,
+						new java.sql.Date(((Date) request_variables
+								.get(ApplicationProperties.DATA_REQUEST_FIELD_ANTICIPATED_DUE_DATE.getStringValue()))
+										.getTime()));
 			} else {
 				prepared_statement.setDate(37, null);
 			}
@@ -1639,7 +1638,6 @@ public class DataLayer {
 		String formatted_query = null;
 
 		try {
-			logger.debug("bmfind query=" + QUERY_SELECT_DATA_REQUESTS_BY_DISPLAY_ID_CREATED_BY);
 			sort_direction = sort_ascending ? "ASC" : "DESC";
 			formatted_query = String.format(QUERY_SELECT_DATA_REQUESTS_BY_DISPLAY_ID_CREATED_BY, sort_field,
 					sort_direction);

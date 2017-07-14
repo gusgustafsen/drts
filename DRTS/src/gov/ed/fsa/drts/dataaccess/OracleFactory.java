@@ -124,7 +124,7 @@ public class OracleFactory {
 					InitialContext ctx_aims = new InitialContext();
 					ds_drts = (DataSource) ctx_aims.lookup(JNDI_ENV_NAME_DRTS);
 
-					logger.info("Data source AIMS initialized using JNDI.");
+					logger.info("Data source DRTS initialized using JNDI.");
 
 					processEngine = processEngineConfiguration
 							.setDataSourceJndiName(ApplicationProperties.ORACLE_JNDI.getStringValue())
